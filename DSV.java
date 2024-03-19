@@ -2,120 +2,73 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
 import lib.components.*;
+import lib.ap.*;
 
 public class DSV {
+
+	// general setting
+	private	final int SCREENWIDTH = 1200;
+	private final int SCREENHEIGHT = 800;
+
+	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
+
+
+	// main components
 	private JFrame frame;
-	private JPanel pan_animation;
-	private JPanel pan_dropdown;
-	private JPanel pan_op_current;
-	private JPanel pan_op_array;
-	private JPanel pan_op_queue;
-	private JPanel pan_op_stack;
-	private JPanel pan_op_linkedlist;
-	private JPanel pan_op_tree;
-	private JPanel pan_op_graph;
+	private JPanel panAnimation;
+	private JPanel panDropdown;
+	private JPanel panOPCurrent;
+	private JPanel panOPArray;
+	private JPanel panOPQueue;
+	private JPanel panOPStack;
+	private JPanel panOPLinkedList;
+	private JPanel panOPTree;
+	private JPanel panOPGraph;
 	private JArrow arrow;
 	private JCircle circle;
 	private JSquare square;
 
+
+	// Animation Planner
+	private APArray apArray;
+
+
 	public DSV() {
-		initialize();
+		initAnimationArea();
+		initDropdownArea();
+		initArrayPanel();
+		initQueuePanel();
+		initStackPanel();
+		initLinkedListPanel();
+		initTreePanel();
+		initGraphPanel();
+		initFrame();
+		initAP();
 	}
 
-	private void initialize() {
+	private void initAP(){
+		apArray = new APArray();
+	}
 
-		int screenWidth = 1200;
-		int screenHeight = 800;
+	private void initFrame() {
 
 		// frame
 		frame = new JFrame("Data Structure Visualizer");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(screenWidth, screenHeight);
+		frame.setSize(SCREENWIDTH, SCREENHEIGHT);
 		frame.setLayout(null);
 
-		// animation area
-		pan_animation = new JPanel();
-		pan_animation.setLayout(null); // Set layout to null to freely position components
-		pan_animation.setBounds(0, 0, 1000, 800);
-
-		// dropdown area
-		pan_dropdown = new JPanel();
-		pan_dropdown.setLayout(null);
-		pan_dropdown.setBounds(1000, 0, 200, 30);
-
-		// operation area
-		pan_op_array = new JPanel();
-		pan_op_array.setLayout(null);
-		pan_op_array.setBounds(1000, 30, 200, 770);
-		pan_op_array.setVisible(true);
-		
-		pan_op_queue = new JPanel();
-		pan_op_queue.setLayout(null);
-		pan_op_queue.setBounds(1000, 30, 200, 770);
-		pan_op_queue.setVisible(false);
-		
-		pan_op_stack = new JPanel();
-		pan_op_stack.setLayout(null);
-		pan_op_stack.setBounds(1000, 30, 200, 770);
-		pan_op_stack.setVisible(false);
-		
-		pan_op_linkedlist = new JPanel();
-		pan_op_linkedlist.setLayout(null);
-		pan_op_linkedlist.setBounds(1000, 30, 200, 770);
-		pan_op_linkedlist.setVisible(false);
-
-		pan_op_tree = new JPanel();
-		pan_op_tree.setLayout(null);
-		pan_op_tree.setBounds(1000, 30, 200, 770);
-		pan_op_tree.setVisible(false);
-
-		pan_op_graph = new JPanel();
-		pan_op_graph.setLayout(null);
-		pan_op_graph.setBounds(1000, 30, 200, 770);
-		pan_op_graph.setVisible(false);
-		
-		pan_op_current = pan_op_array;
-		
-		// components (position related to its container)
-		arrow = new JArrow();
-		arrow.setBackground(new Color(0, 0, 0, 0));
-		arrow.setBounds(0, 0, screenWidth, screenHeight); // Change the values according to your preference
-		circle = new JCircle(200, 150, 20);
-		circle.setBackground(new Color(0, 0, 0, 0));
-		circle.setBounds(0, 0, screenWidth, screenHeight); // Change the values according to your preference
-		square = new JSquare(100, 100, 20, 40);
-		square.setBackground(new Color(0, 0, 0, 0));
-		square.setBounds(0, 0, screenWidth, screenHeight);
-		
-		String[] choices = { "Array", "Queue", "Stack", "Linked List", "Tree", "Graph" };
-		JComboBox<String> comboBox = new JComboBox<>(choices);
-		comboBox.setBounds(2, 2, 180, 25);
-		comboBox.setLightWeightPopupEnabled(false); // fix showing two dropdown list
-		comboBox.addActionListener(new ActionListener(){
-			@Override
-			public void actionPerformed(ActionEvent e){
-				showSelectedPanel(EOPPanel.values()[comboBox.getSelectedIndex()]);
-			}
-		});
-		
-
-		// add components to repective area
-		pan_animation.add(arrow);
-		pan_animation.add(circle);
-		pan_animation.add(square);
-		pan_dropdown.add(comboBox);
-
-
 		// Add the animation panel to the frame
-		frame.add(pan_animation);
-		frame.add(pan_dropdown);
-		frame.add(pan_op_array);
-		frame.add(pan_op_queue);
-		frame.add(pan_op_stack);
-		frame.add(pan_op_linkedlist);
-		frame.add(pan_op_tree);
-		frame.add(pan_op_graph);
+		frame.add(panAnimation);
+		frame.add(panDropdown);
+		frame.add(panOPArray);
+		frame.add(panOPQueue);
+		frame.add(panOPStack);
+		frame.add(panOPLinkedList);
+		frame.add(panOPTree);
+		frame.add(panOPGraph);
 
 		Timer timer = new Timer(100, new ActionListener() {
 			@Override
@@ -129,7 +82,7 @@ public class DSV {
 				// move the square
 				square.move(0, 0);
 
-				pan_animation.repaint();
+				panAnimation.repaint();
 			}
 		});
 		timer.start();
@@ -137,43 +90,186 @@ public class DSV {
 		frame.setVisible(true);
 	}
 
+	private void initAnimationArea(){
+		panAnimation = new JPanel();
+		panAnimation.setLayout(null); // Set layout to null to freely position components
+		panAnimation.setBounds(0, 0, 1000, 800);
+
+		arrow = new JArrow();
+		arrow.setBackground(new Color(0, 0, 0, 0));
+		arrow.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT); // Change the values according to your preference
+		circle = new JCircle(200, 150, 20);
+		circle.setBackground(new Color(0, 0, 0, 0));
+		circle.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT); // Change the values according to your preference
+		square = new JSquare(100, 100, 20, 40);
+		square.setBackground(new Color(0, 0, 0, 0));
+		square.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT);
+		
+		panAnimation.add(arrow);
+		panAnimation.add(circle);
+		panAnimation.add(square);
+	}
+
+	private void initDropdownArea(){
+
+		// new panel
+		panDropdown = new JPanel();
+		panDropdown.setLayout(null);
+		panDropdown.setBounds(1000, 0, 200, 30);
+
+		// new components
+		String[] choices = { "Array", "Queue", "Stack", "Linked List", "Tree", "Graph" };
+		JComboBox<String> comboBox = new JComboBox<>(choices);
+		comboBox.setBounds(2, 2, 180, 28);
+		comboBox.setLightWeightPopupEnabled(false); // fix showing two dropdown list
+		comboBox.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				showSelectedPanel(EOPPanel.values()[comboBox.getSelectedIndex()]);
+			}
+		});
+
+		// add to panel
+		panDropdown.add(comboBox);
+	}
+	
+	private void initArrayPanel(){
+
+		// new panel
+		panOPArray = new JPanel();
+		panOPArray.setLayout(null);
+		panOPArray.setBounds(1000, 30, 200, 770);
+		panOPArray.setVisible(true);
+
+		// new components
+		AutoLayout autolayout = new AutoLayout();
+		JLabel lb_default = new JLabel("Default Array");
+		JLabel lb_modification = new JLabel("Modification");
+		JLabel lb_index = new JLabel("Index");
+		JLabel lb_num = new JLabel("Number");
+		JPlaceholderTextArea ta_default = new JPlaceholderTextArea();
+		JPlaceholderTextField tf_index = new JPlaceholderTextField();
+		JPlaceholderTextField tf_num = new JPlaceholderTextField();
+		JButton btn_create = new JButton("Create");
+		JButton btn_modify = new JButton("Modify");
+		lb_default.setFont(TITLEFONT);
+		ta_default.setPlaceholder("e.g. [1,2,3,4]");
+		lb_modification.setFont(TITLEFONT);
+		tf_index.setPlaceholder("e.g. 0");
+		tf_num.setPlaceholder("e.g. 10");
+		btn_create.addActionListener(new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				// do something
+			}
+		});
+		btn_modify.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				// do something
+			}
+		});
+		
+		autolayout.setBounds();
+		autolayout.setBounds(lb_default);
+		autolayout.setBounds(ta_default, 250);
+		autolayout.setBounds(btn_create);
+		autolayout.setBounds();
+		autolayout.setBounds(lb_modification);
+		autolayout.setBounds(lb_index);
+		autolayout.setBounds(tf_index);
+		autolayout.setBounds(lb_num);
+		autolayout.setBounds(tf_num);
+		autolayout.setBounds(btn_modify);
+
+
+		// init : [1,2,3,4]
+
+		// add components
+		panOPArray.add(lb_default);
+		panOPArray.add(ta_default);
+		panOPArray.add(lb_modification);
+		panOPArray.add(lb_index);
+		panOPArray.add(tf_index);
+		panOPArray.add(lb_num);
+		panOPArray.add(tf_num);
+		panOPArray.add(btn_create);
+		panOPArray.add(btn_modify);
+
+		panOPCurrent = panOPArray;
+	}
+
+	private void initQueuePanel(){
+		panOPQueue = new JPanel();
+		panOPQueue.setLayout(null);
+		panOPQueue.setBounds(1000, 30, 200, 770);
+		panOPQueue.setVisible(false);
+	}
+
+	private void initStackPanel(){
+		panOPStack = new JPanel();
+		panOPStack.setLayout(null);
+		panOPStack.setBounds(1000, 30, 200, 770);
+		panOPStack.setVisible(false);
+	}
+
+	private void initLinkedListPanel(){
+		panOPLinkedList = new JPanel();
+		panOPLinkedList.setLayout(null);
+		panOPLinkedList.setBounds(1000, 30, 200, 770);
+		panOPLinkedList.setVisible(false);
+	}
+
+	private void initTreePanel(){
+		panOPTree = new JPanel();
+		panOPTree.setLayout(null);
+		panOPTree.setBounds(1000, 30, 200, 770);
+		panOPTree.setVisible(false);
+	}
+
+	private void initGraphPanel(){
+		panOPGraph = new JPanel();
+		panOPGraph.setLayout(null);
+		panOPGraph.setBounds(1000, 30, 200, 770);
+		panOPGraph.setVisible(false);
+	}
+
 	private void showSelectedPanel(EOPPanel panel){
 		switch(panel){
 			case ARRAY:
-				pan_op_array.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_array;
+				panOPArray.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPArray;
 				break;
 			case QUEUE:
-				pan_op_queue.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_queue;
+				panOPQueue.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPQueue;
 				break;
 			case STACK:
-				pan_op_stack.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_stack;
+				panOPStack.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPStack;
 				break;
 			case LINKEDLIST:
-				pan_op_linkedlist.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_linkedlist;
+				panOPLinkedList.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPLinkedList;
 				break;
 			case TREE:
-				pan_op_tree.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_tree;
+				panOPTree.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPTree;
 				break;
 			case GRAPH:
-				pan_op_graph.setVisible(true);
-				pan_op_current.setVisible(false);
-				pan_op_current = pan_op_graph;
+				panOPGraph.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPGraph;
 				break;
 			default:
-				
-
+				panOPCurrent.setVisible(true);
+				break;
 		}
-
 	}
 
 	private enum EOPPanel{
@@ -184,10 +280,34 @@ public class DSV {
 		TREE,
 		GRAPH
 	}
-
+	
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			new DSV();
 		});
+	}
+}
+
+class AutoLayout {
+	private final int X = 2;
+	private int y;
+	private final int W = 180;
+	private final int H = 30;
+
+	public AutoLayout() {
+		this.y = 2;
+	}
+
+	public void setBounds(){
+		this.y = this.y + 2 + this.H / 2;
+	}
+
+	public void setBounds(JComponent component) {
+		setBounds(component, this.H);
+	}
+
+	public void setBounds(JComponent component,int height) {
+		component.setBounds(this.X, this.y, this.W, height);
+		this.y = y + 2 + height;
 	}
 }
