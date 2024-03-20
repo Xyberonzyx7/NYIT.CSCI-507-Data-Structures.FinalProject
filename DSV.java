@@ -2,6 +2,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 
 import lib.components.*;
 import lib.ap.*;
@@ -9,14 +10,19 @@ import lib.ap.*;
 public class DSV {
 
 	// general setting
-	private	final int SCREENWIDTH = 1200;
-	private final int SCREENHEIGHT = 800;
+	private final Rectangle RECT_SCREEN = new Rectangle(0, 0, 1200, 800);
+	private final Rectangle RECT_HINT = new Rectangle(0, 0, 1000, 30);
+	private final Rectangle RECT_ANIMATION = new Rectangle(0, 30, 1000, 770);
+	private final Rectangle RECT_DROPDOWN = new Rectangle(1000, 0, 200, 30);
+	private final Rectangle RECT_OPERATION = new Rectangle(1000, 30, 200, 770);
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
 
 	// main components
 	private JFrame frame;
+	private JPanel panHint;
+	private JFadingLabel lb_hint;
 	private JPanel panAnimation;
 	private JPanel panDropdown;
 	private JPanel panOPCurrent;
@@ -36,6 +42,7 @@ public class DSV {
 
 
 	public DSV() {
+		initHintArea();
 		initAnimationArea();
 		initDropdownArea();
 		initArrayPanel();
@@ -52,12 +59,24 @@ public class DSV {
 		apArray = new APArray();
 	}
 
+	private void initHintArea(){
+		panHint = new JPanel();
+		panHint.setLayout(null);
+		panHint.setBounds(RECT_HINT);
+		panHint.setBackground(new Color(0, 0, 0, 0));
+
+		lb_hint = new JFadingLabel("", SwingConstants.CENTER);
+		lb_hint.setBounds(RECT_HINT);
+
+		panHint.add(lb_hint);
+	}
+
 	private void initFrame() {
 
 		// frame
 		frame = new JFrame("Data Structure Visualizer");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(SCREENWIDTH, SCREENHEIGHT);
+		frame.setBounds(RECT_SCREEN);
 		frame.setLayout(null);
 
 		// Add the animation panel to the frame
@@ -69,6 +88,7 @@ public class DSV {
 		frame.add(panOPLinkedList);
 		frame.add(panOPTree);
 		frame.add(panOPGraph);
+		frame.add(panHint);
 
 		Timer timer = new Timer(100, new ActionListener() {
 			@Override
@@ -91,19 +111,21 @@ public class DSV {
 	}
 
 	private void initAnimationArea(){
+
+		// animation area
 		panAnimation = new JPanel();
 		panAnimation.setLayout(null); // Set layout to null to freely position components
-		panAnimation.setBounds(0, 0, 1000, 800);
+		panAnimation.setBounds(RECT_ANIMATION);
 
 		arrow = new JArrow();
 		arrow.setBackground(new Color(0, 0, 0, 0));
-		arrow.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT); // Change the values according to your preference
+		arrow.setBounds(RECT_ANIMATION); // Change the values according to your preference
 		circle = new JCircle(200, 150, 20);
 		circle.setBackground(new Color(0, 0, 0, 0));
-		circle.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT); // Change the values according to your preference
+		circle.setBounds(RECT_ANIMATION); // Change the values according to your preference
 		square = new JSquare(100, 100, 20, 40);
 		square.setBackground(new Color(0, 0, 0, 0));
-		square.setBounds(0, 0, SCREENWIDTH, SCREENHEIGHT);
+		square.setBounds(RECT_ANIMATION);
 		
 		panAnimation.add(arrow);
 		panAnimation.add(circle);
@@ -115,7 +137,7 @@ public class DSV {
 		// new panel
 		panDropdown = new JPanel();
 		panDropdown.setLayout(null);
-		panDropdown.setBounds(1000, 0, 200, 30);
+		panDropdown.setBounds(RECT_DROPDOWN);
 
 		// new components
 		String[] choices = { "Array", "Queue", "Stack", "Linked List", "Tree", "Graph" };
@@ -138,7 +160,7 @@ public class DSV {
 		// new panel
 		panOPArray = new JPanel();
 		panOPArray.setLayout(null);
-		panOPArray.setBounds(1000, 30, 200, 770);
+		panOPArray.setBounds(RECT_OPERATION);
 		panOPArray.setVisible(true);
 
 		// new components
@@ -160,13 +182,24 @@ public class DSV {
 		btn_create.addActionListener(new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
-				// do something
+				String input = ta_default.getText();	
+
+				if(input.isEmpty()){
+					return;
+				}
+
+				try{
+					String[] numbers = input.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+					int[] result = Arrays.stream(numbers).mapToInt(Integer::parseInt).toArray();
+				}catch(NumberFormatException exception){
+					return;
+				}
+				
 			}
 		});
 		btn_modify.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e){
-				// do something
+			public void actionPerformed(ActionEvent e) {
 			}
 		});
 		
@@ -202,7 +235,7 @@ public class DSV {
 	private void initQueuePanel(){
 		panOPQueue = new JPanel();
 		panOPQueue.setLayout(null);
-		panOPQueue.setBounds(1000, 30, 200, 770);
+		panOPQueue.setBounds(RECT_OPERATION);
 		panOPQueue.setVisible(false);
 	}
 
@@ -216,7 +249,7 @@ public class DSV {
 	private void initLinkedListPanel(){
 		panOPLinkedList = new JPanel();
 		panOPLinkedList.setLayout(null);
-		panOPLinkedList.setBounds(1000, 30, 200, 770);
+		panOPLinkedList.setBounds(RECT_OPERATION);
 		panOPLinkedList.setVisible(false);
 	}
 
@@ -311,3 +344,4 @@ class AutoLayout {
 		this.y = y + 2 + height;
 	}
 }
+

@@ -9,10 +9,11 @@ public class JFadingLabel extends JLabel {
     private static final int FADE_DURATION_MS = 5000; // Duration of the fade (in milliseconds)
     private static final int NUM_FADE_STEPS = 20; // Number of steps for the fade animation
 
-    public JFadingLabel(String text) {
-        super(text);
-        setFont(new Font("Arial", Font.PLAIN, 14));
-    }
+	public JFadingLabel(String text, int horizontalAlignment){
+		super(text, horizontalAlignment);
+        setFont(new Font("Arial", Font.BOLD, 16));
+		setForeground(Color.RED);
+	}
 
 	@Override
 	public void setText(String text) {
