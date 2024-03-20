@@ -70,7 +70,9 @@ public class DSV {
 		frame.add(panOPTree);
 		frame.add(panOPGraph);
 
-		Timer timer = new Timer(100, new ActionListener() {
+		int[] count = {0};
+		Timer timer = new Timer(100, null);
+		timer.addActionListener( new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// Extend the arrow
@@ -83,6 +85,10 @@ public class DSV {
 				square.move(0, 0);
 
 				panAnimation.repaint();
+				count[0]++;
+				if(count[0] == 30){
+					timer.stop();
+				}
 			}
 		});
 		timer.start();
@@ -103,8 +109,7 @@ public class DSV {
 		circle = new JCircle(200, 150, 20);
 		circle.setBackground(new Color(0, 0, 0, 0));
 		circle.setBounds(RECT_ANIMATION); // Change the values according to your preference
-		square = new JSquare(100, 100, 20, 40);
-		square.setBackground(new Color(0, 0, 0, 0));
+		square = new JSquare(100, 100);
 		square.setBounds(RECT_ANIMATION);
 
 		panAnimation.add(arrow);
@@ -170,8 +175,9 @@ public class DSV {
 				}
 
 				try {
-					String[] numbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
-					int[] result = Arrays.stream(numbers).mapToInt(Integer::parseInt).toArray();
+					String[] szNumbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
+					apArray.initArray(nNumbers);
 				} catch (NumberFormatException exception) {
 					popHint("Default array is not valid.");
 					return;

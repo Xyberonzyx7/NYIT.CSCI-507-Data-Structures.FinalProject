@@ -9,18 +9,16 @@ import lib.components.*;
 public class APArray {
 
 	// storage
-	List<Integer> storage;
+	int[] nStorage;
 
 	public APArray(){
-		storage = new ArrayList<>();
 	}
 
-	public boolean initArray(int[] nums){
-		return true;
+	public void initArray(int[] nums){
+		nStorage = nums;
 	}
 
-	public boolean modifyArray(int index, int number){
-		return true;
+	public void modifyArray(int index, int number){
 	}
 
 
