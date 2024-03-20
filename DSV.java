@@ -11,18 +11,14 @@ public class DSV {
 
 	// general setting
 	private final Rectangle RECT_SCREEN = new Rectangle(0, 0, 1200, 800);
-	private final Rectangle RECT_HINT = new Rectangle(0, 0, 1000, 30);
-	private final Rectangle RECT_ANIMATION = new Rectangle(0, 30, 1000, 770);
+	private final Rectangle RECT_ANIMATION = new Rectangle(0, 0, 1000, 770);
 	private final Rectangle RECT_DROPDOWN = new Rectangle(1000, 0, 200, 30);
-	private final Rectangle RECT_OPERATION = new Rectangle(1000, 30, 200, 770);
+	private final Rectangle RECT_OPERATION = new Rectangle(1000,30, 200, 770);
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
-
 	// main components
 	private JFrame frame;
-	private JPanel panHint;
-	private JFadingLabel lb_hint;
 	private JPanel panAnimation;
 	private JPanel panDropdown;
 	private JPanel panOPCurrent;
@@ -36,13 +32,10 @@ public class DSV {
 	private JCircle circle;
 	private JSquare square;
 
-
 	// Animation Planner
 	private APArray apArray;
 
-
 	public DSV() {
-		initHintArea();
 		initAnimationArea();
 		initDropdownArea();
 		initArrayPanel();
@@ -55,20 +48,8 @@ public class DSV {
 		initAP();
 	}
 
-	private void initAP(){
+	private void initAP() {
 		apArray = new APArray();
-	}
-
-	private void initHintArea(){
-		panHint = new JPanel();
-		panHint.setLayout(null);
-		panHint.setBounds(RECT_HINT);
-		panHint.setBackground(new Color(0, 0, 0, 0));
-
-		lb_hint = new JFadingLabel("", SwingConstants.CENTER);
-		lb_hint.setBounds(RECT_HINT);
-
-		panHint.add(lb_hint);
 	}
 
 	private void initFrame() {
@@ -88,7 +69,6 @@ public class DSV {
 		frame.add(panOPLinkedList);
 		frame.add(panOPTree);
 		frame.add(panOPGraph);
-		frame.add(panHint);
 
 		Timer timer = new Timer(100, new ActionListener() {
 			@Override
@@ -110,7 +90,7 @@ public class DSV {
 		frame.setVisible(true);
 	}
 
-	private void initAnimationArea(){
+	private void initAnimationArea() {
 
 		// animation area
 		panAnimation = new JPanel();
@@ -126,13 +106,13 @@ public class DSV {
 		square = new JSquare(100, 100, 20, 40);
 		square.setBackground(new Color(0, 0, 0, 0));
 		square.setBounds(RECT_ANIMATION);
-		
+
 		panAnimation.add(arrow);
 		panAnimation.add(circle);
 		panAnimation.add(square);
 	}
 
-	private void initDropdownArea(){
+	private void initDropdownArea() {
 
 		// new panel
 		panDropdown = new JPanel();
@@ -144,9 +124,9 @@ public class DSV {
 		JComboBox<String> comboBox = new JComboBox<>(choices);
 		comboBox.setBounds(2, 2, 180, 28);
 		comboBox.setLightWeightPopupEnabled(false); // fix showing two dropdown list
-		comboBox.addActionListener(new ActionListener(){
+		comboBox.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e){
+			public void actionPerformed(ActionEvent e) {
 				showSelectedPanel(EOPPanel.values()[comboBox.getSelectedIndex()]);
 			}
 		});
@@ -154,8 +134,8 @@ public class DSV {
 		// add to panel
 		panDropdown.add(comboBox);
 	}
-	
-	private void initArrayPanel(){
+
+	private void initArrayPanel() {
 
 		// new panel
 		panOPArray = new JPanel();
@@ -165,7 +145,7 @@ public class DSV {
 
 		// new components
 		AutoLayout autolayout = new AutoLayout();
-		JLabel lb_default = new JLabel("Default Array");
+		JLabel lb_default = new JLabel("Default Array (int[])");
 		JLabel lb_modification = new JLabel("Modification");
 		JLabel lb_index = new JLabel("Index");
 		JLabel lb_num = new JLabel("Number");
@@ -179,30 +159,47 @@ public class DSV {
 		lb_modification.setFont(TITLEFONT);
 		tf_index.setPlaceholder("e.g. 0");
 		tf_num.setPlaceholder("e.g. 10");
-		btn_create.addActionListener(new ActionListener(){
+		btn_create.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e){
-				String input = ta_default.getText();	
+			public void actionPerformed(ActionEvent e) {
+				String szDefault = ta_default.getText();
 
-				if(input.isEmpty()){
+				if (szDefault.isEmpty()) {
+					popHint("Default array is not valid.");
 					return;
 				}
 
-				try{
-					String[] numbers = input.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+				try {
+					String[] numbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
 					int[] result = Arrays.stream(numbers).mapToInt(Integer::parseInt).toArray();
-				}catch(NumberFormatException exception){
+				} catch (NumberFormatException exception) {
+					popHint("Default array is not valid.");
 					return;
 				}
-				
+
 			}
 		});
 		btn_modify.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+				String szIndex = tf_index.getText();
+				String szNumber = tf_num.getText();
+
+				if (szIndex.isEmpty() || szNumber.isEmpty()) {
+					popHint("Index or Number is not valid.");
+					return;
+				}
+
+				try {
+					int nIndex = Integer.parseInt(szIndex);
+					int nNumber = Integer.parseInt(szNumber);
+				} catch (NumberFormatException exception) {
+					popHint("Index or Number is not valid.");
+					return;
+				}
 			}
 		});
-		
+
 		autolayout.setBounds();
 		autolayout.setBounds(lb_default);
 		autolayout.setBounds(ta_default, 250);
@@ -214,7 +211,6 @@ public class DSV {
 		autolayout.setBounds(lb_num);
 		autolayout.setBounds(tf_num);
 		autolayout.setBounds(btn_modify);
-
 
 		// init : [1,2,3,4]
 
@@ -232,43 +228,43 @@ public class DSV {
 		panOPCurrent = panOPArray;
 	}
 
-	private void initQueuePanel(){
+	private void initQueuePanel() {
 		panOPQueue = new JPanel();
 		panOPQueue.setLayout(null);
 		panOPQueue.setBounds(RECT_OPERATION);
 		panOPQueue.setVisible(false);
 	}
 
-	private void initStackPanel(){
+	private void initStackPanel() {
 		panOPStack = new JPanel();
 		panOPStack.setLayout(null);
 		panOPStack.setBounds(1000, 30, 200, 770);
 		panOPStack.setVisible(false);
 	}
 
-	private void initLinkedListPanel(){
+	private void initLinkedListPanel() {
 		panOPLinkedList = new JPanel();
 		panOPLinkedList.setLayout(null);
 		panOPLinkedList.setBounds(RECT_OPERATION);
 		panOPLinkedList.setVisible(false);
 	}
 
-	private void initTreePanel(){
+	private void initTreePanel() {
 		panOPTree = new JPanel();
 		panOPTree.setLayout(null);
 		panOPTree.setBounds(1000, 30, 200, 770);
 		panOPTree.setVisible(false);
 	}
 
-	private void initGraphPanel(){
+	private void initGraphPanel() {
 		panOPGraph = new JPanel();
 		panOPGraph.setLayout(null);
 		panOPGraph.setBounds(1000, 30, 200, 770);
 		panOPGraph.setVisible(false);
 	}
 
-	private void showSelectedPanel(EOPPanel panel){
-		switch(panel){
+	private void showSelectedPanel(EOPPanel panel) {
+		switch (panel) {
 			case ARRAY:
 				panOPArray.setVisible(true);
 				panOPCurrent.setVisible(false);
@@ -305,7 +301,11 @@ public class DSV {
 		}
 	}
 
-	private enum EOPPanel{
+	private void popHint(String szMsg){
+		JOptionPane.showMessageDialog(null, szMsg, "Hint", JOptionPane.INFORMATION_MESSAGE);
+	}
+
+	private enum EOPPanel {
 		ARRAY,
 		QUEUE,
 		STACK,
@@ -313,7 +313,7 @@ public class DSV {
 		TREE,
 		GRAPH
 	}
-	
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			new DSV();
@@ -331,7 +331,7 @@ class AutoLayout {
 		this.y = 2;
 	}
 
-	public void setBounds(){
+	public void setBounds() {
 		this.y = this.y + 2 + this.H / 2;
 	}
 
@@ -339,9 +339,8 @@ class AutoLayout {
 		setBounds(component, this.H);
 	}
 
-	public void setBounds(JComponent component,int height) {
+	public void setBounds(JComponent component, int height) {
 		component.setBounds(this.X, this.y, this.W, height);
 		this.y = y + 2 + height;
 	}
 }
-
