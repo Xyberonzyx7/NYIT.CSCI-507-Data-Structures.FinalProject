@@ -36,7 +36,7 @@ public class JSquare extends JShape {
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
         g2d.setColor(color);
 		g2d.setStroke(new BasicStroke(STROKE));
-        g2d.drawRect(x, y, SIDELENGTH, SIDELENGTH); // Draw the border
+        g2d.drawRect(x - SIDELENGTH / 2, y - SIDELENGTH / 2, SIDELENGTH, SIDELENGTH); // Draw the border
     }
 }
 

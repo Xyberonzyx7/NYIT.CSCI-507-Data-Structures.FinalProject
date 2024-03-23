@@ -18,7 +18,7 @@ public class APArray {
 	private int[] nStorage;
 	private List<Point> locations;
 	private final int MARGIN = 200;
-	private final int HORIZONTAL_SPACE = 50;
+	private final int HORIZONTAL_SPACE = 60;
 	private final int VERTICAL_SPACE = 200;
 
 	public APArray(Rectangle rectAnimationArea){
@@ -51,7 +51,8 @@ public class APArray {
 
 		// animation planning
 		for(int i = 0; i < nStorage.length; i++){
-			script.add(generateCmd("sq"+i, EShape.SQUARE, ECmd.ADD, locations.get(i), null));
+			script.add(generateCmd("sq"+i, EShape.SQUARE, ECmd.ADD, new Point(0, 0), locations.get(i)));
+			script.add(generateCmd("cir"+i, EShape.CIRCLE, ECmd.ADD, new Point(0, 0), locations.get(i)));
 		}
 		return script;
 	}	

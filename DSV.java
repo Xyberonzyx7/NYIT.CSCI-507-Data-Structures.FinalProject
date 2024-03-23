@@ -5,7 +5,6 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Dictionary;
 
 import lib.components.*;
 import lib.script.Command;
@@ -19,7 +18,7 @@ public class DSV {
 	private final Rectangle RECT_SCREEN = new Rectangle(0, 0, 1200, 800);
 	private final Rectangle RECT_ANIMATION = new Rectangle(0, 0, 1000, 770);
 	private final Rectangle RECT_DROPDOWN = new Rectangle(1000, 0, 200, 30);
-	private final Rectangle RECT_OPERATION = new Rectangle(1000,30, 200, 770);
+	private final Rectangle RECT_OPERATION = new Rectangle(1000, 30, 200, 770);
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
@@ -34,9 +33,6 @@ public class DSV {
 	private JPanel panOPLinkedList;
 	private JPanel panOPTree;
 	private JPanel panOPGraph;
-	private JArrow arrow;
-	private JCircle circle;
-	private JSquare square;
 
 	// Animation Planner
 	private APArray apArray;
@@ -76,29 +72,6 @@ public class DSV {
 		frame.add(panOPTree);
 		frame.add(panOPGraph);
 
-		int[] count = {0};
-		// Timer timer = new Timer(100, null);
-		// timer.addActionListener( new ActionListener() {
-		// 	@Override
-		// 	public void actionPerformed(ActionEvent e) {
-		// 		// Extend the arrow
-		// 		arrow.extendArrow();
-
-		// 		// Move the circle horizontally (for demonstration purposes)
-		// 		circle.move(10, 0);
-
-		// 		// move the square
-		// 		square.move(0, 0);
-
-		// 		panAnimation.repaint();
-		// 		count[0]++;
-		// 		if(count[0] == 30){
-		// 			timer.stop();
-		// 		}
-		// 	}
-		// });
-		// timer.start();
-
 		frame.setVisible(true);
 	}
 
@@ -108,19 +81,6 @@ public class DSV {
 		panAnimation = new JPanel();
 		panAnimation.setLayout(null); // Set layout to null to freely position components
 		panAnimation.setBounds(RECT_ANIMATION);
-
-		arrow = new JArrow();
-		arrow.setBackground(new Color(0, 0, 0, 0));
-		arrow.setBounds(RECT_ANIMATION); // Change the values according to your preference
-		circle = new JCircle(200, 150);
-		circle.setBackground(new Color(0, 0, 0, 0));
-		circle.setBounds(RECT_ANIMATION); // Change the values according to your preference
-		square = new JSquare(100, 100);
-		square.setBounds(RECT_ANIMATION);
-
-		panAnimation.add(arrow);
-		panAnimation.add(circle);
-		panAnimation.add(square);
 	}
 
 	private void initDropdownArea() {
@@ -166,7 +126,7 @@ public class DSV {
 		JButton btn_create = new JButton("Create");
 		JButton btn_modify = new JButton("Modify");
 		lb_default.setFont(TITLEFONT);
-		ta_default.setPlaceholder("e.g. [1,2,3,4]");
+		ta_default.setText("[1,2,3,4]");
 		lb_modification.setFont(TITLEFONT);
 		tf_index.setPlaceholder("e.g. 0");
 		tf_num.setPlaceholder("e.g. 10");
@@ -316,7 +276,7 @@ public class DSV {
 		}
 	}
 
-	private void popHint(String szMsg){
+	private void popHint(String szMsg) {
 		JOptionPane.showMessageDialog(null, szMsg, "Hint", JOptionPane.INFORMATION_MESSAGE);
 	}
 
@@ -329,39 +289,36 @@ public class DSV {
 		GRAPH
 	}
 
-	private void runClip(Clip clip){
-		int[] count = {0};
+	private void runClip(Clip clip) {
+		int[] count = { 0 };
 
 		List<Movement> movements = clip.getMovements();
 
 		// add obj to panAnimation
-		for(int i = 0; i < movements.size(); i++){
+		for (int i = 0; i < movements.size(); i++) {
 			movements.get(i).component.setBounds(RECT_ANIMATION);
 			panAnimation.add(movements.get(i).component);
 		}
 
-
 		Timer timer = new Timer(100, null);
-		timer.addActionListener( new ActionListener() {
+		timer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 
-				for(int i = 0; i < movements.size(); i++){
-					if(movements.get(i).cmd == ECmd.ADD){
+				for (int i = 0; i < movements.size(); i++) {
+					if (movements.get(i).cmd == ECmd.ADD) {
 						// do nothing
 					}
 				}
 
 				panAnimation.repaint();
 				count[0]++;
-				if(count[0] == 30){
+				if (count[0] == 30) {
 					timer.stop();
 				}
 			}
 		});
 		timer.start();
-
-
 	}
 
 	public static void main(String[] args) {
@@ -371,13 +328,13 @@ public class DSV {
 	}
 }
 
-class ScriptInterpreter{
+class ScriptInterpreter {
 
-	public Clip read(Script script){
+	public Clip read(Script script) {
 
-		Clip clip = new Clip();	
+		Clip clip = new Clip();
 
-		for(int i = 0; i < script.size(); i++){
+		for (int i = 0; i < script.size(); i++) {
 			Movement movement = new Movement();
 
 			Command cmd = script.get(i);
@@ -388,13 +345,17 @@ class ScriptInterpreter{
 
 			// get object
 			Component component;
-			switch(cmd.shape){
+			switch (cmd.shape) {
 				case SQUARE:
-				component = new JSquare((int)cmd.start.getX(), (int)cmd.start.getY());
-				movement.component = component;
-				break;
+					component = new JSquare((int) cmd.end.getX(), (int) cmd.end.getY());
+					break;
+				case CIRCLE:
+					component = new JCircle((int) cmd.end.getX(), (int) cmd.end.getY());
+					break;
 				default:
+					component = null;
 			}
+			movement.component = component;
 
 			movement.cmd = cmd.cmd;
 
@@ -403,26 +364,25 @@ class ScriptInterpreter{
 
 		return clip;
 	}
-
 }
 
-class Clip{
+class Clip {
 	private List<Movement> movements;
 
-	public Clip(){
+	public Clip() {
 		movements = new ArrayList<>();
 	}
 
-	public void add(Movement movement){
+	public void add(Movement movement) {
 		this.movements.add(movement);
 	}
 
-	public List<Movement> getMovements(){
+	public List<Movement> getMovements() {
 		return this.movements;
 	}
 }
 
-class Movement{
+class Movement {
 	public String szName;
 	Component component;
 	ECmd cmd;
