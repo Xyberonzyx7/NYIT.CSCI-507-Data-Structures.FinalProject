@@ -3,16 +3,16 @@ package lib.components;
 import javax.swing.*;
 import java.awt.*;
 
-public class JCircle extends JPanel {
+public class JCircle extends JShape {
     private int x; // X-coordinate of circle's center
     private int y; // Y-coordinate of circle's center
     private int radius; // Radius of the circle
     private Color color; // Circle color (you can customize this)
 
-    public JCircle(int x, int y, int radius) {
+    public JCircle(int x, int y) {
         this.x = x;
         this.y = y;
-        this.radius = radius;
+        this.radius = 20;
         this.color = Color.BLUE; // Default color (you can change it)
     }
 

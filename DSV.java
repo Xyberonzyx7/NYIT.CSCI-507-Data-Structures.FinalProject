@@ -2,9 +2,15 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Dictionary;
 
 import lib.components.*;
+import lib.script.Command;
+import lib.script.ECmd;
+import lib.script.Script;
 import lib.ap.*;
 
 public class DSV {
@@ -49,7 +55,7 @@ public class DSV {
 	}
 
 	private void initAP() {
-		apArray = new APArray();
+		apArray = new APArray(RECT_ANIMATION);
 	}
 
 	private void initFrame() {
@@ -71,27 +77,27 @@ public class DSV {
 		frame.add(panOPGraph);
 
 		int[] count = {0};
-		Timer timer = new Timer(100, null);
-		timer.addActionListener( new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-				// Extend the arrow
-				arrow.extendArrow();
+		// Timer timer = new Timer(100, null);
+		// timer.addActionListener( new ActionListener() {
+		// 	@Override
+		// 	public void actionPerformed(ActionEvent e) {
+		// 		// Extend the arrow
+		// 		arrow.extendArrow();
 
-				// Move the circle horizontally (for demonstration purposes)
-				circle.move(10, 0);
+		// 		// Move the circle horizontally (for demonstration purposes)
+		// 		circle.move(10, 0);
 
-				// move the square
-				square.move(0, 0);
+		// 		// move the square
+		// 		square.move(0, 0);
 
-				panAnimation.repaint();
-				count[0]++;
-				if(count[0] == 30){
-					timer.stop();
-				}
-			}
-		});
-		timer.start();
+		// 		panAnimation.repaint();
+		// 		count[0]++;
+		// 		if(count[0] == 30){
+		// 			timer.stop();
+		// 		}
+		// 	}
+		// });
+		// timer.start();
 
 		frame.setVisible(true);
 	}
@@ -106,7 +112,7 @@ public class DSV {
 		arrow = new JArrow();
 		arrow.setBackground(new Color(0, 0, 0, 0));
 		arrow.setBounds(RECT_ANIMATION); // Change the values according to your preference
-		circle = new JCircle(200, 150, 20);
+		circle = new JCircle(200, 150);
 		circle.setBackground(new Color(0, 0, 0, 0));
 		circle.setBounds(RECT_ANIMATION); // Change the values according to your preference
 		square = new JSquare(100, 100);
@@ -177,7 +183,10 @@ public class DSV {
 				try {
 					String[] szNumbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
 					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
-					apArray.initArray(nNumbers);
+					Script script = apArray.initArray(nNumbers);
+					ScriptInterpreter si = new ScriptInterpreter();
+					Clip clip = si.read(script);
+					runClip(clip);
 				} catch (NumberFormatException exception) {
 					popHint("Default array is not valid.");
 					return;
@@ -320,11 +329,103 @@ public class DSV {
 		GRAPH
 	}
 
+	private void runClip(Clip clip){
+		int[] count = {0};
+
+		List<Movement> movements = clip.getMovements();
+
+		// add obj to panAnimation
+		for(int i = 0; i < movements.size(); i++){
+			movements.get(i).component.setBounds(RECT_ANIMATION);
+			panAnimation.add(movements.get(i).component);
+		}
+
+
+		Timer timer = new Timer(100, null);
+		timer.addActionListener( new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+
+				for(int i = 0; i < movements.size(); i++){
+					if(movements.get(i).cmd == ECmd.ADD){
+						// do nothing
+					}
+				}
+
+				panAnimation.repaint();
+				count[0]++;
+				if(count[0] == 30){
+					timer.stop();
+				}
+			}
+		});
+		timer.start();
+
+
+	}
+
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			new DSV();
 		});
 	}
+}
+
+class ScriptInterpreter{
+
+	public Clip read(Script script){
+
+		Clip clip = new Clip();	
+
+		for(int i = 0; i < script.size(); i++){
+			Movement movement = new Movement();
+
+			Command cmd = script.get(i);
+
+			// get name
+			String szName = cmd.szName;
+			movement.szName = szName;
+
+			// get object
+			Component component;
+			switch(cmd.shape){
+				case SQUARE:
+				component = new JSquare((int)cmd.start.getX(), (int)cmd.start.getY());
+				movement.component = component;
+				break;
+				default:
+			}
+
+			movement.cmd = cmd.cmd;
+
+			clip.add(movement);
+		}
+
+		return clip;
+	}
+
+}
+
+class Clip{
+	private List<Movement> movements;
+
+	public Clip(){
+		movements = new ArrayList<>();
+	}
+
+	public void add(Movement movement){
+		this.movements.add(movement);
+	}
+
+	public List<Movement> getMovements(){
+		return this.movements;
+	}
+}
+
+class Movement{
+	public String szName;
+	Component component;
+	ECmd cmd;
 }
 
 class AutoLayout {

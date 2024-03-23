@@ -2,18 +2,17 @@ package lib.components;
 import javax.swing.*;
 import java.awt.*;
 
-public class JSquare extends JPanel {
+public class JSquare extends JShape {
     private int x; // X-coordinate of square's top-left corner
     private int y; // Y-coordinate of square's top-left corner
     private Color color; // Square color
 	private final int STROKE = 5;
-	private final int SIDELENGTH = 50;
+	private final int SIDELENGTH = 60;
 
-    public JSquare(int x, int y) {
-        this.x = x;
-        this.y = y;
-        this.color = Color.CYAN; // Default color (you can change it)
-		setBackground(new Color(0, 0, 0, 0));
+    public JSquare(int d, int e) {
+        this.x = d;
+        this.y = e;
+        this.color = Color.DARK_GRAY; // Default color (you can change it)
 	}
 
     public void move(int dx, int dy) {

@@ -1,5 +1,5 @@
 package lib.components;
 
-public class JLine {
+public class JLine extends JShape {
 	
 }
