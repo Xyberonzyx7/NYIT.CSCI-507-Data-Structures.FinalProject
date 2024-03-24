@@ -8,4 +8,5 @@ public class Scene {
 	public EAction action;
 	public Point start;
 	public Point end;
+	public String txt;
 }

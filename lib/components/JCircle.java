@@ -10,11 +10,13 @@ public class JCircle extends JShape {
 	private FPoint now;
     private int radius; // Radius of the circle
     private Color color; // Circle color (you can customize this)
+	private String txt;
 
-    public JCircle(int x, int y) {
+    public JCircle(int x, int y, String txt) {
 		now = new FPoint(x, y);
         now.x = x;
         now.y = y;
+		this.txt = txt;
         this.radius = 20;
         this.color = Color.BLUE; // Default color (you can change it)
     }
@@ -63,7 +65,17 @@ public class JCircle extends JShape {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+
+		// draw circle
         g.setColor(color);
         g.fillOval((int) now.x - radius, (int) now.y - radius, 2 * radius, 2 * radius);
+
+		// draw txt
+		g.setColor(Color.WHITE);
+		g.setFont(new Font("Arial", Font.BOLD, 14));
+		FontMetrics metrics = g.getFontMetrics(g.getFont());
+		int x = (int) now.x - metrics.stringWidth(txt) / 2;
+		int y = (int) now.y - metrics.getHeight() / 2 + metrics.getAscent();
+		g.drawString( txt, x, y);
     }
 }

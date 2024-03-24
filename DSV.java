@@ -304,8 +304,6 @@ public class DSV {
 				public void actionPerformed(ActionEvent e) {
 					// shape.move(2, 2);
 					shape.moveto(destinationX, destinationY);
-					System.out.println("shape.x() = " + shape.x());
-					System.out.println("destinationX = " + destinationX);
 					
 					if (shape.x() == destinationX) {
 						// Stop the timer for this specific clip
@@ -350,7 +348,7 @@ class ScriptInterpreter {
 					shape = new JSquare((int) scene.start.getX(), (int) scene.start.getY());
 					break;
 				case CIRCLE:
-					shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY());
+					shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY(), scene.txt);
 					break;
 				default:
 					shape = null;

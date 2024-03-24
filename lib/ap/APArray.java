@@ -51,8 +51,8 @@ public class APArray {
 
 		// animation planning
 		for(int i = 0; i < nStorage.length; i++){
-			script.add(generateCmd("sq"+i, EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i)));
-			script.add(generateCmd("cir"+i, EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i)));
+			script.add(generateCmd("sq"+i, EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), ""));
+			script.add(generateCmd("cir"+i, EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i), Integer.toString(i)));
 		}
 		return script;
 	}	
@@ -60,13 +60,14 @@ public class APArray {
 	public void modifyArray(int index, int number){
 	}
 	
-	private Scene generateCmd(String szName, EShape shape, EAction action, Point start, Point end){
+	private Scene generateCmd(String szName, EShape shape, EAction action, Point start, Point end, String txt){
 		Scene scene = new Scene();
 		scene.szName = szName;
 		scene.shape = shape;
 		scene.action = action;
 		scene.start = start;
 		scene.end = end;
+		scene.txt = txt;
 		return scene;
 
 	}
