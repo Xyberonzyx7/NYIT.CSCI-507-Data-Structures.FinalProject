@@ -1,6 +1,6 @@
 package lib.script;
 
-public enum ECmd {
+public enum EAction {
 	ADD,
 	DELETE,
 	MOVE	

@@ -6,8 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lib.components.*;
-import lib.script.Command;
-import lib.script.ECmd;
+import lib.script.Scene;
+import lib.script.EAction;
 import lib.script.EShape;
 import lib.script.Script;
 
@@ -17,7 +17,7 @@ public class APArray {
 	// storage
 	private int[] nStorage;
 	private List<Point> locations;
-	private final int MARGIN = 200;
+	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
 	private final int VERTICAL_SPACE = 200;
 
@@ -51,8 +51,8 @@ public class APArray {
 
 		// animation planning
 		for(int i = 0; i < nStorage.length; i++){
-			script.add(generateCmd("sq"+i, EShape.SQUARE, ECmd.ADD, new Point(0, 0), locations.get(i)));
-			script.add(generateCmd("cir"+i, EShape.CIRCLE, ECmd.ADD, new Point(0, 0), locations.get(i)));
+			script.add(generateCmd("sq"+i, EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i)));
+			script.add(generateCmd("cir"+i, EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i)));
 		}
 		return script;
 	}	
@@ -60,14 +60,14 @@ public class APArray {
 	public void modifyArray(int index, int number){
 	}
 	
-	private Command generateCmd(String szName, EShape shape, ECmd cmd, Point start, Point end){
-		Command command = new Command();
-		command.szName = szName;
-		command.shape = shape;
-		command.cmd = cmd;
-		command.start = start;
-		command.end = end;
-		return command;
+	private Scene generateCmd(String szName, EShape shape, EAction action, Point start, Point end){
+		Scene scene = new Scene();
+		scene.szName = szName;
+		scene.shape = shape;
+		scene.action = action;
+		scene.start = start;
+		scene.end = end;
+		return scene;
 
 	}
 }

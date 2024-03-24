@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import lib.components.*;
-import lib.script.Command;
-import lib.script.ECmd;
+import lib.script.Scene;
+import lib.script.EAction;
 import lib.script.Script;
 import lib.ap.*;
 
@@ -145,8 +145,8 @@ public class DSV {
 					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
 					Script script = apArray.initArray(nNumbers);
 					ScriptInterpreter si = new ScriptInterpreter();
-					Clip clip = si.read(script);
-					runClip(clip);
+					Movie clip = si.read(script);
+					runMovie(clip);
 				} catch (NumberFormatException exception) {
 					popHint("Default array is not valid.");
 					return;
@@ -289,36 +289,36 @@ public class DSV {
 		GRAPH
 	}
 
-	private void runClip(Clip clip) {
-		int[] count = { 0 };
+	private void runMovie(Movie movie) {
+		List<Clip> clips = movie.getClips();
 
-		List<Movement> movements = clip.getMovements();
+		for (int i = 0; i < clips.size(); i++) {
+			JShape shape = clips.get(i).shape;
+			int destinationX = (int) clips.get(i).end.getX();
+			int destinationY = (int) clips.get(i).end.getY();
 
-		// add obj to panAnimation
-		for (int i = 0; i < movements.size(); i++) {
-			movements.get(i).component.setBounds(RECT_ANIMATION);
-			panAnimation.add(movements.get(i).component);
-		}
+			panAnimation.add(shape);
 
-		Timer timer = new Timer(100, null);
-		timer.addActionListener(new ActionListener() {
-			@Override
-			public void actionPerformed(ActionEvent e) {
-
-				for (int i = 0; i < movements.size(); i++) {
-					if (movements.get(i).cmd == ECmd.ADD) {
-						// do nothing
+			Timer clipTimer = new Timer(100, new ActionListener() {
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// shape.move(2, 2);
+					shape.moveto(destinationX, destinationY);
+					System.out.println("shape.x() = " + shape.x());
+					System.out.println("destinationX = " + destinationX);
+					
+					if (shape.x() == destinationX) {
+						// Stop the timer for this specific clip
+						((Timer) e.getSource()).stop();
 					}
-				}
 
-				panAnimation.repaint();
-				count[0]++;
-				if (count[0] == 30) {
-					timer.stop();
+					panAnimation.repaint(); // Purpose: clear the panel
 				}
-			}
-		});
-		timer.start();
+			});
+
+			// Start the timer for this clip
+			clipTimer.start();
+		}
 	}
 
 	public static void main(String[] args) {
@@ -330,62 +330,66 @@ public class DSV {
 
 class ScriptInterpreter {
 
-	public Clip read(Script script) {
+	public Movie read(Script script) {
 
-		Clip clip = new Clip();
+		Movie movie = new Movie();
 
 		for (int i = 0; i < script.size(); i++) {
-			Movement movement = new Movement();
+			Clip clip = new Clip();
 
-			Command cmd = script.get(i);
+			Scene scene = script.get(i);
 
 			// get name
-			String szName = cmd.szName;
-			movement.szName = szName;
+			String szName = scene.szName;
+			clip.szName = szName;
 
 			// get object
-			Component component;
-			switch (cmd.shape) {
+			JShape shape;
+			switch (scene.shape) {
 				case SQUARE:
-					component = new JSquare((int) cmd.end.getX(), (int) cmd.end.getY());
+					shape = new JSquare((int) scene.start.getX(), (int) scene.start.getY());
 					break;
 				case CIRCLE:
-					component = new JCircle((int) cmd.end.getX(), (int) cmd.end.getY());
+					shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY());
 					break;
 				default:
-					component = null;
+					shape = null;
 			}
-			movement.component = component;
+			clip.shape = shape;
 
-			movement.cmd = cmd.cmd;
+			clip.action = scene.action;
+			clip.start = scene.start;
+			clip.end = scene.end;
 
-			clip.add(movement);
+			movie.add(clip);
 		}
 
-		return clip;
+		return movie;
+	}
+}
+
+class Movie {
+	private List<Clip> clips;
+
+	public Movie() {
+		clips = new ArrayList<>();
+	}
+
+	public void add(Clip clip) {
+		this.clips.add(clip);
+	}
+
+	public List<Clip> getClips() {
+		return this.clips;
 	}
 }
 
 class Clip {
-	private List<Movement> movements;
-
-	public Clip() {
-		movements = new ArrayList<>();
-	}
-
-	public void add(Movement movement) {
-		this.movements.add(movement);
-	}
-
-	public List<Movement> getMovements() {
-		return this.movements;
-	}
-}
-
-class Movement {
 	public String szName;
-	Component component;
-	ECmd cmd;
+	JShape shape;
+	EAction action;
+	Point start;
+	Point end;
 }
 
 class AutoLayout {

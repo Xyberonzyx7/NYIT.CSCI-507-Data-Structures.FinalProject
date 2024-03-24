@@ -4,17 +4,17 @@ import java.util.List;
 import java.util.ArrayList;
 
 public class Script {
-	List<Command> cmds;	
+	List<Scene> cmds;	
 
 	public Script(){
 		cmds = new ArrayList<>();
 	}
 
-	public void add(Command cmd){
+	public void add(Scene cmd){
 		cmds.add(cmd);
 	}
 
-	public Command get(int index){
+	public Scene get(int index){
 		return cmds.get(index);
 	}
 

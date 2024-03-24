@@ -11,5 +11,11 @@ public class JShape extends JPanel {
 		setBackground(new Color(0, 0, 0, 0));
 		setBounds(RECT_ANIMATION);
 	}
+
+	public float x(){ return 0;}
+	public float y(){ return 0;}
+
+	public void move(float x, float y){}
+	public void moveto(float x, float y){}
 }
 

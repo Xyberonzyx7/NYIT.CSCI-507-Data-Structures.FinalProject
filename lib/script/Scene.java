@@ -2,10 +2,10 @@ package lib.script;
 
 import java.awt.Point;
 
-public class Command {
+public class Scene {
 	public String szName;
 	public EShape shape;
-	public ECmd cmd;
+	public EAction action;
 	public Point start;
 	public Point end;
 }
