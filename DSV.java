@@ -141,6 +141,11 @@ public class DSV {
 				}
 
 				try {
+					
+					// clear the panAnimation
+					clearPanAnimation();
+
+					// add new components
 					String[] szNumbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
 					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
 					Script script = apArray.initArray(nNumbers);
@@ -274,6 +279,11 @@ public class DSV {
 				panOPCurrent.setVisible(true);
 				break;
 		}
+	}
+
+	private void clearPanAnimation(){
+		panAnimation.removeAll();
+		panAnimation.repaint();
 	}
 
 	private void popHint(String szMsg) {
