@@ -52,7 +52,7 @@ public class APArray {
 		// animation planning
 		for(int i = 0; i < nStorage.length; i++){
 			script.add(generateCmd("sq"+i, EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), ""));
-			script.add(generateCmd("cir"+i, EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i), Integer.toString(i)));
+			script.add(generateCmd("cir"+i, EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i), Integer.toString(nums[i])));
 		}
 		return script;
 	}	
