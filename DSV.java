@@ -420,10 +420,14 @@ public class DSV {
 			switch(clip.action){
 				case ADD:
 					runAdd(clip.id, clip.shape);
-					runMoveTo(clip.id, clip.shape, clip.end);
+					runMoveTo(clip.id, clip.shape, clip.end, null);
 				break;
 				case DELETE:
-					runDelete(clip.id, clip.shape);
+					TimerCallback callback = () ->{
+						runDelete(clip.id, clip.shape);
+					};
+					runMoveTo(clip.id, clip.shape, clip.end, callback);
+
 				break;
 				default:
 			}
@@ -431,7 +435,11 @@ public class DSV {
 		}
 	}
 
-	private void runMoveTo(int id, JShape shape, Point destination){
+	private void runMoveTo(int id, JShape shape, Point destination, TimerCallback callback){
+
+		if(destination == null){
+			return;
+		}
 
 		Timer clipTimer = new Timer(100, new ActionListener() {
 			@Override
@@ -441,6 +449,7 @@ public class DSV {
 	
 				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
 					// Stop the timer for this specific clip
+					if(callback != null) callback.onTimerComplete();
 					((Timer) e.getSource()).stop();
 				}
 	
@@ -507,6 +516,10 @@ public class DSV {
 			movie.add(clip);
 		}
 		return movie;
+	}
+
+	interface TimerCallback{
+		void onTimerComplete();
 	}
 
 	public static void main(String[] args) {

@@ -12,14 +12,15 @@ import lib.script.*;
 
 public class APStack {
 
-	private HashMap<Integer, Integer> map;
-	private Stack<Integer> stack;	// stack of unique id
+	private HashMap<Integer, Integer> map; 	// squares
+	private Stack<Integer> stack;			// circles
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int VERTICAL_SPACE = 60;
 	private int middleX;
 	private int objCount;
 	private int capacity;
+	private Point disappearPoint;
 
 	public APStack(Rectangle rectAnimationArea){
 		middleX = (int) (rectAnimationArea.getWidth() / 2);
@@ -32,6 +33,7 @@ public class APStack {
 		stack = new Stack<>();
 		locations = new ArrayList<Point>();
 		objCount = 0;
+		disappearPoint = new Point(middleX, -20);
 
 		// get placeble locations
 		while ( y >= nYMin){
@@ -66,7 +68,7 @@ public class APStack {
 			return script;
 		}
 
-		// add component to map
+		// add component to stack
 		stack.push(generateUniqueID());
 		script.addScene(generateScene(stack.peek(), EShape.CIRCLE, EAction.ADD, new Point(middleX, 0), locations.get(stack.size()-1), Integer.toString(number)));
 		return script;
@@ -74,6 +76,14 @@ public class APStack {
 
 	public Script pop(){
 		Script script = new Script();
+
+		if(stack.size() == 0){
+			return script;
+		}
+
+		// pop component from stack
+		int popedID = stack.pop();
+		script.addScene(generateScene(popedID, EShape.CIRCLE, EAction.DELETE, null, disappearPoint, null));
 		return script;
 	}
 
