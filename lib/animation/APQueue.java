@@ -12,8 +12,8 @@ import lib.datastructure.CircularQueue;
 import lib.script.*;
 
 public class APQueue {
-	private HashMap<Integer, Integer> map;	// square
-	private CircularQueue queue;
+	private HashMap<Integer, Integer> map;	// store square id
+	private CircularQueue queue;			// store circle id
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
@@ -59,6 +59,19 @@ public class APQueue {
 			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), null));
 		}
 
+		return script;
+	}
+
+	public Script enqueue(int number){
+		Script script = new Script();
+
+		if(queue.isFull()){
+			return script;
+		}
+
+		// add component to queue
+		queue.enqueue(generateUniqueID());
+		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(queue.size() - 1), Integer.toString(number)));
 		return script;
 	}
 

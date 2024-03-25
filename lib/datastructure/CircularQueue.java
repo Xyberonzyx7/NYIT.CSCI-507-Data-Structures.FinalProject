@@ -54,4 +54,12 @@ public class CircularQueue {
 	public int size(){
 		return sz;
 	}
+
+	public boolean isFull(){
+		return (sz == N) ? true : false;	
+	}
+
+	public boolean isEmpty(){
+		return (sz == 0) ? true : false;
+	}
 }

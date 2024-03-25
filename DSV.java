@@ -367,6 +367,26 @@ public class DSV {
 				}
 			}
 		});
+		btn_enqueue.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String szPush = tf_enqueue.getText();
+				if (szPush.isEmpty()) {
+					popHint("Value is not valid.");
+					return;
+				}
+
+				try {
+					// add new components
+					Script script = apQueue.enqueue(Integer.parseInt(szPush));
+					Movie clip = readScript(script);
+					runMovie(clip);
+				} catch (NumberFormatException exception) {
+					popHint("Value is not valid.");
+					return;
+				}
+			}
+		});
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_size);
 		autoLayout.setBounds(tf_size);
