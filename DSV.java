@@ -327,7 +327,43 @@ public class DSV {
 		panOPQueue.setBounds(RECT_OPERATION);
 		panOPQueue.setVisible(false);
 
+		// new components
+		AutoLayout autoLayout = new AutoLayout();
+		JLabel lb_size = new JLabel("Size of Queue");
+		JPlaceholderTextField tf_size = new JPlaceholderTextField();
+		JButton btn_init = new JButton("Initialize");
+		JLabel lb_enqueue = new JLabel("Enqueue");
+		JPlaceholderTextField tf_enqueue = new JPlaceholderTextField();
+		JButton btn_enqueue = new JButton("Enqueue");
+		JLabel lb_dequeue = new JLabel("Dequeue");
+		JButton btn_dequeue = new JButton("Dequeue");
+		lb_size.setFont(TITLEFONT);
+		tf_size.setPlaceholder("e.g. 5");
+		lb_enqueue.setFont(TITLEFONT);
+		tf_enqueue.setPlaceholder("e.g. 0");
+		lb_dequeue.setFont(TITLEFONT);
+
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_size);
+		autoLayout.setBounds(tf_size);
+		autoLayout.setBounds(btn_init);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_enqueue);
+		autoLayout.setBounds(tf_enqueue);
+		autoLayout.setBounds(btn_enqueue);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_dequeue);
+		autoLayout.setBounds(btn_dequeue);
+
 		// add components
+		panOPQueue.add(lb_size);
+		panOPQueue.add(tf_size);
+		panOPQueue.add(btn_init);
+		panOPQueue.add(lb_enqueue);
+		panOPQueue.add(tf_enqueue);
+		panOPQueue.add(btn_enqueue);
+		panOPQueue.add(lb_dequeue);
+		panOPQueue.add(btn_dequeue);
 	}
 
 	private void initLinkedListPanel() {
