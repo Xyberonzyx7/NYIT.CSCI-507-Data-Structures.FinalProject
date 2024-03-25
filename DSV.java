@@ -267,6 +267,36 @@ public class DSV {
 				}
 			}
 		});
+		btn_push.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String szPush = tf_push.getText();
+				if(szPush.isEmpty()){
+					popHint("Value is not valid.");
+					return;
+				}
+
+				try{
+					// add new components
+					Script script = apStack.push(Integer.parseInt(szPush));
+					Movie clip = readScript(script);
+					runMovie(clip);
+				}catch(NumberFormatException exception){
+					popHint("Value is not valid.");
+					return;
+				}
+			}
+		});
+		btn_pop.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+
+				// add new components
+				Script script = apStack.pop();
+				Movie clip = readScript(script);
+				runMovie(clip);
+			}
+		});
 
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_size);
