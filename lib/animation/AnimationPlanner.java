@@ -1,4 +1,4 @@
-package lib.ap;
+package lib.animation;
 
 public class AnimationPlanner {
 	

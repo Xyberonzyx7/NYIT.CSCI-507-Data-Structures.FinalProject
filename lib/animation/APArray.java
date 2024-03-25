@@ -1,4 +1,4 @@
-package lib.ap;
+package lib.animation;
 
 import java.awt.Point;
 import java.awt.Rectangle;

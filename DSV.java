@@ -8,11 +8,11 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import lib.animation.*;
 import lib.components.*;
 import lib.script.Scene;
 import lib.script.EAction;
 import lib.script.Script;
-import lib.ap.*;
 
 public class DSV {
 
