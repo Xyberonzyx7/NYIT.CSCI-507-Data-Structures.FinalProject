@@ -39,6 +39,7 @@ public class DSV {
 	// variables
 	private APArray apArray;
 	private APStack apStack;
+	private APQueue apQueue;
 	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
 
 	public DSV() {
@@ -57,6 +58,7 @@ public class DSV {
 	private void initVariable() {
 		apArray = new APArray(RECT_ANIMATION);
 		apStack = new APStack(RECT_ANIMATION);
+		apQueue = new APQueue(RECT_ANIMATION);
 		mapArrayCast = new HashMap<Integer, JShape>();
 	}
 
@@ -342,7 +344,29 @@ public class DSV {
 		lb_enqueue.setFont(TITLEFONT);
 		tf_enqueue.setPlaceholder("e.g. 0");
 		lb_dequeue.setFont(TITLEFONT);
+		btn_init.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String szSize = tf_size.getText();
+				if(szSize.isEmpty()){
+					popHint("Size is not valid.");
+					return;
+				}
 
+				try{
+					// clear the panAnimation
+					clearPanAnimation();
+
+					// add new components
+					Script script = apQueue.initQueue(Integer.parseInt(szSize));
+					Movie clip = readScript(script);
+					runMovie(clip);
+				}catch(NumberFormatException exception){
+					popHint("Size is not valid.");
+					return;
+				}
+			}
+		});
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_size);
 		autoLayout.setBounds(tf_size);
