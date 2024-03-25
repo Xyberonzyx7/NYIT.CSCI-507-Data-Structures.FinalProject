@@ -3,7 +3,7 @@ package lib.script;
 import java.awt.Point;
 
 public class Scene {
-	public String szName;
+	public int id;
 	public EShape shape;
 	public EAction action;
 	public Point start;

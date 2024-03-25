@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import lib.components.*;
 import lib.script.Scene;
@@ -34,10 +35,12 @@ public class DSV {
 	private JPanel panOPTree;
 	private JPanel panOPGraph;
 
-	// Animation Planner
+	// variables
 	private APArray apArray;
+	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
 
 	public DSV() {
+		initVariable();
 		initAnimationArea();
 		initDropdownArea();
 		initArrayPanel();
@@ -47,11 +50,11 @@ public class DSV {
 		initTreePanel();
 		initGraphPanel();
 		initFrame();
-		initAP();
 	}
 
-	private void initAP() {
+	private void initVariable() {
 		apArray = new APArray(RECT_ANIMATION);
+		mapArrayCast = new HashMap<Integer, JShape>();
 	}
 
 	private void initFrame() {
@@ -149,8 +152,7 @@ public class DSV {
 					String[] szNumbers = szDefault.replaceAll("[^0-9]+", " ").trim().split("\\s+");
 					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
 					Script script = apArray.initArray(nNumbers);
-					ScriptInterpreter si = new ScriptInterpreter();
-					Movie clip = si.read(script);
+					Movie clip = readScript(script);
 					runMovie(clip);
 				} catch (NumberFormatException exception) {
 					popHint("Default array is not valid.");
@@ -173,6 +175,9 @@ public class DSV {
 				try {
 					int nIndex = Integer.parseInt(szIndex);
 					int nNumber = Integer.parseInt(szNumber);
+					Script script = apArray.modifyArray(nIndex, nNumber);
+					Movie clip = readScript(script);
+					runMovie(clip);
 				} catch (NumberFormatException exception) {
 					popHint("Index or Number is not valid.");
 					return;
@@ -284,6 +289,8 @@ public class DSV {
 	private void clearPanAnimation(){
 		panAnimation.removeAll();
 		panAnimation.repaint();
+
+		mapArrayCast.clear();
 	}
 
 	private void popHint(String szMsg) {
@@ -300,79 +307,109 @@ public class DSV {
 	}
 
 	private void runMovie(Movie movie) {
+
 		List<Clip> clips = movie.getClips();
 
 		for (int i = 0; i < clips.size(); i++) {
-			JShape shape = clips.get(i).shape;
-			int destinationX = (int) clips.get(i).end.getX();
-			int destinationY = (int) clips.get(i).end.getY();
 
-			panAnimation.add(shape);
+			Clip clip = clips.get(i);
 
-			Timer clipTimer = new Timer(100, new ActionListener() {
-				@Override
-				public void actionPerformed(ActionEvent e) {
-					// shape.move(2, 2);
-					shape.moveto(destinationX, destinationY);
-					
-					if (shape.x() == destinationX) {
-						// Stop the timer for this specific clip
-						((Timer) e.getSource()).stop();
-					}
+			switch(clip.action){
+				case ADD:
+					runAdd(clip.id, clip.shape);
+					runMoveTo(clip.id, clip.shape, clip.end);
+				break;
+				case DELETE:
+					runDelete(clip.id, clip.shape);
+				break;
+				default:
+			}
 
-					panAnimation.repaint(); // Purpose: clear the panel
-				}
-			});
-
-			// Start the timer for this clip
-			clipTimer.start();
 		}
+	}
+
+	private void runMoveTo(int id, JShape shape, Point destination){
+
+		Timer clipTimer = new Timer(100, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// shape.move(2, 2);
+				shape.moveto((float)destination.getX(), (float)destination.getY());
+	
+				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
+					// Stop the timer for this specific clip
+					((Timer) e.getSource()).stop();
+				}
+	
+				panAnimation.repaint(); // Purpose: clear the panel
+			}
+		});
+	
+		// Start the timer for this clip
+		clipTimer.start();
+	}
+
+	private void runAdd(int id, JShape shape) {
+		
+		// add to panAnimation
+		panAnimation.add(shape);
+
+		// add to map
+		mapArrayCast.put(id, shape);
+
+		panAnimation.repaint();
+	}
+
+	private void runDelete(int id, JShape shape){
+
+		// delete from panAnimation
+		panAnimation.remove(shape);
+
+		// delete from map
+		mapArrayCast.remove(id);
+
+		panAnimation.repaint();
+	}
+
+	private Movie readScript(Script script){
+
+		Movie movie = new Movie();
+		
+		for (int i = 0; i < script.SceneSize(); i++) {
+
+			Clip clip = new Clip();
+		
+			Scene scene = script.getScene(i);
+			
+			if(mapArrayCast.containsKey(scene.id)){
+				clip.shape = mapArrayCast.get(scene.id);
+			}else{
+				switch (scene.shape) {
+					case SQUARE:
+						clip.shape = new JSquare((int) scene.start.getX(), (int) scene.start.getY());
+					break;
+					case CIRCLE:
+						clip.shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY(), scene.txt);
+					break;
+					default:
+						clip.shape = null;
+				}
+			}
+
+			clip.id = scene.id;
+			clip.action = scene.action;
+			clip.start = scene.start;
+			clip.end = scene.end;
+		
+			movie.add(clip);
+		}
+		return movie;
 	}
 
 	public static void main(String[] args) {
 		SwingUtilities.invokeLater(() -> {
 			new DSV();
 		});
-	}
-}
-
-class ScriptInterpreter {
-
-	public Movie read(Script script) {
-
-		Movie movie = new Movie();
-
-		for (int i = 0; i < script.size(); i++) {
-			Clip clip = new Clip();
-
-			Scene scene = script.get(i);
-
-			// get name
-			String szName = scene.szName;
-			clip.szName = szName;
-
-			// get object
-			JShape shape;
-			switch (scene.shape) {
-				case SQUARE:
-					shape = new JSquare((int) scene.start.getX(), (int) scene.start.getY());
-					break;
-				case CIRCLE:
-					shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY(), scene.txt);
-					break;
-				default:
-					shape = null;
-			}
-			clip.shape = shape;
-
-			clip.action = scene.action;
-			clip.start = scene.start;
-			clip.end = scene.end;
-
-			movie.add(clip);
-		}
-
-		return movie;
 	}
 }
 
@@ -393,7 +430,7 @@ class Movie {
 }
 
 class Clip {
-	public String szName;
+	public int id;
 	JShape shape;
 	EAction action;
 	Point start;
