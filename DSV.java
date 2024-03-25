@@ -424,6 +424,56 @@ public class DSV {
 		panOPLinkedList.setLayout(null);
 		panOPLinkedList.setBounds(RECT_OPERATION);
 		panOPLinkedList.setVisible(false);
+
+		AutoLayout autoLayout = new AutoLayout();
+		JLabel lb_init = new JLabel("Initialize");
+		JPlaceholderTextArea ta_init = new JPlaceholderTextArea();
+		JButton btn_init = new JButton("Initialize");
+		JLabel lb_insert = new JLabel("Insert");
+		JLabel lb_index = new JLabel("Index");
+		JPlaceholderTextField tf_index = new JPlaceholderTextField();
+		JLabel lb_data = new JLabel("data");
+		JPlaceholderTextField tf_data = new JPlaceholderTextField();
+		JButton btn_insert = new JButton();
+		JLabel lb_remove = new JLabel("Remove");
+		JPlaceholderTextField tf_remove = new JPlaceholderTextField();
+		JButton btn_remove = new JButton("Remove");
+		lb_init.setFont(TITLEFONT);
+		lb_insert.setFont(TITLEFONT);
+		lb_remove.setFont(TITLEFONT);
+		ta_init.setText("[1,2,3,4]");
+		tf_index.setPlaceholder("e.g. 0");
+		tf_data.setPlaceholder("e.g. 100");
+		tf_remove.setPlaceholder("e.g. 1");
+
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_init);
+		autoLayout.setBounds(ta_init);
+		autoLayout.setBounds(btn_init);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_insert);
+		autoLayout.setBounds(lb_index);
+		autoLayout.setBounds(tf_index);
+		autoLayout.setBounds(lb_data);
+		autoLayout.setBounds(tf_data);
+		autoLayout.setBounds(btn_insert);
+		autoLayout.setBounds(lb_remove);
+		autoLayout.setBounds(tf_remove);
+		autoLayout.setBounds(btn_remove);
+
+		// add components
+		panOPLinkedList.add(lb_init);
+		panOPLinkedList.add(ta_init);
+		panOPLinkedList.add(btn_init);
+		panOPLinkedList.add(lb_insert);
+		panOPLinkedList.add(lb_index);
+		panOPLinkedList.add(tf_index);
+		panOPLinkedList.add(lb_data);
+		panOPLinkedList.add(tf_data);
+		panOPLinkedList.add(btn_insert);
+		panOPLinkedList.add(lb_remove);
+		panOPLinkedList.add(tf_remove);
+		panOPLinkedList.add(btn_remove);
 	}
 
 	private void initTreePanel() {
