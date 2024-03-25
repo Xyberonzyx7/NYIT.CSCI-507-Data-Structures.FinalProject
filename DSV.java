@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.stream.Collectors;
 
 import lib.components.*;
 import lib.script.Scene;
@@ -44,8 +45,8 @@ public class DSV {
 		initAnimationArea();
 		initDropdownArea();
 		initArrayPanel();
-		initQueuePanel();
 		initStackPanel();
+		initQueuePanel();
 		initLinkedListPanel();
 		initTreePanel();
 		initGraphPanel();
@@ -69,8 +70,8 @@ public class DSV {
 		frame.add(panAnimation);
 		frame.add(panDropdown);
 		frame.add(panOPArray);
-		frame.add(panOPQueue);
 		frame.add(panOPStack);
+		frame.add(panOPQueue);
 		frame.add(panOPLinkedList);
 		frame.add(panOPTree);
 		frame.add(panOPGraph);
@@ -94,7 +95,11 @@ public class DSV {
 		panDropdown.setBounds(RECT_DROPDOWN);
 
 		// new components
-		String[] choices = { "Array", "Queue", "Stack", "Linked List", "Tree", "Graph" };
+		String[] choices = Arrays.stream(
+			EOPPanel.values())
+			.map(Enum::name)
+			.collect(Collectors.toList())
+			.toArray(new String[0]);
 		JComboBox<String> comboBox = new JComboBox<>(choices);
 		comboBox.setBounds(2, 2, 180, 28);
 		comboBox.setLightWeightPopupEnabled(false); // fix showing two dropdown list
@@ -198,8 +203,6 @@ public class DSV {
 		autolayout.setBounds(tf_num);
 		autolayout.setBounds(btn_modify);
 
-		// init : [1,2,3,4]
-
 		// add components
 		panOPArray.add(lb_default);
 		panOPArray.add(ta_default);
@@ -214,18 +217,45 @@ public class DSV {
 		panOPCurrent = panOPArray;
 	}
 
+	private void initStackPanel() {
+		panOPStack = new JPanel();
+		panOPStack.setLayout(null);
+		panOPStack.setBounds(RECT_OPERATION);
+		panOPStack.setVisible(false);
+
+		AutoLayout autoLayout = new AutoLayout();
+		JLabel lb_push = new JLabel("Push");
+		JPlaceholderTextField tf_push = new JPlaceholderTextField();
+		JButton btn_push = new JButton("Push");
+		JLabel lb_pop = new JLabel("Pop");
+		JButton btn_pop = new JButton("Pop");
+		lb_push.setFont(TITLEFONT);
+		tf_push.setText("e.g. 0");
+		lb_pop.setFont(TITLEFONT);
+
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_push);
+		autoLayout.setBounds(tf_push);
+		autoLayout.setBounds(btn_push);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_pop);
+		autoLayout.setBounds(btn_pop);
+
+		// add components
+		panOPStack.add(lb_push);
+		panOPStack.add(tf_push);
+		panOPStack.add(btn_push);
+		panOPStack.add(lb_pop);
+		panOPStack.add(btn_pop);
+	}
+
 	private void initQueuePanel() {
 		panOPQueue = new JPanel();
 		panOPQueue.setLayout(null);
 		panOPQueue.setBounds(RECT_OPERATION);
 		panOPQueue.setVisible(false);
-	}
 
-	private void initStackPanel() {
-		panOPStack = new JPanel();
-		panOPStack.setLayout(null);
-		panOPStack.setBounds(1000, 30, 200, 770);
-		panOPStack.setVisible(false);
+		// add components
 	}
 
 	private void initLinkedListPanel() {
@@ -255,16 +285,16 @@ public class DSV {
 				panOPArray.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPArray;
+				break;				
+			case STACK:
+				panOPStack.setVisible(true);
+				panOPCurrent.setVisible(false);
+				panOPCurrent = panOPStack;
 				break;
 			case QUEUE:
 				panOPQueue.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPQueue;
-				break;
-			case STACK:
-				panOPStack.setVisible(true);
-				panOPCurrent.setVisible(false);
-				panOPCurrent = panOPStack;
 				break;
 			case LINKEDLIST:
 				panOPLinkedList.setVisible(true);
@@ -300,8 +330,8 @@ public class DSV {
 
 	private enum EOPPanel {
 		ARRAY,
-		QUEUE,
 		STACK,
+		QUEUE,
 		LINKEDLIST,
 		TREE,
 		GRAPH
