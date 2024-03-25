@@ -130,6 +130,7 @@ public class DSV {
 		JButton btn_modify = new JButton("Modify");
 		lb_default.setFont(TITLEFONT);
 		ta_default.setText("[1,2,3,4]");
+		ta_default.setLineWrap(true);
 		lb_modification.setFont(TITLEFONT);
 		tf_index.setPlaceholder("e.g. 0");
 		tf_num.setPlaceholder("e.g. 10");
