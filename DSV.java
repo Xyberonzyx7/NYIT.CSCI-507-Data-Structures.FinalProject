@@ -387,6 +387,15 @@ public class DSV {
 				}
 			}
 		});
+		btn_dequeue.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// add new components
+				Script script = apQueue.dequeue();
+				Movie clip = readScript(script);
+				runMovie(clip);
+			}
+		});
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_size);
 		autoLayout.setBounds(tf_size);

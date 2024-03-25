@@ -31,7 +31,7 @@ public class APQueue {
 		// init variable
 		capacity = 0;
 		objCount = 0;
-		disappPoint = new Point(middleY, -20);
+		disappPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
 		map = new HashMap<>();
 
@@ -71,7 +71,21 @@ public class APQueue {
 
 		// add component to queue
 		queue.enqueue(generateUniqueID());
-		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(queue.size() - 1), Integer.toString(number)));
+		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(queue.rearIndex()), Integer.toString(number)));
+		return script;
+	}
+
+	public Script dequeue(){
+		Script script = new Script();
+
+		if(queue.isEmpty()){
+			return script;
+		}
+
+		// dequeue component from the front index
+		int dequeuedID = queue.dequeue();
+		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.DELETE, null, disappPoint, null));
+
 		return script;
 	}
 
