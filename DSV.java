@@ -38,6 +38,7 @@ public class DSV {
 
 	// variables
 	private APArray apArray;
+	private APStack apStack;
 	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
 
 	public DSV() {
@@ -55,6 +56,7 @@ public class DSV {
 
 	private void initVariable() {
 		apArray = new APArray(RECT_ANIMATION);
+		apStack = new APStack(RECT_ANIMATION);
 		mapArrayCast = new HashMap<Integer, JShape>();
 	}
 
@@ -106,7 +108,12 @@ public class DSV {
 		comboBox.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
+
+				// show selected panel
 				showSelectedPanel(EOPPanel.values()[comboBox.getSelectedIndex()]);
+
+				// clear panAnimation
+				clearPanAnimation();
 			}
 		});
 
@@ -224,15 +231,47 @@ public class DSV {
 		panOPStack.setVisible(false);
 
 		AutoLayout autoLayout = new AutoLayout();
+		JLabel lb_size = new JLabel("Size of Stack");
+		JPlaceholderTextField tf_size = new JPlaceholderTextField();
+		JButton btn_init = new JButton("Initialize");
 		JLabel lb_push = new JLabel("Push");
 		JPlaceholderTextField tf_push = new JPlaceholderTextField();
 		JButton btn_push = new JButton("Push");
 		JLabel lb_pop = new JLabel("Pop");
 		JButton btn_pop = new JButton("Pop");
+		lb_size.setFont(TITLEFONT);
+		tf_size.setPlaceholder("e.g. 5");
 		lb_push.setFont(TITLEFONT);
-		tf_push.setText("e.g. 0");
+		tf_push.setPlaceholder("e.g. 0");
 		lb_pop.setFont(TITLEFONT);
+		btn_init.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String szSize = tf_size.getText();
+				if(szSize.isEmpty()){
+					popHint("Size is not valid.");
+					return;
+				}
 
+				try{
+					// clear the panAnimation
+					clearPanAnimation();
+
+					// add new components
+					Script script = apStack.initStack(Integer.parseInt(szSize));
+					Movie clip = readScript(script);
+					runMovie(clip);
+				}catch(NumberFormatException exception){
+					popHint("Size is not valid.");
+					return;
+				}
+			}
+		});
+
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_size);
+		autoLayout.setBounds(tf_size);
+		autoLayout.setBounds(btn_init);
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_push);
 		autoLayout.setBounds(tf_push);
@@ -242,6 +281,9 @@ public class DSV {
 		autoLayout.setBounds(btn_pop);
 
 		// add components
+		panOPStack.add(lb_size);
+		panOPStack.add(tf_size);
+		panOPStack.add(btn_init);
 		panOPStack.add(lb_push);
 		panOPStack.add(tf_push);
 		panOPStack.add(btn_push);

@@ -3,18 +3,14 @@ package lib.ap;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.HashMap;
 
-import lib.components.*;
-import lib.script.Scene;
-import lib.script.EAction;
-import lib.script.EShape;
-import lib.script.Script;
+import lib.script.*;
+
 
 // Animation Planner Array (AP Array), generate scripts
-public class APArray {
+public class APArray extends AnimationPlanner{
 
 	private HashMap<Integer, Integer> map; // key = inex, value = id
 	private List<Point> locations;
@@ -24,7 +20,6 @@ public class APArray {
 	private int objCount;
 
 	public APArray(Rectangle rectAnimationArea){
-
 		
 		int nXMin = (int) (rectAnimationArea.getX() + MARGIN);
 		int nXMax = (int) (rectAnimationArea.getX() + rectAnimationArea.getWidth() - MARGIN);

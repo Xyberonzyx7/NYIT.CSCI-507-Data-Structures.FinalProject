@@ -1,11 +1,8 @@
 package lib.components;
-import javax.swing.*;
 
 import lib.tools.FPoint;
 
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 public class JSquare extends JShape {
 	private FPoint now;
