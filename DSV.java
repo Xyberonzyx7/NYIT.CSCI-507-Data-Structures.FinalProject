@@ -40,6 +40,7 @@ public class DSV {
 	private APArray apArray;
 	private APStack apStack;
 	private APQueue apQueue;
+	private APLinkedList apLinkedList;
 	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
 
 	public DSV() {
@@ -59,6 +60,7 @@ public class DSV {
 		apArray = new APArray(RECT_ANIMATION);
 		apStack = new APStack(RECT_ANIMATION);
 		apQueue = new APQueue(RECT_ANIMATION);
+		apLinkedList = new APLinkedList(RECT_ANIMATION);
 		mapArrayCast = new HashMap<Integer, JShape>();
 	}
 
@@ -445,6 +447,34 @@ public class DSV {
 		tf_index.setPlaceholder("e.g. 0");
 		tf_data.setPlaceholder("e.g. 100");
 		tf_remove.setPlaceholder("e.g. 1");
+		btn_init.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String szInit = ta_init.getText();
+
+				if (szInit.isEmpty()) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+				try {
+					
+					// clear the panAnimation
+					clearPanAnimation();
+
+					// add new components
+					String[] szNumbers = szInit.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
+					Script script = apLinkedList.initLinkedList(nNumbers);
+					Movie clip = readScript(script);
+					runMovie(clip);
+				} catch (NumberFormatException exception) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+			}
+		});
 
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);

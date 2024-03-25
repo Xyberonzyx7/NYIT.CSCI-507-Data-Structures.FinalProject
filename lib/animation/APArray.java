@@ -17,7 +17,6 @@ public class APArray extends AnimationPlanner{
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
 	private final int VERTICAL_SPACE = 200;
-	private int objCount;
 
 	public APArray(Rectangle rectAnimationArea){
 		
@@ -88,10 +87,5 @@ public class APArray extends AnimationPlanner{
 		scene.end = end;
 		scene.txt = txt;
 		return scene;
-	}
-
-	private int generateUniqueID(){
-		objCount++;
-		return objCount;
 	}
 }

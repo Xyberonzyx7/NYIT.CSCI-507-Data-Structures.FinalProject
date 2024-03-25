@@ -9,17 +9,91 @@ public class SinglyLinkedList {
 		tail = null;
 	}
 
-	public void add(int data){
+	// public void add(int data){
+	// 	Node newNode = new Node(data);
+	// 	if(head == null && tail == null){
+	// 		head = newNode;
+	// 		tail = newNode;
+	// 		newNode.next = null;
+	// 	}
+	// 	else{
+	// 		tail.next = newNode;
+	// 		tail = newNode;
+	// 		tail.next = null;
+	// 	}
+	// }
+
+	public int getAt(int index){
+		Node current = head;
+		int i = 0;
+		while(current != null){
+
+			if(i == index) return current.data;
+
+			current = current.next;
+			i++;
+		}
+		return -1;
+	}
+
+	public void insertAt(int index, int data) {
 		Node newNode = new Node(data);
-		if(head == null && tail == null){
+		if(index == 0){
+			newNode.next = head;
 			head = newNode;
-			tail = newNode;
-			newNode.next = null;
+			if(tail == null){
+				tail = newNode;
+			}
 		}
 		else{
-			tail.next = newNode;
-			tail = newNode;
-			tail.next = null;
+			Node current = head;
+			for(int i = 0; i < index - 1; i++){
+				if(current != null){
+					current = current.next;
+				}
+				else{
+					return;
+				}
+			}
+			newNode.next = current.next;
+			current.next = newNode;
+			if(newNode.next == null){
+				tail = newNode;
+			}
+		}
+	}
+
+	public void removeAt(int index) {
+		if (index == 0) {
+			if (head != null) {
+				head = head.next;
+				if (head == null) {
+					tail = null;
+				}
+			}
+		} else {
+			Node current = head;
+			for (int i = 0; i < index - 1; i++) {
+				if (current != null && current.next != null) {
+					current = current.next;
+				} else {
+					return;
+				}
+			}
+			if (current.next != null) {
+				current.next = current.next.next;
+				if (current.next == null) {
+					tail = current;
+				}
+			}
+		}
+	}
+
+	public void print(){
+		Node current = head;
+		while(current != null){
+			System.out.println(current.data);
+			current = current.next;
 		}
 	}
 }

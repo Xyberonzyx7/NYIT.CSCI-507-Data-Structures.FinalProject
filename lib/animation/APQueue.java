@@ -11,14 +11,13 @@ import java.util.Stack;
 import lib.datastructure.CircularQueue;
 import lib.script.*;
 
-public class APQueue {
+public class APQueue extends AnimationPlanner {
 	private HashMap<Integer, Integer> map;	// store square id
 	private CircularQueue queue;			// store circle id
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
 	private int middleY;
-	private int objCount;
 	private int capacity;
 	private Point disappPoint;
 
@@ -30,7 +29,6 @@ public class APQueue {
 
 		// init variable
 		capacity = 0;
-		objCount = 0;
 		disappPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
 		map = new HashMap<>();
@@ -98,10 +96,5 @@ public class APQueue {
 		scene.end = end;
 		scene.txt = txt;
 		return scene;
-	}
-
-	private Integer generateUniqueID() {
-		objCount++;
-		return objCount;
 	}
 }
