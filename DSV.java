@@ -607,6 +607,7 @@ public class DSV {
 	private void runMoveTo(int id, JShape shape, Point destination, TimerCallback callback){
 
 		if(destination == null){
+			callback.onTimerComplete();
 			return;
 		}
 

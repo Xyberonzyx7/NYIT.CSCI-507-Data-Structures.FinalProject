@@ -12,7 +12,8 @@ import lib.script.*;
 // Animation Planner Array (AP Array), generate scripts
 public class APArray extends AnimationPlanner{
 
-	private HashMap<Integer, Integer> map; // key = inex, value = id
+	private int[] squaresIDs;
+	private int[] circleIDs;
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
@@ -26,7 +27,6 @@ public class APArray extends AnimationPlanner{
 		int nYMax = (int) (rectAnimationArea.getY() + rectAnimationArea.getHeight() - MARGIN);
 
 		// init variable
-		map = new HashMap<>();
 		objCount = 0;
 
 		// get placable available locations
@@ -50,10 +50,11 @@ public class APArray extends AnimationPlanner{
 
 		
 		// init map
-		map.clear();
+		squaresIDs = new int[nums.length];
+		circleIDs = new int[nums.length];
 		for(int i = 0; i < nums.length; i++){
-			map.put( i+1000, generateUniqueID()); // square frame not use often, put at 1000+ to not to affect array operation
-			map.put( i, generateUniqueID());
+			squaresIDs[i] = generateUniqueID();
+			circleIDs[i] = generateUniqueID();
 		}
 
 		// animation planning
@@ -61,12 +62,12 @@ public class APArray extends AnimationPlanner{
 			Motion squareMotion = new Motion();
 			squareMotion.movefrom = new Point(0, 0);
 			squareMotion.moveto = locations.get(i);
-			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, squareMotion));
+			script.addScene(generateScene(squaresIDs[i], EShape.SQUARE, EAction.ADD, squareMotion));
 			Motion circleMotion = new Motion();
 			circleMotion.movefrom = new Point(0, 0);
 			circleMotion.moveto = locations.get(i);
 			circleMotion.showtext = Integer.toString(nums[i]);
-			script.addScene(generateScene(map.get(i), EShape.CIRCLE, EAction.ADD, circleMotion));
+			script.addScene(generateScene(circleIDs[i], EShape.CIRCLE, EAction.ADD, circleMotion));
 		}
 		return script;
 	}	
@@ -74,15 +75,14 @@ public class APArray extends AnimationPlanner{
 	public Script modifyArray(int index, int number){
 		Script script = new Script();
 
-		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.DELETE, new Motion()));
-		map.remove(index);
+		script.addScene(generateScene(circleIDs[index], EShape.CIRCLE, EAction.DELETE, new Motion()));
 
 		Motion putMotion = new Motion();
 		putMotion.movefrom = new Point(0, 0);
 		putMotion.moveto = locations.get(index);
 		putMotion.showtext = Integer.toString(number);
-		map.put(index, generateUniqueID());
-		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.ADD, putMotion));
+		circleIDs[index] = generateUniqueID();
+		script.addScene(generateScene(circleIDs[index], EShape.CIRCLE, EAction.ADD, putMotion));
 
 
 		// animation planning
