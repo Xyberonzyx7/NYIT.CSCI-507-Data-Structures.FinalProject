@@ -13,7 +13,8 @@ import lib.script.*;
 
 public class APLinkedList extends AnimationPlanner {
 	
-	private SinglyLinkedList sll;
+	private SinglyLinkedList sll_node;
+	private SinglyLinkedList sll_arrow;
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int VERTICAL_SPACE = 100;
@@ -26,7 +27,8 @@ public class APLinkedList extends AnimationPlanner {
 		int nYMax = (int) (rectAnimationArea.getY() + rectAnimationArea.getHeight() - MARGIN);
 
 		// init variable
-		sll = new SinglyLinkedList();
+		sll_node = new SinglyLinkedList();
+		sll_arrow = new SinglyLinkedList();
 		locations = new ArrayList<>();
 
 		// get placeable locations
@@ -48,28 +50,34 @@ public class APLinkedList extends AnimationPlanner {
 	public Script initLinkedList(int[] nums){
 		Script script = new Script();
 
-		// init sll
-		sll = new SinglyLinkedList();
+		// init sll_node
+		sll_node = new SinglyLinkedList();
 		for(int i = 0; i < nums.length; i++){
-			sll.insertAt(i, generateUniqueID());
+			sll_node.insertAt(i, generateUniqueID());
+		}
+
+		// init sll_arrow
+		for(int i = 0; i < nums.length - 1; i++){
+			sll_arrow.insertAt(i, generateUniqueID());
 		}
 
 		// animation planning
 		for(int i = 0; i < nums.length; i++){
-			script.addScene(generateScene(sll.getAt(i), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i), Integer.toString(nums[i])));
+			Motion circleMotion = new Motion();
+			circleMotion.movefrom = new Point(0, 0);
+			circleMotion.moveto = locations.get(i);
+			circleMotion.showtext = Integer.toString(nums[i]);
+			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.ADD, circleMotion)); 
+		}
+
+		for(int i = 0; i < nums.length - 1; i++){
+			Motion arrowMotion = new Motion();
+			arrowMotion.movefrom = new Point(0, 0);
+			arrowMotion.moveto = new Point((int)(locations.get(i).getX() + locations.get(i+1).getX()) / 2, (int)(locations.get(i).getY() + locations.get(i+1).getY()) / 2);
+			arrowMotion.angle = 180;
+			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.ADD, arrowMotion));
 		}
 
 		return script;
-	}
-
-	private Scene generateScene(int id, EShape shape, EAction action, Point start, Point end, String txt){
-		Scene scene = new Scene();
-		scene.id = id;
-		scene.shape = shape;
-		scene.action = action;
-		scene.start = start;
-		scene.end = end;
-		scene.txt = txt;
-		return scene;
 	}
 }

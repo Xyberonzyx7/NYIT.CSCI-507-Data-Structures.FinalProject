@@ -1,21 +1,44 @@
-package lib.components;
+ package lib.components;
 
 import javax.swing.*;
+
+import lib.tools.FPoint;
+
 import java.awt.*;
 
-public class JArrow extends JPanel {
+public class JArrow extends JShape {
     private int arrowLength = 50; // Initial length of the arrow
-    private double arrowAngle = Math.toRadians(45); // Initial angle (45 degrees)
+    private double arrowAngle = Math.toRadians(90); // Initial angle (45 degrees)
+	private FPoint center;
 
-    public void extendArrow() {
-        arrowLength += 10; // Increase the length
-        repaint(); // Redraw the arrow
-    }
+	public JArrow(int x, int y, int angle){
+		center = new FPoint(x, y);
+		arrowAngle = Math.toRadians(angle);
+	}
 
-    public void shrinkArrow() {
-        arrowLength -= 10; // Decrease the length
-        repaint(); // Redraw the arrow
-    }
+	@Override
+	public void move(float dx, float dy){
+		center.x += dx;
+		center.y += dy;
+		repaint();
+	}
+
+	@Override
+	public void moveto(float x, float y){
+		int step = 3;
+		float dx = (x - center.x) / (float) step;
+		float dy = (y - center.y) / (float) step;
+
+		if (Math.abs(x - center.x) < 1) {
+			dx = x - center.x;
+		}
+
+		if (Math.abs(y - center.y) < 1) {
+			dy = y - center.y;
+		}
+
+		move(dx, dy);
+	}
 
     public void setArrowAngle(double angleDegrees) {
         arrowAngle = Math.toRadians(angleDegrees); // Set the arrow angle
@@ -29,14 +52,15 @@ public class JArrow extends JPanel {
 		g2d.setColor(Color.BLUE);
 		g2d.setStroke(new BasicStroke(1));
 
-		int cx = getWidth() / 2;
-		int cy = getHeight() / 2;
 
 		// Calculate arrow end point
-		int arrowEndX = cx + (int) (arrowLength * Math.cos(arrowAngle));
-		int arrowEndY = cy - (int) (arrowLength * Math.sin(arrowAngle));
+		int arrowEndX = (int) center.x - (int) (arrowLength / 2 * Math.cos(arrowAngle));
+		int arrowEndY = (int) center.y + (int) (arrowLength / 2 * Math.sin(arrowAngle));
 
-		g2d.drawLine(cx, cy, arrowEndX, arrowEndY); // Draw the arrow line
+		int arrowHeadX = (int) center.x + (int) (arrowLength / 2 * Math.cos(arrowAngle));
+		int arrowHeadY = (int) center.y - (int) (arrowLength / 2 * Math.sin(arrowAngle));
+
+		g2d.drawLine(arrowEndX, arrowEndY, arrowHeadX, arrowHeadY); // Draw the arrow line
 
 		// Draw the arrowhead
 		int arrowHeadLength = 10; // Length of the arrowhead

@@ -10,7 +10,7 @@ import java.util.Stack;
 
 import lib.script.*;
 
-public class APStack {
+public class APStack extends AnimationPlanner {
 
 	private HashMap<Integer, Integer> map; 	// squares
 	private Stack<Integer> stack;			// circles
@@ -18,7 +18,6 @@ public class APStack {
 	private final int MARGIN = 100;
 	private final int VERTICAL_SPACE = 60;
 	private int middleX;
-	private int objCount;
 	private int capacity;
 	private Point disappearPoint;
 
@@ -32,7 +31,6 @@ public class APStack {
 		map = new HashMap<>();
 		stack = new Stack<>();
 		locations = new ArrayList<Point>();
-		objCount = 0;
 		disappearPoint = new Point(middleX, -20);
 
 		// get placeble locations
@@ -55,7 +53,10 @@ public class APStack {
 
 		// animation planning
 		for(int i = 0; i < this.capacity; i++){
-			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), null));
+			Motion squareMotion = new Motion();
+			squareMotion.movefrom = new Point(0, 0);
+			squareMotion.moveto = locations.get(i);
+			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, squareMotion));
 		}
 
 		return script;
@@ -70,7 +71,11 @@ public class APStack {
 
 		// add component to stack
 		stack.push(generateUniqueID());
-		script.addScene(generateScene(stack.peek(), EShape.CIRCLE, EAction.ADD, new Point(middleX, 0), locations.get(stack.size()-1), Integer.toString(number)));
+		Motion circleMotion = new Motion();
+		circleMotion.movefrom = new Point(middleX, 0);
+		circleMotion.moveto = locations.get(stack.size() - 1);
+		circleMotion.showtext = Integer.toString(number);
+		script.addScene(generateScene(stack.peek(), EShape.CIRCLE, EAction.ADD, circleMotion));
 		return script;
 	}
 
@@ -83,24 +88,9 @@ public class APStack {
 
 		// pop component from stack
 		int popedID = stack.pop();
-		script.addScene(generateScene(popedID, EShape.CIRCLE, EAction.DELETE, null, disappearPoint, null));
+		Motion circleMotion = new Motion();
+		circleMotion.moveto = disappearPoint;
+		script.addScene(generateScene(popedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
 		return script;
 	}
-
-	private Scene generateScene(int id, EShape shape, EAction action, Point start, Point end, String txt){
-		Scene scene = new Scene();
-		scene.id = id;
-		scene.shape = shape;
-		scene.action = action;
-		scene.start = start;
-		scene.end = end;
-		scene.txt = txt;
-		return scene;
-	}
-
-	private int generateUniqueID() {
-		objCount++;
-		return objCount;
-	}
-	
 }

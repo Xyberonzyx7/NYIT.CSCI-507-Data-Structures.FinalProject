@@ -19,7 +19,7 @@ public class APQueue extends AnimationPlanner {
 	private final int HORIZONTAL_SPACE = 60;
 	private int middleY;
 	private int capacity;
-	private Point disappPoint;
+	private Point disappearPoint;
 
 	public APQueue(Rectangle rectAnimationArea){
 		middleY = (int)(rectAnimationArea.getHeight() / 2);
@@ -29,7 +29,7 @@ public class APQueue extends AnimationPlanner {
 
 		// init variable
 		capacity = 0;
-		disappPoint = new Point(-20, -20);
+		disappearPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
 		map = new HashMap<>();
 
@@ -54,7 +54,10 @@ public class APQueue extends AnimationPlanner {
 
 		// animation planning
 		for(int i = 0; i < capacity; i++){
-			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), null));
+			Motion squareMotion = new Motion();
+			squareMotion.movefrom = new Point(0, 0);
+			squareMotion.moveto = locations.get(i);
+			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.ADD, squareMotion));
 		}
 
 		return script;
@@ -69,7 +72,11 @@ public class APQueue extends AnimationPlanner {
 
 		// add component to queue
 		queue.enqueue(generateUniqueID());
-		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(queue.rearIndex()), Integer.toString(number)));
+		Motion circleMotion = new Motion();
+		circleMotion.movefrom = new Point(0, 0);
+		circleMotion.moveto = locations.get(queue.rearIndex());
+		circleMotion.showtext = Integer.toString(number);
+		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, circleMotion));
 		return script;
 	}
 
@@ -82,19 +89,10 @@ public class APQueue extends AnimationPlanner {
 
 		// dequeue component from the front index
 		int dequeuedID = queue.dequeue();
-		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.DELETE, null, disappPoint, null));
+		Motion circleMotion = new Motion();
+		circleMotion.moveto = disappearPoint;
+		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
 
 		return script;
-	}
-
-	private Scene generateScene(int id, EShape shape, EAction action, Point start, Point end, String txt){
-		Scene scene = new Scene();
-		scene.id = id;
-		scene.shape = shape;
-		scene.action = action;
-		scene.start = start;
-		scene.end = end;
-		scene.txt = txt;
-		return scene;
 	}
 }

@@ -589,13 +589,13 @@ public class DSV {
 			switch(clip.action){
 				case ADD:
 					runAdd(clip.id, clip.shape);
-					runMoveTo(clip.id, clip.shape, clip.end, null);
+					runMoveTo(clip.id, clip.shape, clip.moveto, null);
 				break;
 				case DELETE:
 					TimerCallback callback = () ->{
 						runDelete(clip.id, clip.shape);
 					};
-					runMoveTo(clip.id, clip.shape, clip.end, callback);
+					runMoveTo(clip.id, clip.shape, clip.moveto, callback);
 
 				break;
 				default:
@@ -667,10 +667,13 @@ public class DSV {
 			}else{
 				switch (scene.shape) {
 					case SQUARE:
-						clip.shape = new JSquare((int) scene.start.getX(), (int) scene.start.getY());
+						clip.shape = new JSquare((int) scene.movefrom.getX(), (int) scene.movefrom.getY());
 					break;
 					case CIRCLE:
-						clip.shape = new JCircle((int) scene.start.getX(), (int) scene.start.getY(), scene.txt);
+						clip.shape = new JCircle((int) scene.movefrom.getX(), (int) scene.movefrom.getY(), scene.showtext);
+					break;
+					case ARROW:
+						clip.shape = new JArrow((int) scene.movefrom.getX(), (int) scene.movefrom.getY(), scene.angle);
 					break;
 					default:
 						clip.shape = null;
@@ -679,8 +682,8 @@ public class DSV {
 
 			clip.id = scene.id;
 			clip.action = scene.action;
-			clip.start = scene.start;
-			clip.end = scene.end;
+			clip.movefrom = scene.movefrom;
+			clip.moveto = scene.moveto;
 		
 			movie.add(clip);
 		}
@@ -715,11 +718,15 @@ class Movie {
 }
 
 class Clip {
-	public int id;
+	int id;
 	JShape shape;
 	EAction action;
+	Point movefrom;
+	Point moveto;
 	Point start;
 	Point end;
+	int angle;
+	String showtext;
 }
 
 class AutoLayout {

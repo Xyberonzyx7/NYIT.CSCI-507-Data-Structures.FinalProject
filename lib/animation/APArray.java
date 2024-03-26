@@ -58,8 +58,15 @@ public class APArray extends AnimationPlanner{
 
 		// animation planning
 		for(int i = 0; i < nums.length; i++){
-			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, new Point(0, 0), locations.get(i), ""));
-			script.addScene(generateScene(map.get(i), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(i), Integer.toString(nums[i])));
+			Motion squareMotion = new Motion();
+			squareMotion.movefrom = new Point(0, 0);
+			squareMotion.moveto = locations.get(i);
+			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, squareMotion));
+			Motion circleMotion = new Motion();
+			circleMotion.movefrom = new Point(0, 0);
+			circleMotion.moveto = locations.get(i);
+			circleMotion.showtext = Integer.toString(nums[i]);
+			script.addScene(generateScene(map.get(i), EShape.CIRCLE, EAction.ADD, circleMotion));
 		}
 		return script;
 	}	
@@ -67,25 +74,18 @@ public class APArray extends AnimationPlanner{
 	public Script modifyArray(int index, int number){
 		Script script = new Script();
 
-		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.DELETE, null, null, ""));
+		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.DELETE, new Motion()));
 		map.remove(index);
 
+		Motion putMotion = new Motion();
+		putMotion.movefrom = new Point(0, 0);
+		putMotion.moveto = locations.get(index);
+		putMotion.showtext = Integer.toString(number);
 		map.put(index, generateUniqueID());
-		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.ADD, new Point(0, 0), locations.get(index), Integer.toString(number)));
+		script.addScene(generateScene(map.get(index), EShape.CIRCLE, EAction.ADD, putMotion));
 
 
 		// animation planning
 		return script;
-	}
-	
-	private Scene generateScene(int id, EShape shape, EAction action, Point start, Point end, String txt){
-		Scene scene = new Scene();
-		scene.id = id;
-		scene.shape = shape;
-		scene.action = action;
-		scene.start = start;
-		scene.end = end;
-		scene.txt = txt;
-		return scene;
 	}
 }
