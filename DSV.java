@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.stream.Collectors;
+import java.util.concurrent.*;
 
 import lib.animation.*;
 import lib.components.*;
@@ -434,9 +435,9 @@ public class DSV {
 		JLabel lb_insert = new JLabel("Insert");
 		JLabel lb_index = new JLabel("Index");
 		JPlaceholderTextField tf_index = new JPlaceholderTextField();
-		JLabel lb_data = new JLabel("data");
+		JLabel lb_data = new JLabel("Data");
 		JPlaceholderTextField tf_data = new JPlaceholderTextField();
-		JButton btn_insert = new JButton();
+		JButton btn_insert = new JButton("Insert");
 		JLabel lb_remove = new JLabel("Remove");
 		JPlaceholderTextField tf_remove = new JPlaceholderTextField();
 		JButton btn_remove = new JButton("Remove");
@@ -475,7 +476,53 @@ public class DSV {
 
 			}
 		});
+		btn_insert.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String szIndex = tf_index.getText();
+				String szData = tf_data.getText();
 
+				if (szIndex.isEmpty() || szData.isEmpty()) {
+					popHint("Index or Data is not valid.");
+					return;
+				}
+
+				try {
+					// add new components
+					Script script = apLinkedList.insert(Integer.parseInt(szIndex), Integer.parseInt(szData));
+					Movie clip = readScript(script);
+					runMovie(clip);
+				} catch (NumberFormatException exception) {
+					popHint("Index or Data is not valid.");
+					return;
+				}
+
+			}
+		});
+		btn_remove.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String szInit = ta_init.getText();
+
+				if (szInit.isEmpty()) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+				try {
+					// add new components
+					String[] szNumbers = szInit.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
+					Script script = apLinkedList.initLinkedList(nNumbers);
+					Movie clip = readScript(script);
+					runMovie(clip);
+				} catch (NumberFormatException exception) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+			}
+		});
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);
 		autoLayout.setBounds(ta_init);
@@ -582,26 +629,47 @@ public class DSV {
 
 		List<Clip> clips = movie.getClips();
 
-		for (int i = 0; i < clips.size(); i++) {
+		if(clips.size() == 0) return;
 
-			Clip clip = clips.get(i);
+		ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
-			switch(clip.action){
-				case ADD:
-					runAdd(clip.id, clip.shape);
-					runMoveTo(clip.id, clip.shape, clip.moveto, null);
-				break;
-				case DELETE:
-					TimerCallback callback = () ->{
+		Runnable task = new Runnable(){
+
+			int i = 0;
+
+			@Override
+			public void run(){
+
+				
+				Clip clip = clips.get(i);	
+
+				switch(clip.action){
+					case ADD:
+						runAdd(clip.id, clip.shape);
+						runMoveTo(clip.id, clip.shape, clip.moveto, null);
+					break;
+					case MOVE:
+						runMoveTo(clip.id, clip.shape, clip.moveto, null);
+					break;
+					case DELETE:
+						// TimerCallback callback = () ->{
+						// 	runDelete(clip.id, clip.shape);
+						// }
+						runMoveTo(clip.id, clip.shape, clip.moveto, null);
 						runDelete(clip.id, clip.shape);
-					};
-					runMoveTo(clip.id, clip.shape, clip.moveto, callback);
 
-				break;
-				default:
+					break;
+					default:
+				}
+				i += 1;
+
+				if(i >= clips.size()) executor.shutdown();
+				else{
+					executor.schedule(this, movie.getClips().get(i).delaystart, TimeUnit.MILLISECONDS);
+				}
 			}
-
-		}
+		};
+		executor.schedule(task, movie.getClips().get(0).delaystart, TimeUnit.MILLISECONDS);
 	}
 
 	private void runMoveTo(int id, JShape shape, Point destination, TimerCallback callback){
@@ -656,6 +724,12 @@ public class DSV {
 	private Movie readScript(Script script){
 
 		Movie movie = new Movie();
+
+		// temporary remember the casts from a same script
+		// because before this script is ran, the cast won't be added to the mapArrayCast.
+		// This will cause the same cast to be newed more than once if the same cast appears 
+		// in the script for more than one time.
+		HashMap<Integer, JShape> mapTmpShapeInSameScript = new HashMap<>();
 		
 		for (int i = 0; i < script.SceneSize(); i++) {
 
@@ -665,7 +739,9 @@ public class DSV {
 			
 			if(mapArrayCast.containsKey(scene.id)){
 				clip.shape = mapArrayCast.get(scene.id);
-			}else{
+			} else if(mapTmpShapeInSameScript.containsKey(scene.id)){
+				clip.shape = mapTmpShapeInSameScript.get(scene.id);
+			} else{
 				switch (scene.shape) {
 					case SQUARE:
 						clip.shape = new JSquare((int) scene.movefrom.getX(), (int) scene.movefrom.getY());
@@ -679,12 +755,15 @@ public class DSV {
 					default:
 						clip.shape = null;
 				}
+
+				mapTmpShapeInSameScript.put(scene.id, clip.shape);
 			}
 
 			clip.id = scene.id;
 			clip.action = scene.action;
 			clip.movefrom = scene.movefrom;
 			clip.moveto = scene.moveto;
+			clip.delaystart = scene.delaystart;
 		
 			movie.add(clip);
 		}
@@ -728,6 +807,7 @@ class Clip {
 	Point end;
 	int angle;
 	String showtext;
+	int delaystart;
 }
 
 class AutoLayout {
