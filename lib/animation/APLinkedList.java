@@ -20,7 +20,6 @@ public class APLinkedList extends AnimationPlanner {
 	private final int VERTICAL_SPACE = 100;
 	private final int HORIZONTAL_SPACE = 100;
 	private final int NewNodeY = 200;
-	private int nodeCount = 0;
 
 	public APLinkedList(Rectangle rectAnimationArea){
 		int nXMin = (int) (rectAnimationArea.getX() + MARGIN);
@@ -56,7 +55,6 @@ public class APLinkedList extends AnimationPlanner {
 		sll_node = new SinglyLinkedList();
 		for(int i = 0; i < nums.length; i++){
 			sll_node.insertAt(i, generateUniqueID());
-			nodeCount += 1;
 		}
 
 		// init sll_arrow
@@ -87,6 +85,11 @@ public class APLinkedList extends AnimationPlanner {
 	public Script insert(int index, int data){
 
 		Script script = new Script();
+
+		// protection
+		if(index >= sll_node.getSize()){
+			return script;
+		}
 		
 		// modify the list before animation
 		sll_node.insertAt(index, generateUniqueID());
@@ -126,12 +129,14 @@ public class APLinkedList extends AnimationPlanner {
 		}
 
 		// move + extends prior arrow
-		Motion extendOldArrowMotion = new Motion();
-		extendOldArrowMotion.moveto = getMiddlePoint(locations.get(index-1), locations.get(index+1));
-		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, extendOldArrowMotion));	
-		extendOldArrowMotion = new Motion();
-		extendOldArrowMotion.extendto = 150;
-		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, extendOldArrowMotion));
+		if (index-1>= 0) {
+			Motion extendOldArrowMotion = new Motion();
+			extendOldArrowMotion.moveto = getMiddlePoint(locations.get(index - 1), locations.get(index + 1));
+			script.addScene(generateScene(sll_arrow.getAt(index - 1), EShape.ARROW, EAction.MOVE, extendOldArrowMotion));
+			extendOldArrowMotion = new Motion();
+			extendOldArrowMotion.extendto = 150;
+			script.addScene(generateScene(sll_arrow.getAt(index - 1), EShape.ARROW, EAction.EXTEND, extendOldArrowMotion));
+		}
 
 		// new an arrow for the new node
 		Motion newArrowMotion = new Motion();
@@ -143,11 +148,12 @@ public class APLinkedList extends AnimationPlanner {
 		script.addScene(generateWaitScene(2000));
 
 		// delete old node's arrow
-		Motion deleteOldArrowMotion = new Motion();
-		deleteOldArrowMotion.moveto = new Point(-10, -10);
-		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, deleteOldArrowMotion));
-		script.addScene(generateWaitScene(2000));
-		// script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.DELETE, deleteOldArrowMotion));
+		if(index - 1 >= 0){
+			Motion deleteOldArrowMotion = new Motion();
+			deleteOldArrowMotion.moveto = new Point(-10, -10);
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, deleteOldArrowMotion));
+			script.addScene(generateWaitScene(2000));
+		}
 		
 		// new node insert motion
 		Motion newNodeInsertMotion = new Motion();
@@ -165,12 +171,14 @@ public class APLinkedList extends AnimationPlanner {
 		script.addScene(generateWaitScene(2000));
 		
 		// new another arrow for the old nodes (reuse the old arrow)
-		Motion newPriorArrowMotion = new Motion();
-		newPriorArrowMotion.movefrom = new Point(0, 0);
-		newPriorArrowMotion.moveto = getMiddlePoint(locations.get(index-1),locations.get(index)); 
-		newPriorArrowMotion.shrinkto = 50;
-		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, newPriorArrowMotion));
-		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
+		if(index-1 >= 0){
+			Motion newPriorArrowMotion = new Motion();
+			newPriorArrowMotion.movefrom = new Point(0, 0);
+			newPriorArrowMotion.moveto = getMiddlePoint(locations.get(index-1),locations.get(index)); 
+			newPriorArrowMotion.shrinkto = 50;
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, newPriorArrowMotion));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
+		}
 		
 		return script;
 	}
