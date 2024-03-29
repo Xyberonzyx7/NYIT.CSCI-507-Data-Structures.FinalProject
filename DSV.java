@@ -657,7 +657,9 @@ public class DSV {
 						// }
 						runMoveTo(clip.id, clip.shape, clip.moveto, null);
 						runDelete(clip.id, clip.shape);
-
+					break;
+					case EXTEND:
+						runExtendTo(clip.id, clip.shape, clip.extendto);
 					break;
 					default:
 				}
@@ -684,7 +686,6 @@ public class DSV {
 			public void actionPerformed(ActionEvent e) {
 				// shape.move(2, 2);
 				shape.moveto((float)destination.getX(), (float)destination.getY());
-	
 				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
 					// Stop the timer for this specific clip
 					if(callback != null) callback.onTimerComplete();
@@ -696,6 +697,19 @@ public class DSV {
 		});
 	
 		// Start the timer for this clip
+		clipTimer.start();
+	}
+
+	private void runExtendTo(int id, JShape shape, int length){
+		Timer clipTimer = new Timer(100, new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shape.extendto(length);
+				if(shape.l() == length){
+					((Timer) e.getSource()).stop();
+				}
+			}
+		});
 		clipTimer.start();
 	}
 
@@ -763,6 +777,7 @@ public class DSV {
 			clip.action = scene.action;
 			clip.movefrom = scene.movefrom;
 			clip.moveto = scene.moveto;
+			clip.extendto = scene.extendto;
 			clip.delaystart = scene.delaystart;
 		
 			movie.add(clip);
@@ -803,6 +818,7 @@ class Clip {
 	EAction action;
 	Point movefrom;
 	Point moveto;
+	int extendto;
 	Point start;
 	Point end;
 	int angle;

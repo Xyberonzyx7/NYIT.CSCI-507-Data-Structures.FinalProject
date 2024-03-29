@@ -26,10 +26,12 @@ public class AnimationPlanner {
 		scene.action = action;
 		scene.movefrom = motion.movefrom;
 		scene.moveto = motion.moveto;
+		scene.extendto = motion.extendto;
 		scene.start = motion.start;
 		scene.end = motion.end;
 		scene.angle = motion.angle;
 		scene.showtext = motion.showtext;
+		scene.delaystart = motion.delaystart;
 		return scene;
 	}
 }

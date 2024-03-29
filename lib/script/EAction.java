@@ -3,5 +3,7 @@ package lib.script;
 public enum EAction {
 	ADD,
 	DELETE,
-	MOVE	
+	MOVE,
+	EXTEND,
+	SHRINK
 }

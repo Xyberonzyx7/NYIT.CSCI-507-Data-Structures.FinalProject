@@ -14,8 +14,11 @@ public class JShape extends JPanel {
 
 	public float x(){ return 0;}
 	public float y(){ return 0;}
+	public float l(){ return 0;}
 
 	public void move(float x, float y){}
 	public void moveto(float x, float y){}
+	public void extend(float dlength){}
+	public void extendto(float length){}
 }
 

@@ -9,19 +9,15 @@ public class SinglyLinkedList {
 		tail = null;
 	}
 
-	// public void add(int data){
-	// 	Node newNode = new Node(data);
-	// 	if(head == null && tail == null){
-	// 		head = newNode;
-	// 		tail = newNode;
-	// 		newNode.next = null;
-	// 	}
-	// 	else{
-	// 		tail.next = newNode;
-	// 		tail = newNode;
-	// 		tail.next = null;
-	// 	}
-	// }
+	public int getSize(){
+		int count = 0;
+		Node current = head;
+		while(current != null){
+			count++;
+			current = current.next;
+		}
+		return count;
+	}
 
 	public int getAt(int index){
 		Node current = head;

@@ -7,13 +7,34 @@ import lib.tools.FPoint;
 import java.awt.*;
 
 public class JArrow extends JShape {
-    private int arrowLength = 50; // Initial length of the arrow
+    private float arrowLength = 50; // Initial length of the arrow
     private double arrowAngle = Math.toRadians(90); // Initial angle (45 degrees)
 	private FPoint center;
 
 	public JArrow(int x, int y, int angle){
 		center = new FPoint(x, y);
 		arrowAngle = Math.toRadians(angle);
+	}
+
+	@Override
+	public float l(){
+		return arrowLength;
+	}
+
+	@Override
+	public void extend(float dlength){
+		arrowLength += dlength;
+		repaint();
+	}
+
+	@Override
+	public void extendto(float length){
+		int step = 3;
+		float dlength = (length - arrowLength) / (float)step;
+		if(Math.abs(length - arrowLength) < 1){
+			dlength = length - arrowLength;
+		}
+		extend(dlength);
 	}
 
 	@Override
@@ -38,6 +59,16 @@ public class JArrow extends JShape {
 		}
 
 		move(dx, dy);
+	}
+
+	@Override
+	public float x(){
+		return center.x;
+	}
+
+	@Override
+	public float y(){
+		return center.y;
 	}
 
     public void setArrowAngle(double angleDegrees) {
