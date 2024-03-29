@@ -8,7 +8,7 @@ import java.awt.*;
 
 public class JArrow extends JShape {
     private float arrowLength = 50; // Initial length of the arrow
-    private double arrowAngle = Math.toRadians(90); // Initial angle (45 degrees)
+    private double arrowAngle = Math.toRadians(90); // in radians 
 	private FPoint center;
 
 	public JArrow(int x, int y, int angle){
@@ -17,8 +17,31 @@ public class JArrow extends JShape {
 	}
 
 	@Override
+	public double a(){
+		return Math.toDegrees(arrowAngle) % 360;
+	}
+
+	@Override
 	public float l(){
 		return arrowLength;
+	}
+
+	@Override
+	public void rotate(double dangle){
+		arrowAngle += dangle;
+		repaint();
+	}
+
+	@Override
+	public void rotateto(double angle){
+		double step = 3;
+		angle = Math.toRadians(angle); // convert from degree to radian
+		// System.out.println("angle = " + angle + " arrowAngle = " + arrowAngle);
+		double dangle = (angle - arrowAngle) / (double)step;
+		if(Math.abs(angle - arrowAngle) < 0.01){
+			dangle = angle - arrowAngle;
+		}
+		rotate(dangle);
 	}
 
 	@Override
@@ -37,6 +60,21 @@ public class JArrow extends JShape {
 		extend(dlength);
 	}
 
+	@Override
+	public void shrink(float dlength){
+		arrowLength += dlength;
+		repaint();
+	}
+
+	@Override
+	public void shrinkto(float length){
+		int step = 3;
+		float dlength = (length - arrowLength) / (float)step;
+		if(Math.abs(length - arrowLength) < 1){
+			dlength = length - arrowLength;
+		}
+		shrink(dlength);
+	}
 	@Override
 	public void move(float dx, float dy){
 		center.x += dx;

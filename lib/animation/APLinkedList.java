@@ -85,17 +85,21 @@ public class APLinkedList extends AnimationPlanner {
 	}
 
 	public Script insert(int index, int data){
-		Script script = new Script();
 
-		// new a node
+		Script script = new Script();
+		
+		// modify the list before animation
 		sll_node.insertAt(index, generateUniqueID());
+		sll_arrow.insertAt(index, generateUniqueID());
+
+		// new node motion
 		Motion newNodeMotion = new Motion();
 		newNodeMotion.movefrom = new Point(0, 0);
 		newNodeMotion.moveto = new Point((int) locations.get(0).getX(), NewNodeY);
 		newNodeMotion.showtext = Integer.toString(data);
 		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.ADD, newNodeMotion));
 
-		// move the node from 0 to index
+		// move node from 0 to index
 		Motion newNodeMoveMotion = new Motion();
 		for(int i = 0; i < index; i++){
 			// newNodeMoveMotion.movefrom = new Point((int) locations.get(i).getX(), NewNodeY);
@@ -104,17 +108,19 @@ public class APLinkedList extends AnimationPlanner {
 			script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.MOVE, newNodeMoveMotion));
 		}
 
-		// move all nodes start from index one space right
+		// wait
+		script.addScene(generateWaitScene(2000));
+
+		// move all nodes start from index one space to the right (including arrows)
 		Motion oldNodeMoveMotion = new Motion();
-		Motion oldArrowMoveMotion = new Motion();
 		for(int i = index+1; i < sll_node.getSize(); i++){
 			oldNodeMoveMotion.moveto = locations.get(i);
-			// oldArrowMoveMotion.delaystart = 2000;
 			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.MOVE, oldNodeMoveMotion));
 		}
 		
-		for(int i = index; i < sll_arrow.getSize(); i++){
-			oldArrowMoveMotion.moveto = getMiddlePoint(locations.get(i+1), locations.get(i+2));
+		Motion oldArrowMoveMotion = new Motion();
+		for(int i = index+1; i < sll_arrow.getSize(); i++){
+			oldArrowMoveMotion.moveto = getMiddlePoint(locations.get(i), locations.get(i+1));
 			oldArrowMoveMotion.angle = 180;
 			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.MOVE, oldArrowMoveMotion));
 		}
@@ -127,18 +133,47 @@ public class APLinkedList extends AnimationPlanner {
 		extendOldArrowMotion.extendto = 150;
 		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, extendOldArrowMotion));
 
-
 		// new an arrow for the new node
-		sll_arrow.insertAt(index, generateUniqueID());
 		Motion newArrowMotion = new Motion();
 		newArrowMotion.movefrom = new Point(0, 0);
 		newArrowMotion.moveto = getMiddlePoint(new Point((int) locations.get(index).getX(), NewNodeY), locations.get(index+1));
 		newArrowMotion.angle = 225;
 		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ADD, newArrowMotion));
 
-		// delete old node's arrow
+		script.addScene(generateWaitScene(2000));
 
-		// new an arrow for the old nodes
+		// delete old node's arrow
+		Motion deleteOldArrowMotion = new Motion();
+		deleteOldArrowMotion.moveto = new Point(-10, -10);
+		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, deleteOldArrowMotion));
+		script.addScene(generateWaitScene(2000));
+		// script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.DELETE, deleteOldArrowMotion));
+		
+		// new node insert motion
+		Motion newNodeInsertMotion = new Motion();
+		newNodeInsertMotion.moveto = locations.get(index);
+		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.MOVE, newNodeInsertMotion));
+		
+		// new arrow rotate
+		Motion newArrowRotateMotion = new Motion();
+		newArrowRotateMotion.moveto = getMiddlePoint(locations.get(index), locations.get(index+1));
+		newArrowRotateMotion.rotateto = 180;
+		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.MOVE, newArrowRotateMotion));
+		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ROTATE, newArrowRotateMotion));
+
+		// wait
+		script.addScene(generateWaitScene(2000));
+		
+		// new another arrow for the old nodes (reuse the old arrow)
+		Motion newPriorArrowMotion = new Motion();
+		newPriorArrowMotion.movefrom = new Point(0, 0);
+		newPriorArrowMotion.moveto = getMiddlePoint(locations.get(index-1),locations.get(index)); 
+		newPriorArrowMotion.shrinkto = 50;
+		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, newPriorArrowMotion));
+		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
+		
+		// modify the list after animation
+		sll_arrow.removeAt(index-1);
 
 		return script;
 	}

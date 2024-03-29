@@ -9,6 +9,8 @@ public class Scene {
 	public Point movefrom;
 	public Point moveto;
 	public int extendto;
+	public int shrinkto;
+	public double rotateto;
 	public Point start;
 	public Point end;
 	public int angle;

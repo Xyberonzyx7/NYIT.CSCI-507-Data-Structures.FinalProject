@@ -640,26 +640,34 @@ public class DSV {
 			@Override
 			public void run(){
 
-				
 				Clip clip = clips.get(i);	
 
 				switch(clip.action){
 					case ADD:
 						runAdd(clip.id, clip.shape);
-						runMoveTo(clip.id, clip.shape, clip.moveto, null);
+						runMoveTo(clip.id, clip.shape, clip.moveto);
 					break;
 					case MOVE:
-						runMoveTo(clip.id, clip.shape, clip.moveto, null);
+						runMoveTo(clip.id, clip.shape, clip.moveto);
 					break;
 					case DELETE:
 						// TimerCallback callback = () ->{
 						// 	runDelete(clip.id, clip.shape);
 						// }
-						runMoveTo(clip.id, clip.shape, clip.moveto, null);
+						runMoveTo(clip.id, clip.shape, clip.moveto);
 						runDelete(clip.id, clip.shape);
 					break;
 					case EXTEND:
 						runExtendTo(clip.id, clip.shape, clip.extendto);
+					break;
+					case SHRINK:
+						runShrinkTo(clip.id, clip.shape, clip.extendto);
+					break;
+					case ROTATE:
+						runRotateTo(clip.id, clip.shape, clip.rotateto);
+					break;
+					case WAIT:
+						// do nothing
 					break;
 					default:
 				}
@@ -674,10 +682,26 @@ public class DSV {
 		executor.schedule(task, movie.getClips().get(0).delaystart, TimeUnit.MILLISECONDS);
 	}
 
-	private void runMoveTo(int id, JShape shape, Point destination, TimerCallback callback){
+	private void runRotateTo(int id, JShape shape, double angle){
+		if(shape.a() == angle){
+			return;
+		}
+
+		Timer clipTimer = new Timer(100, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shape.rotateto((float) angle);
+				if(shape.a() == angle){
+					((Timer) e.getSource()).stop();
+				}
+			}
+		});
+		clipTimer.start();
+	}
+
+	private void runMoveTo(int id, JShape shape, Point destination){
 
 		if(destination == null){
-			callback.onTimerComplete();
 			return;
 		}
 
@@ -688,7 +712,6 @@ public class DSV {
 				shape.moveto((float)destination.getX(), (float)destination.getY());
 				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
 					// Stop the timer for this specific clip
-					if(callback != null) callback.onTimerComplete();
 					((Timer) e.getSource()).stop();
 				}
 	
@@ -705,6 +728,19 @@ public class DSV {
 			@Override
 			public void actionPerformed(ActionEvent e){
 				shape.extendto(length);
+				if(shape.l() == length){
+					((Timer) e.getSource()).stop();
+				}
+			}
+		});
+		clipTimer.start();
+	}
+
+	private void runShrinkTo(int id, JShape shape, int length){
+		Timer clipTimer = new Timer(100, new ActionListener(){
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shape.shrinkto(length);
 				if(shape.l() == length){
 					((Timer) e.getSource()).stop();
 				}
@@ -778,6 +814,8 @@ public class DSV {
 			clip.movefrom = scene.movefrom;
 			clip.moveto = scene.moveto;
 			clip.extendto = scene.extendto;
+			clip.shrinkto = scene.shrinkto;
+			clip.rotateto = scene.rotateto;
 			clip.delaystart = scene.delaystart;
 		
 			movie.add(clip);
@@ -819,6 +857,8 @@ class Clip {
 	Point movefrom;
 	Point moveto;
 	int extendto;
+	int shrinkto;
+	double rotateto;
 	Point start;
 	Point end;
 	int angle;

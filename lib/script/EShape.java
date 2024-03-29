@@ -4,5 +4,5 @@ public enum EShape {
 	SQUARE,
 	CIRCLE,
 	ARROW,
-	LINE
+	NONE,
 }

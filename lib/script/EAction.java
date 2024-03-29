@@ -5,5 +5,7 @@ public enum EAction {
 	DELETE,
 	MOVE,
 	EXTEND,
-	SHRINK
+	SHRINK,
+	ROTATE,
+	WAIT
 }
