@@ -172,9 +172,6 @@ public class APLinkedList extends AnimationPlanner {
 		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, newPriorArrowMotion));
 		script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
 		
-		// modify the list after animation
-		sll_arrow.removeAt(index-1);
-
 		return script;
 	}
 
