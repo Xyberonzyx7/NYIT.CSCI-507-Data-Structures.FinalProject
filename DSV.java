@@ -34,7 +34,7 @@ public class DSV {
 	private JPanel panOPQueue;
 	private JPanel panOPStack;
 	private JPanel panOPLinkedList;
-	private JPanel panOPTree;
+	private JPanel panOPBinarySearchTree;
 	private JPanel panOPGraph;
 
 	// variables
@@ -52,7 +52,7 @@ public class DSV {
 		initStackPanel();
 		initQueuePanel();
 		initLinkedListPanel();
-		initTreePanel();
+		initBinarySearchTreePanel();
 		initGraphPanel();
 		initFrame();
 	}
@@ -80,7 +80,7 @@ public class DSV {
 		frame.add(panOPStack);
 		frame.add(panOPQueue);
 		frame.add(panOPLinkedList);
-		frame.add(panOPTree);
+		frame.add(panOPBinarySearchTree);
 		frame.add(panOPGraph);
 
 		frame.setVisible(true);
@@ -147,6 +147,7 @@ public class DSV {
 		JButton btn_modify = new JButton("Modify");
 		lb_default.setFont(TITLEFONT);
 		ta_default.setText("[1,2,3,4]");
+		ta_default.setPlaceholder("e.g. [1,2,3,4]");
 		ta_default.setLineWrap(true);
 		lb_modification.setFont(TITLEFONT);
 		tf_index.setPlaceholder("e.g. 0");
@@ -205,7 +206,7 @@ public class DSV {
 
 		autolayout.setBounds();
 		autolayout.setBounds(lb_default);
-		autolayout.setBounds(ta_default, 250);
+		autolayout.setBounds(ta_default, 200);
 		autolayout.setBounds(btn_create);
 		autolayout.setBounds();
 		autolayout.setBounds(lb_modification);
@@ -446,6 +447,7 @@ public class DSV {
 		lb_insertAt.setFont(TITLEFONT);
 		lb_removeAt.setFont(TITLEFONT);
 		ta_init.setText("[1,2,3,4]");
+		ta_init.setPlaceholder("e.g. [1,2,3,4]");
 		tf_index.setPlaceholder("e.g. 0");
 		tf_data.setPlaceholder("e.g. 100");
 		tf_remove.setPlaceholder("e.g. 1");
@@ -524,7 +526,7 @@ public class DSV {
 		});
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);
-		autoLayout.setBounds(ta_init);
+		autoLayout.setBounds(ta_init, 200);
 		autoLayout.setBounds(btn_init);
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_insertAt);
@@ -555,11 +557,55 @@ public class DSV {
 		panOPLinkedList.add(btn_remove);
 	}
 
-	private void initTreePanel() {
-		panOPTree = new JPanel();
-		panOPTree.setLayout(null);
-		panOPTree.setBounds(1000, 30, 200, 770);
-		panOPTree.setVisible(false);
+	private void initBinarySearchTreePanel() {
+		panOPBinarySearchTree = new JPanel();
+		panOPBinarySearchTree.setLayout(null);
+		panOPBinarySearchTree.setBounds(RECT_OPERATION);
+		panOPBinarySearchTree.setVisible(false);
+
+		// new components
+		AutoLayout autoLayout = new AutoLayout();
+		JLabel lb_init = new JLabel("Initialize");
+		JPlaceholderTextArea ta_init = new JPlaceholderTextArea();
+		JButton btn_init = new JButton("Initialize");
+		JLabel lb_insert = new JLabel("insert");
+		JPlaceholderTextField tf_insert = new JPlaceholderTextField();
+		JButton btn_insert = new JButton("Insert");
+		JLabel lb_delete = new JLabel("Delete");
+		JPlaceholderTextField tf_delete = new JPlaceholderTextField();
+		JButton btn_delete = new JButton("Delete");
+		lb_init.setFont(TITLEFONT);
+		ta_init.setText("[1,2,3,4,5,6,7]");	
+		ta_init.setPlaceholder("e.g. [1,2,3,4,5,6,7]");
+		lb_insert.setFont(TITLEFONT);
+		tf_insert.setPlaceholder("e.g. 100");
+		lb_delete.setFont(TITLEFONT);
+		tf_delete.setPlaceholder("e.g. 100");
+
+		// auto layout
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_init);
+		autoLayout.setBounds(ta_init, 200);
+		autoLayout.setBounds(btn_init);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_insert);
+		autoLayout.setBounds(tf_insert);
+		autoLayout.setBounds(btn_insert);
+		autoLayout.setBounds();
+		autoLayout.setBounds(lb_delete);
+		autoLayout.setBounds(tf_delete);
+		autoLayout.setBounds(btn_delete);
+
+		// add components
+		panOPBinarySearchTree.add(lb_init);
+		panOPBinarySearchTree.add(ta_init);
+		panOPBinarySearchTree.add(btn_init);
+		panOPBinarySearchTree.add(lb_insert);
+		panOPBinarySearchTree.add(tf_insert);
+		panOPBinarySearchTree.add(btn_insert);
+		panOPBinarySearchTree.add(lb_delete);
+		panOPBinarySearchTree.add(tf_delete);
+		panOPBinarySearchTree.add(btn_delete);
 	}
 
 	private void initGraphPanel() {
@@ -592,9 +638,9 @@ public class DSV {
 				panOPCurrent = panOPLinkedList;
 				break;
 			case TREE:
-				panOPTree.setVisible(true);
+				panOPBinarySearchTree.setVisible(true);
 				panOPCurrent.setVisible(false);
-				panOPCurrent = panOPTree;
+				panOPCurrent = panOPBinarySearchTree;
 				break;
 			case GRAPH:
 				panOPGraph.setVisible(true);

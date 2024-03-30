@@ -26,6 +26,9 @@ public class JPlaceholderTextArea extends JTextArea {
             }
         });
 		this.setFocusTraversalKeysEnabled(true);
+
+		// set line wrap
+		this.setLineWrap(true);
 	}
 
     public String getPlaceholder() {
