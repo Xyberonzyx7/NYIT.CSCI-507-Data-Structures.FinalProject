@@ -1,7 +1,5 @@
 package lib.components;
 
-import javax.swing.*;
-
 import lib.tools.FPoint;
 
 import java.awt.*;
@@ -20,6 +18,12 @@ public class JCircle extends JShape {
         this.radius = 20;
         this.color = Color.BLUE; // Default color (you can change it)
     }
+
+	@Override
+	public void colorto(Color color){
+		this.color = color;
+		repaint();
+	}
 
 	@Override
     public void move(float dx, float dy) {
@@ -57,10 +61,10 @@ public class JCircle extends JShape {
 		return now.y;
 	}
 
-    public void setColor(Color color) {
-        this.color = color;
-        repaint(); // Redraw the circle
-    }
+	@Override
+	public Color c(){
+		return color;
+	}
 
     @Override
     protected void paintComponent(Graphics g) {

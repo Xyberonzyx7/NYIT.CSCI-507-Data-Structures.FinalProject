@@ -1,5 +1,6 @@
 package lib.script;
 
+import java.awt.Color;
 import java.awt.Point;
 
 public class Motion {
@@ -8,6 +9,7 @@ public class Motion {
 	public int extendto = 50;		// extend the shape: such as arrow's length
 	public int shrinkto = 50;		// shrink the shape: sucha as arrow's length
 	public double rotateto = 180;		// rorate the shape: such as arrow's rotation
+	public Color colorto = Color.BLUE;	// change obj's color
 	public Point start = null;		// obj shape start: such as arrow's bottom
 	public Point end = null;		// obj shape end: such as arrow's head
 	public int angle = 0;			// obj shape starting angle

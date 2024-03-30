@@ -1,5 +1,6 @@
 package lib.script;
 
+import java.awt.Color;
 import java.awt.Point;
 
 public class Scene {
@@ -10,6 +11,7 @@ public class Scene {
 	public Point moveto;
 	public int extendto;
 	public int shrinkto;
+	public Color colorto;
 	public double rotateto;
 	public Point start;
 	public Point end;

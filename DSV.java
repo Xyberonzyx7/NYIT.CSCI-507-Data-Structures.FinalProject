@@ -489,7 +489,7 @@ public class DSV {
 
 				try {
 					// add new components
-					Script script = apLinkedList.insert(Integer.parseInt(szIndex), Integer.parseInt(szData));
+					Script script = apLinkedList.insertAt(Integer.parseInt(szIndex), Integer.parseInt(szData));
 					Movie clip = readScript(script);
 					runMovie(clip);
 				} catch (NumberFormatException exception) {
@@ -502,22 +502,20 @@ public class DSV {
 		btn_remove.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szInit = ta_init.getText();
+				String szRemove = tf_remove.getText();
 
-				if (szInit.isEmpty()) {
-					popHint("Default array is not valid.");
+				if (szRemove.isEmpty()) {
+					popHint("Remove index is not valid.");
 					return;
 				}
 
 				try {
 					// add new components
-					String[] szNumbers = szInit.replaceAll("[^0-9]+", " ").trim().split("\\s+");
-					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
-					Script script = apLinkedList.initLinkedList(nNumbers);
+					Script script = apLinkedList.removeAt(Integer.parseInt(szRemove));
 					Movie clip = readScript(script);
 					runMovie(clip);
 				} catch (NumberFormatException exception) {
-					popHint("Default array is not valid.");
+					popHint("Remove index is not valid.");
 					return;
 				}
 
@@ -640,7 +638,7 @@ public class DSV {
 			@Override
 			public void run(){
 
-				Clip clip = clips.get(i);	
+				Clip clip = clips.get(i);
 
 				switch(clip.action){
 					case ADD:
@@ -666,6 +664,9 @@ public class DSV {
 					case ROTATE:
 						runRotateTo(clip.id, clip.shape, clip.rotateto);
 					break;
+					case COLOR:
+						runColorTo(clip.id, clip.shape, clip.colorto);
+					break;
 					case WAIT:
 						// do nothing
 					break;
@@ -682,6 +683,25 @@ public class DSV {
 		executor.schedule(task, movie.getClips().get(0).delaystart, TimeUnit.MILLISECONDS);
 	}
 
+	private void runColorTo(int id, JShape shape, Color color){
+		
+		if(shape.c() == color){
+			return;
+		}
+
+		Timer clipTimer = new Timer(100, new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				shape.colorto(color);
+				panAnimation.repaint();
+				if(shape.c() == color){
+					((Timer) e.getSource()).stop();
+				}
+			}
+		});
+		clipTimer.start();
+	}
+
 	private void runRotateTo(int id, JShape shape, double angle){
 		if(shape.a() == angle){
 			return;
@@ -691,6 +711,7 @@ public class DSV {
 			@Override
 			public void actionPerformed(ActionEvent e){
 				shape.rotateto((float) angle);
+				panAnimation.repaint();
 				if(shape.a() == angle){
 					((Timer) e.getSource()).stop();
 				}
@@ -710,12 +731,12 @@ public class DSV {
 			public void actionPerformed(ActionEvent e) {
 				// shape.move(2, 2);
 				shape.moveto((float)destination.getX(), (float)destination.getY());
+				panAnimation.repaint();
+
 				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
 					// Stop the timer for this specific clip
 					((Timer) e.getSource()).stop();
 				}
-	
-				panAnimation.repaint(); // Purpose: clear the panel
 			}
 		});
 	
@@ -815,6 +836,7 @@ public class DSV {
 			clip.moveto = scene.moveto;
 			clip.extendto = scene.extendto;
 			clip.shrinkto = scene.shrinkto;
+			clip.colorto = scene.colorto;
 			clip.rotateto = scene.rotateto;
 			clip.delaystart = scene.delaystart;
 		
@@ -859,6 +881,7 @@ class Clip {
 	int extendto;
 	int shrinkto;
 	double rotateto;
+	Color colorto;
 	Point start;
 	Point end;
 	int angle;

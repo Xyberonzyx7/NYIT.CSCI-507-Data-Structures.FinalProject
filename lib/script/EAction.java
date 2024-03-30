@@ -7,5 +7,6 @@ public enum EAction {
 	EXTEND,
 	SHRINK,
 	ROTATE,
+	COLOR,
 	WAIT
 }

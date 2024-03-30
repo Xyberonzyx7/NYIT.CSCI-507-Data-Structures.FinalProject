@@ -1,5 +1,6 @@
 package lib.animation;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.security.spec.EdDSAParameterSpec;
@@ -19,7 +20,7 @@ public class APLinkedList extends AnimationPlanner {
 	private final int MARGIN = 100;
 	private final int VERTICAL_SPACE = 100;
 	private final int HORIZONTAL_SPACE = 100;
-	private final int NewNodeY = 200;
+	private final int LOWERY = 200;
 
 	public APLinkedList(Rectangle rectAnimationArea){
 		int nXMin = (int) (rectAnimationArea.getX() + MARGIN);
@@ -82,7 +83,7 @@ public class APLinkedList extends AnimationPlanner {
 		return script;
 	}
 
-	public Script insert(int index, int data){
+	public Script insertAt(int index, int data){
 
 		Script script = new Script();
 
@@ -98,7 +99,7 @@ public class APLinkedList extends AnimationPlanner {
 		// new node motion
 		Motion newNodeMotion = new Motion();
 		newNodeMotion.movefrom = new Point(0, 0);
-		newNodeMotion.moveto = new Point((int) locations.get(0).getX(), NewNodeY);
+		newNodeMotion.moveto = new Point((int) locations.get(0).getX(), LOWERY);
 		newNodeMotion.showtext = Integer.toString(data);
 		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.ADD, newNodeMotion));
 
@@ -106,7 +107,7 @@ public class APLinkedList extends AnimationPlanner {
 		Motion newNodeMoveMotion = new Motion();
 		for(int i = 0; i < index; i++){
 			// newNodeMoveMotion.movefrom = new Point((int) locations.get(i).getX(), NewNodeY);
-			newNodeMoveMotion.moveto = new Point((int) locations.get(i+1).getX(), NewNodeY);
+			newNodeMoveMotion.moveto = new Point((int) locations.get(i+1).getX(), LOWERY);
 			newNodeMoveMotion.delaystart = 2000;
 			script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.MOVE, newNodeMoveMotion));
 		}
@@ -141,7 +142,7 @@ public class APLinkedList extends AnimationPlanner {
 		// new an arrow for the new node
 		Motion newArrowMotion = new Motion();
 		newArrowMotion.movefrom = new Point(0, 0);
-		newArrowMotion.moveto = getMiddlePoint(new Point((int) locations.get(index).getX(), NewNodeY), locations.get(index+1));
+		newArrowMotion.moveto = getMiddlePoint(new Point((int) locations.get(index).getX(), LOWERY), locations.get(index+1));
 		newArrowMotion.angle = 225;
 		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ADD, newArrowMotion));
 
@@ -180,6 +181,120 @@ public class APLinkedList extends AnimationPlanner {
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
 		}
 		
+		return script;
+	}
+
+	public Script removeAt(int index){
+		Script script = new Script();
+		System.out.println("sll_node.getSize() = " + sll_node.getSize());
+		System.out.println("sll_arrow.getSize() = " + sll_arrow.getSize());
+
+		if(index >= sll_node.getSize()){
+			return script;
+		}
+
+		// loop to index
+		for(int i = 0; i < index+1; i++){
+			
+			Motion highlightMotion = new Motion();
+			highlightMotion.colorto = Color.RED;
+			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.COLOR, highlightMotion));
+			
+			if(i > 0){
+				Motion unhighlightMotion = new Motion();
+				unhighlightMotion.colorto = Color.BLUE;
+				script.addScene(generateScene(sll_node.getAt(i-1), EShape.CIRCLE, EAction.COLOR, unhighlightMotion));
+			}
+			
+			// wait
+			script.addScene(generateWaitScene(2000));
+		}
+
+		// extract the target node
+		Point extractPoint = new Point((int)locations.get(index).getX(), LOWERY);
+		Motion extractNodeMotion = new Motion();
+		extractNodeMotion.moveto = extractPoint;
+		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.MOVE, extractNodeMotion));
+
+		if(index-1 >= 0){
+			Motion extractPriorArrow = new Motion();
+			extractPriorArrow.rotateto = 135;
+			extractPriorArrow.moveto = getMiddlePoint( locations.get(index-1), extractPoint);
+			extractPriorArrow.extendto = 71;
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.ROTATE, extractPriorArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, extractPriorArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, extractPriorArrow));
+		}
+
+		if(index < sll_arrow.getSize()){
+			Motion extractIndexArrow = new Motion();
+			extractIndexArrow.rotateto = 225;
+			extractIndexArrow.moveto = getMiddlePoint(locations.get(index+1), extractPoint);
+			extractIndexArrow.extendto = 71;
+			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ROTATE, extractIndexArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.MOVE, extractIndexArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.EXTEND, extractIndexArrow));
+		}
+
+		// wait
+		script.addScene(generateWaitScene(2000));
+
+		// prior arrow to index's next node
+		if(index - 1 >= 0){
+			Motion priorArrowToNextNode = new Motion();
+			priorArrowToNextNode.rotateto = 180;
+			priorArrowToNextNode.extendto = 150;
+			priorArrowToNextNode.moveto = getMiddlePoint(locations.get(index-1), locations.get(index+1));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.ROTATE, priorArrowToNextNode));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, priorArrowToNextNode));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, priorArrowToNextNode));
+		}
+
+		// remove target node and its arrow (if target node is the last node, remove its prior arrow too)
+		Motion removeTargetNode = new Motion();
+		script.addScene(generateScene(sll_node.getAt(index), EShape.ARROW, EAction.DELETE, removeTargetNode));
+		if(index < sll_arrow.getSize()){
+			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.DELETE, removeTargetNode));
+		}
+
+		if(index - 1 >= 0 && index == sll_arrow.getSize()){
+			Motion motion = new Motion();
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.DELETE, motion));
+		}
+
+		// wait
+		script.addScene(generateWaitScene(2000));
+
+		// move the rest of the nodes backward
+		for(int i = index+1; i < sll_node.getSize(); i++){
+			Motion motion = new Motion();
+			motion.moveto = locations.get(i-1);
+			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.MOVE, motion));
+		}
+
+		// move the rest of the arrows backward
+		for(int i = index+1; i < sll_arrow.getSize(); i++){
+			Motion motion = new Motion();
+			motion.moveto = getMiddlePoint(locations.get(i-1), locations.get(i));
+			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.MOVE, motion));
+		}
+
+		// shrink the prior arrow
+		if(index-1 >= 0){
+			Motion shrinkPriorArrow = new Motion();
+			shrinkPriorArrow.moveto = getMiddlePoint(locations.get(index - 1), locations.get(index));
+			shrinkPriorArrow.shrinkto = 50;
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, shrinkPriorArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, shrinkPriorArrow));
+		}
+
+		// remove target's node from list (if the target node is the last node, remove its prior arrow)
+		sll_node.removeAt(index);
+		if(index - 1 >= 0 && index == sll_arrow.getSize()){
+			sll_arrow.removeAt(index-1);
+		}else{
+			sll_arrow.removeAt(index);
+		}
 		return script;
 	}
 

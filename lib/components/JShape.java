@@ -16,6 +16,7 @@ public class JShape extends JPanel {
 	public float y(){ return 0;}
 	public float l(){ return 0;}
 	public double a(){ return 0;}
+	public Color c(){ return Color.BLUE;};
 
 	public void move(float x, float y){}
 	public void moveto(float x, float y){}
@@ -25,5 +26,6 @@ public class JShape extends JPanel {
 	public void shrinkto(float length){}
 	public void rotate(double dangle){}
 	public void rotateto(double angle){}
+	public void colorto(Color color){}
 }
 

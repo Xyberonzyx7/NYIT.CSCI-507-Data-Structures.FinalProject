@@ -24,21 +24,14 @@ public class AnimationPlanner {
 	}
 
 	public Scene generateWaitScene(int delaystart){
-		Scene scene = new Scene();
-		scene.id = generateNullID();
-		scene.shape = EShape.NONE;
-		scene.action = EAction.WAIT;
-		scene.movefrom = null;
-		scene.moveto = null;
-		scene.extendto = -1;
-		scene.shrinkto = -1;
-		scene.rotateto = -1;
-		scene.start = null;
-		scene.end = null;
-		scene.angle = -1;
-		scene.showtext = "";
-		scene.delaystart = delaystart;
-		return scene;
+		Motion motion = new Motion();
+		motion.delaystart = 2000;
+		return generateScene(generateNullID(), EShape.NONE, EAction.WAIT, motion);
+	}
+
+	public Scene generateDeleteScene(int id, EShape shape){
+		Motion motion = new Motion();
+		return generateScene(id, shape, EAction.DELETE, motion);
 	}
 
 	public Scene generateScene(int id, EShape shape, EAction action, Motion motion){
@@ -51,6 +44,7 @@ public class AnimationPlanner {
 		scene.extendto = motion.extendto;
 		scene.shrinkto = motion.shrinkto;
 		scene.rotateto = motion.rotateto;
+		scene.colorto = motion.colorto;
 		scene.start = motion.start;
 		scene.end = motion.end;
 		scene.angle = motion.angle;
