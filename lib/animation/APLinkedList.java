@@ -186,8 +186,6 @@ public class APLinkedList extends AnimationPlanner {
 
 	public Script removeAt(int index){
 		Script script = new Script();
-		System.out.println("sll_node.getSize() = " + sll_node.getSize());
-		System.out.println("sll_arrow.getSize() = " + sll_arrow.getSize());
 
 		if(index >= sll_node.getSize()){
 			return script;
