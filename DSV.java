@@ -570,17 +570,17 @@ public class DSV {
 		JLabel lb_init = new JLabel("Initialize");
 		JPlaceholderTextArea ta_init = new JPlaceholderTextArea();
 		JButton btn_init = new JButton("Initialize");
-		JLabel lb_insert = new JLabel("insert");
-		JPlaceholderTextField tf_insert = new JPlaceholderTextField();
-		JButton btn_insert = new JButton("Insert");
+		JLabel lb_add = new JLabel("Add");
+		JPlaceholderTextField tf_add = new JPlaceholderTextField();
+		JButton btn_add = new JButton("Add");
 		JLabel lb_delete = new JLabel("Delete");
 		JPlaceholderTextField tf_delete = new JPlaceholderTextField();
 		JButton btn_delete = new JButton("Delete");
 		lb_init.setFont(TITLEFONT);
 		ta_init.setText("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");	
 		ta_init.setPlaceholder("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");
-		lb_insert.setFont(TITLEFONT);
-		tf_insert.setPlaceholder("e.g. 100");
+		lb_add.setFont(TITLEFONT);
+		tf_add.setPlaceholder("e.g. 100");
 		lb_delete.setFont(TITLEFONT);
 		tf_delete.setPlaceholder("e.g. 100");
 		btn_init.addActionListener(new ActionListener() {
@@ -611,15 +611,35 @@ public class DSV {
 
 			}
 		});
+		btn_add.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String szAdd = tf_add.getText();
+
+				if(szAdd.isEmpty()){
+					popHint("Data is not valid.");
+					return;
+				}
+
+				try{
+					Script script = apBinarySearchTree.add(Integer.parseInt(szAdd));
+					Movie movie = readScript(script);
+					runMovie(movie);
+				} catch(NumberFormatException exception){
+					popHint("Data is not valid.");
+					return;
+				}
+			}
+		});
 		// auto layout
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);
 		autoLayout.setBounds(ta_init, 200);
 		autoLayout.setBounds(btn_init);
 		autoLayout.setBounds();
-		autoLayout.setBounds(lb_insert);
-		autoLayout.setBounds(tf_insert);
-		autoLayout.setBounds(btn_insert);
+		autoLayout.setBounds(lb_add);
+		autoLayout.setBounds(tf_add);
+		autoLayout.setBounds(btn_add);
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_delete);
 		autoLayout.setBounds(tf_delete);
@@ -629,9 +649,9 @@ public class DSV {
 		panOPBinarySearchTree.add(lb_init);
 		panOPBinarySearchTree.add(ta_init);
 		panOPBinarySearchTree.add(btn_init);
-		panOPBinarySearchTree.add(lb_insert);
-		panOPBinarySearchTree.add(tf_insert);
-		panOPBinarySearchTree.add(btn_insert);
+		panOPBinarySearchTree.add(lb_add);
+		panOPBinarySearchTree.add(tf_add);
+		panOPBinarySearchTree.add(btn_add);
 		panOPBinarySearchTree.add(lb_delete);
 		panOPBinarySearchTree.add(tf_delete);
 		panOPBinarySearchTree.add(btn_delete);

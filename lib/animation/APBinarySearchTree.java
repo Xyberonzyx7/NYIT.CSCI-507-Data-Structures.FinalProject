@@ -20,6 +20,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 	Tree<ValuePair> arrowTree;	// int: id, int: arrow length, Point: location
 	private final int VERTICAL_SPACE = 110;
 	private final int LEVELLIMIT = 5;
+	private final Point STANDBYPOINT = new Point(110, 110);
 	public APBinarySearchTree(Rectangle rectAnimationArea){
 
 		// locations
@@ -53,16 +54,6 @@ public class APBinarySearchTree extends AnimationPlanner {
 		TreeNode<ValuePair> arrow = arrowTree.root;
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> locationNode = locationsTree.root;
-
-		// // test
-		// System.out.println(getAngle(new Point(0, 0), new Point(10, 0)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(10, 10)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(0, 10)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(-10, 10)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(-10, 0)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(-10, -10)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(0, -10)));
-		// System.out.println(getAngle(new Point(0, 0), new Point(10, -10)));
 
 		for(int i = 0; i < nums.length; i++){
 			
@@ -113,6 +104,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					}else{
 						node = node.right;
 						locationNode = locationNode.right;
+						arrow = arrow.right;
 					}
 				}else if(nums[i] < node.data.num){
 					if(node.left == null){
@@ -139,13 +131,114 @@ public class APBinarySearchTree extends AnimationPlanner {
 					}else{
 						node = node.left;
 						locationNode = locationNode.left;
+						arrow = arrow.left;
 					}
 				}else{
 					break;
 				}
 			}
 		}
+		return script;
+	}
 
+	public Script add(int num){
+		Script script = new Script();
+		TreeNode<ValuePair> arrow = arrowTree.root;
+		TreeNode<ValuePair> node = dataTree.root;
+		TreeNode<Point> locationNode = locationsTree.root;
+
+		// new node to standby position
+		TreeNode<ValuePair> newNode = new TreeNode<>(null);
+		newNode.data = new ValuePair(generateUniqueID(), num, STANDBYPOINT);
+
+		// animation
+		Motion standbyMotion = new Motion();
+		standbyMotion.movefrom = new Point(0, 0);
+		standbyMotion.moveto = STANDBYPOINT;
+		standbyMotion.showtext = Integer.toString(num);
+		script.addScene(generateScene(newNode.data.id, EShape.CIRCLE, EAction.ADD, standbyMotion));
+		script.addScene(generateScene(newNode.data.id, EShape.CIRCLE, EAction.MOVE, standbyMotion));
+
+		// wait
+		script.addScene(generateWaitScene(2000));
+		
+		while (true) {
+
+			// animation planning highlight node to for comparing
+			Motion highlight = new Motion();
+			highlight.colorto = Color.RED;
+			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, highlight));
+
+			// wait
+			script.addScene(generateWaitScene(2000));
+
+			// unhighlight self
+			Motion unHighlight = new Motion();
+			unHighlight.colorto = Color.BLUE;
+			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, unHighlight));
+
+			if (num > node.data.num) {
+				if (node.right == null) {
+					node.right = newNode;
+					node.right.data.location = locationNode.right.data;
+					arrow.right = new TreeNode<ValuePair>(null);
+					arrow.right.data = new ValuePair(generateUniqueID(),
+							getLength(node.data.location, node.right.data.location),
+							getMiddlePoint(node.data.location, node.right.data.location));
+
+					// animation planning
+					Motion motion = new Motion();
+					motion.movefrom = new Point(0, 0);
+					motion.moveto = locationNode.right.data;
+					motion.showtext = Integer.toString(num);
+					script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.ADD, motion));
+
+					Motion arrowMotion = new Motion();
+					arrowMotion.movefrom = new Point(0, 0);
+					arrowMotion.moveto = getMiddlePoint(node.data.location, node.right.data.location);
+					arrowMotion.angle = getAngle(node.data.location, node.right.data.location);
+					arrowMotion.extendto = getLength(node.data.location, node.right.data.location) - 50;
+					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.EXTEND, arrowMotion));
+					break;
+				} else {
+					node = node.right;
+					locationNode = locationNode.right;
+					arrow = arrow.right;
+				}
+			} else if (num < node.data.num) {
+				if (node.left == null) {
+					node.left = newNode;
+					node.left.data.location = locationNode.left.data;
+					arrow.left = new TreeNode<ValuePair>(null);
+					arrow.left.data = new ValuePair(generateUniqueID(),
+							getLength(node.data.location, node.left.data.location),
+							getMiddlePoint(node.data.location, node.left.data.location));
+
+					// animation planning
+					Motion motion = new Motion();
+					motion.movefrom = new Point(0, 0);
+					motion.moveto = locationNode.left.data;
+					motion.showtext = Integer.toString(num);
+					script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.ADD, motion));
+
+					Motion arrowMotion = new Motion();
+					arrowMotion.movefrom = new Point(0, 0);
+					arrowMotion.moveto = getMiddlePoint(node.data.location, node.left.data.location);
+					arrowMotion.angle = getAngle(node.data.location, node.left.data.location);
+					arrowMotion.extendto = getLength(node.data.location, node.left.data.location) - 50;
+					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.EXTEND, arrowMotion));
+					break;
+				} else {
+					node = node.left;
+					locationNode = locationNode.left;
+					arrow = arrow.left;
+				}
+			} else {
+				break;
+			}
+		}
 		return script;
 	}
 
