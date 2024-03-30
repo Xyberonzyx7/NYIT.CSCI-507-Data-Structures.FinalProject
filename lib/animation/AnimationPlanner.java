@@ -52,4 +52,32 @@ public class AnimationPlanner {
 		scene.delaystart = motion.delaystart;
 		return scene;
 	}
+
+	public Point getMiddlePoint(Point p1, Point p2){
+		return new Point((int)((p1.getX() + p2.getX()) / 2), (int)((p1.getY() + p2.getY())/ 2));
+	}
+
+	public double getAngle(Point start, Point end){
+
+		double deltaX = end.x - start.x;
+        double deltaY = end.y - start.y;
+		deltaY *= -1;	// for graphical components, positive y is pointing downward
+
+        // Calculate the angle in radians using Math.atan2()
+        double angleRadians = Math.atan2(deltaY, deltaX);
+
+        // Convert radians to degrees
+        double angleDegrees = Math.toDegrees(angleRadians);
+
+        // Ensure the angle is positive (between 0 and 360 degrees)
+        angleDegrees = (angleDegrees + 360 + 180) % 360;	// for arrow, 0 degree is <--, 180 degree is -->
+
+        return angleDegrees;
+	}
+
+	public int getLength(Point p1, Point p2){
+		double dx = p2.getX() - p1.getX();
+		double dy = p2.getY() - p1.getY();
+		return (int) Math.sqrt(dx*dx + dy*dy);
+	}
 }

@@ -11,7 +11,7 @@ public class JArrow extends JShape {
     private double arrowAngle = Math.toRadians(90); // in radians 
 	private FPoint center;
 
-	public JArrow(int x, int y, int angle){
+	public JArrow(int x, int y, double angle){
 		center = new FPoint(x, y);
 		arrowAngle = Math.toRadians(angle);
 	}

@@ -79,7 +79,6 @@ public class APLinkedList extends AnimationPlanner {
 			arrowMotion.angle = 180;
 			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.ADD, arrowMotion));
 		}
-
 		return script;
 	}
 
@@ -294,9 +293,5 @@ public class APLinkedList extends AnimationPlanner {
 			sll_arrow.removeAt(index);
 		}
 		return script;
-	}
-
-	private Point getMiddlePoint(Point p1, Point p2){
-		return new Point((int)((p1.getX() + p2.getX()) / 2), (int)((p1.getY() + p2.getY())/ 2));
 	}
 }

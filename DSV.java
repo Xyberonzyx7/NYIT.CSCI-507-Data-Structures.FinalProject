@@ -42,6 +42,7 @@ public class DSV {
 	private APStack apStack;
 	private APQueue apQueue;
 	private APLinkedList apLinkedList;
+	private APBinarySearchTree apBinarySearchTree;
 	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
 
 	public DSV() {
@@ -62,6 +63,7 @@ public class DSV {
 		apStack = new APStack(RECT_ANIMATION);
 		apQueue = new APQueue(RECT_ANIMATION);
 		apLinkedList = new APLinkedList(RECT_ANIMATION);
+		apBinarySearchTree = new APBinarySearchTree(RECT_ANIMATION);
 		mapArrayCast = new HashMap<Integer, JShape>();
 	}
 
@@ -575,13 +577,40 @@ public class DSV {
 		JPlaceholderTextField tf_delete = new JPlaceholderTextField();
 		JButton btn_delete = new JButton("Delete");
 		lb_init.setFont(TITLEFONT);
-		ta_init.setText("[1,2,3,4,5,6,7]");	
-		ta_init.setPlaceholder("e.g. [1,2,3,4,5,6,7]");
+		ta_init.setText("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");	
+		ta_init.setPlaceholder("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");
 		lb_insert.setFont(TITLEFONT);
 		tf_insert.setPlaceholder("e.g. 100");
 		lb_delete.setFont(TITLEFONT);
 		tf_delete.setPlaceholder("e.g. 100");
+		btn_init.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				String szInit = ta_init.getText();
 
+				if (szInit.isEmpty()) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+				try {
+					
+					// clear the panAnimation
+					clearPanAnimation();
+
+					// add new components
+					String[] szNumbers = szInit.replaceAll("[^0-9]+", " ").trim().split("\\s+");
+					int[] nNumbers = Arrays.stream(szNumbers).mapToInt(Integer::parseInt).toArray();
+					Script script = apBinarySearchTree.initBinarySearchTree(nNumbers);
+					Movie clip = readScript(script);
+					runMovie(clip);
+				} catch (NumberFormatException exception) {
+					popHint("Default array is not valid.");
+					return;
+				}
+
+			}
+		});
 		// auto layout
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);

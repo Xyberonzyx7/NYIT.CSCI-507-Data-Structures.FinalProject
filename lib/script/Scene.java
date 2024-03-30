@@ -15,7 +15,7 @@ public class Scene {
 	public double rotateto;
 	public Point start;
 	public Point end;
-	public int angle;
+	public double angle;
 	public String showtext;
 	public int delaystart; // in ms
 }
