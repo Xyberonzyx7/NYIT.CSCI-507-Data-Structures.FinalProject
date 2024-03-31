@@ -631,6 +631,26 @@ public class DSV {
 				}
 			}
 		});
+		btn_delete.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				String szDelete = tf_delete.getText();
+
+				if(szDelete.isEmpty()){
+					popHint("Data is not valid.");
+					return;
+				}
+			
+				try{
+					Script script = apBinarySearchTree.delete(Integer.parseInt(szDelete));
+					Movie movie = readScript(script);
+					runMovie(movie);
+				} catch(NumberFormatException exception){
+					popHint("Data is not valid.");
+					return;
+				}
+			}
+		});
 		// auto layout
 		autoLayout.setBounds();
 		autoLayout.setBounds(lb_init);
@@ -809,7 +829,7 @@ public class DSV {
 		Timer clipTimer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				shape.rotateto((float) angle);
+				shape.rotateto(angle);
 				panAnimation.repaint();
 				if(shape.a() == angle){
 					((Timer) e.getSource()).stop();
