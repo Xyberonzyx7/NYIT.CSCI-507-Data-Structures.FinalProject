@@ -6,8 +6,7 @@ import java.awt.Point;
 public class Motion {
 	public Point movefrom = null; 	// whole obj moving from this point
 	public Point moveto = null;		// whole obj moving to this point
-	public int extendto = 50;		// extend the shape: such as arrow's length
-	public int shrinkto = 50;		// shrink the shape: sucha as arrow's length
+	public int lengthto = 50;		// extend the shape: such as arrow's length
 	public double rotateto = 180;		// rorate the shape: such as arrow's rotation
 	public Color colorto = Color.BLUE;	// change obj's color
 	public Point start = null;		// obj shape start: such as arrow's bottom

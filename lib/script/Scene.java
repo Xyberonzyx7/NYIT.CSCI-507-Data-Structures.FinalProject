@@ -9,8 +9,7 @@ public class Scene {
 	public EAction action;
 	public Point movefrom;
 	public Point moveto;
-	public int extendto;
-	public int shrinkto;
+	public int lengthto;
 	public Color colorto;
 	public double rotateto;
 	public Point start;

@@ -1,6 +1,9 @@
 package lib.animation;
 
+import java.awt.Color;
 import java.awt.Point;
+import java.util.List;
+import java.util.ArrayList;
 
 import lib.script.EAction;
 import lib.script.EShape;
@@ -34,6 +37,39 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.DELETE, motion);
 	}
 
+	public List<Scene> generateFlashingScene(int id, EShape shape, EAction action, Color defaultColor, Color flashColor){
+		List<Scene> scenes = new ArrayList<>();
+
+		// highlight
+		Motion highlight = new Motion();
+		highlight.colorto = flashColor;
+		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateWaitScene(500));
+
+		// unhighlight
+		Motion unhighlight = new Motion();
+		unhighlight.colorto = defaultColor;
+		scenes.add(generateScene(id, shape, action, unhighlight));
+		scenes.add(generateWaitScene(500));
+
+		// highlight
+		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateWaitScene(500));
+
+		// unhighlight
+		scenes.add(generateScene(id, shape, action, unhighlight));
+		scenes.add(generateWaitScene(500));
+
+		// highlight
+		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateWaitScene(500));
+
+		// unhighlight
+		scenes.add(generateScene(id, shape, action, unhighlight));
+
+		return scenes;
+	}
+
 	public Scene generateScene(int id, EShape shape, EAction action, Motion motion){
 		Scene scene = new Scene();
 		scene.id = id;
@@ -41,8 +77,7 @@ public class AnimationPlanner {
 		scene.action = action;
 		scene.movefrom = motion.movefrom;
 		scene.moveto = motion.moveto;
-		scene.extendto = motion.extendto;
-		scene.shrinkto = motion.shrinkto;
+		scene.lengthto = motion.lengthto;
 		scene.rotateto = motion.rotateto;
 		scene.colorto = motion.colorto;
 		scene.start = motion.start;

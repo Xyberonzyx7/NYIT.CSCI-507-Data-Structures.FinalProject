@@ -20,13 +20,18 @@ public class JCircle extends JShape {
     }
 
 	@Override
+	public void textto(String text){
+		this.txt = text;
+		repaint();
+	}
+
+	@Override
 	public void colorto(Color color){
 		this.color = color;
 		repaint();
 	}
 
-	@Override
-    public void move(float dx, float dy) {
+    private void move(float dx, float dy) {
         // Move the circle by dx units horizontally and dy units vertically
         now.x += dx;
         now.y += dy;
@@ -64,6 +69,11 @@ public class JCircle extends JShape {
 	@Override
 	public Color c(){
 		return color;
+	}
+
+	@Override
+	public String t(){
+		return txt;
 	}
 
     @Override

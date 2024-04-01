@@ -26,8 +26,7 @@ public class JArrow extends JShape {
 		return arrowLength;
 	}
 
-	@Override
-	public void rotate(double dangle){
+	private void rotate(double dangle){
 		arrowAngle += dangle;
 		repaint();
 	}
@@ -36,7 +35,6 @@ public class JArrow extends JShape {
 	public void rotateto(double angle){
 		double step = 3;
 		angle = Math.toRadians(angle); // convert from degree to radian
-		// System.out.println("angle = " + angle + " arrowAngle = " + arrowAngle);
 		double dangle = (angle - arrowAngle) / (double)step;
 		if(Math.abs(angle - arrowAngle) < 0.01){
 			dangle = angle - arrowAngle;
@@ -44,14 +42,13 @@ public class JArrow extends JShape {
 		rotate(dangle);
 	}
 
-	@Override
-	public void extend(float dlength){
+	private void extend(float dlength){
 		arrowLength += dlength;
 		repaint();
 	}
 
 	@Override
-	public void extendto(float length){
+	public void lengthto(float length){
 		int step = 3;
 		float dlength = (length - arrowLength) / (float)step;
 		if(Math.abs(length - arrowLength) < 1){
@@ -60,23 +57,22 @@ public class JArrow extends JShape {
 		extend(dlength);
 	}
 
-	@Override
-	public void shrink(float dlength){
-		arrowLength += dlength;
-		repaint();
-	}
+	// private void shrink(float dlength){
+	// 	arrowLength += dlength;
+	// 	repaint();
+	// }
 
-	@Override
-	public void shrinkto(float length){
-		int step = 3;
-		float dlength = (length - arrowLength) / (float)step;
-		if(Math.abs(length - arrowLength) < 1){
-			dlength = length - arrowLength;
-		}
-		shrink(dlength);
-	}
-	@Override
-	public void move(float dx, float dy){
+	// @Override
+	// public void shrinkto(float length){
+	// 	int step = 3;
+	// 	float dlength = (length - arrowLength) / (float)step;
+	// 	if(Math.abs(length - arrowLength) < 1){
+	// 		dlength = length - arrowLength;
+	// 	}
+	// 	shrink(dlength);
+	// }
+
+	private void move(float dx, float dy){
 		center.x += dx;
 		center.y += dy;
 		repaint();

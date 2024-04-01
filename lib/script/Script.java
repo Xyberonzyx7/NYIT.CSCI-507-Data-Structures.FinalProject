@@ -7,19 +7,23 @@ public class Script {
 	List<Scene> scenes;	
 
 	public Script(){
-		scenes = new ArrayList<>();
+		this.scenes = new ArrayList<>();
 	}
 
 	public void addScene(Scene scene){
-		scenes.add(scene);
+		this.scenes.add(scene);
+	}
+
+	public void addScene(List<Scene> scenes){
+		this.scenes.addAll(scenes);
 	}
 
 	public Scene getScene(int index){
-		return scenes.get(index);
+		return this.scenes.get(index);
 	}
 
 	public int SceneSize(){
-		return scenes.size();
+		return this.scenes.size();
 	}
 }
 

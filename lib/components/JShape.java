@@ -17,15 +17,13 @@ public class JShape extends JPanel {
 	public float l(){ return 0;}
 	public double a(){ return 0;}
 	public Color c(){ return Color.BLUE;};
+	public String t(){ return "";}
 
-	public void move(float x, float y){}
 	public void moveto(float x, float y){}
-	public void extend(float dlength){}
-	public void extendto(float length){}
-	public void shrink(float dlength){}
+	public void lengthto(float length){}
 	public void shrinkto(float length){}
-	public void rotate(double dangle){}
 	public void rotateto(double angle){}
 	public void colorto(Color color){}
+	public void textto(String text){}
 }
 

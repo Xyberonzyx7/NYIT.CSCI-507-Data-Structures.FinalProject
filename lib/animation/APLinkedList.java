@@ -134,8 +134,8 @@ public class APLinkedList extends AnimationPlanner {
 			extendOldArrowMotion.moveto = getMiddlePoint(locations.get(index - 1), locations.get(index + 1));
 			script.addScene(generateScene(sll_arrow.getAt(index - 1), EShape.ARROW, EAction.MOVE, extendOldArrowMotion));
 			extendOldArrowMotion = new Motion();
-			extendOldArrowMotion.extendto = 150;
-			script.addScene(generateScene(sll_arrow.getAt(index - 1), EShape.ARROW, EAction.EXTEND, extendOldArrowMotion));
+			extendOldArrowMotion.lengthto = 150;
+			script.addScene(generateScene(sll_arrow.getAt(index - 1), EShape.ARROW, EAction.LENGTH, extendOldArrowMotion));
 		}
 
 		// new an arrow for the new node
@@ -175,9 +175,9 @@ public class APLinkedList extends AnimationPlanner {
 			Motion newPriorArrowMotion = new Motion();
 			newPriorArrowMotion.movefrom = new Point(0, 0);
 			newPriorArrowMotion.moveto = getMiddlePoint(locations.get(index-1),locations.get(index)); 
-			newPriorArrowMotion.shrinkto = 50;
+			newPriorArrowMotion.lengthto = 50;
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, newPriorArrowMotion));
-			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, newPriorArrowMotion));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.LENGTH, newPriorArrowMotion));
 		}
 		
 		return script;
@@ -217,20 +217,20 @@ public class APLinkedList extends AnimationPlanner {
 			Motion extractPriorArrow = new Motion();
 			extractPriorArrow.rotateto = 135;
 			extractPriorArrow.moveto = getMiddlePoint( locations.get(index-1), extractPoint);
-			extractPriorArrow.extendto = 71;
+			extractPriorArrow.lengthto = 71;
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.ROTATE, extractPriorArrow));
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, extractPriorArrow));
-			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, extractPriorArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.LENGTH, extractPriorArrow));
 		}
 
 		if(index < sll_arrow.getSize()){
 			Motion extractIndexArrow = new Motion();
 			extractIndexArrow.rotateto = 225;
 			extractIndexArrow.moveto = getMiddlePoint(locations.get(index+1), extractPoint);
-			extractIndexArrow.extendto = 71;
+			extractIndexArrow.lengthto = 71;
 			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ROTATE, extractIndexArrow));
 			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.MOVE, extractIndexArrow));
-			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.EXTEND, extractIndexArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.LENGTH, extractIndexArrow));
 		}
 
 		// wait
@@ -240,11 +240,11 @@ public class APLinkedList extends AnimationPlanner {
 		if(index - 1 >= 0){
 			Motion priorArrowToNextNode = new Motion();
 			priorArrowToNextNode.rotateto = 180;
-			priorArrowToNextNode.extendto = 150;
+			priorArrowToNextNode.lengthto = 150;
 			priorArrowToNextNode.moveto = getMiddlePoint(locations.get(index-1), locations.get(index+1));
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.ROTATE, priorArrowToNextNode));
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, priorArrowToNextNode));
-			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.EXTEND, priorArrowToNextNode));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.LENGTH, priorArrowToNextNode));
 		}
 
 		// remove target node and its arrow (if target node is the last node, remove its prior arrow too)
@@ -280,9 +280,9 @@ public class APLinkedList extends AnimationPlanner {
 		if(index-1 >= 0){
 			Motion shrinkPriorArrow = new Motion();
 			shrinkPriorArrow.moveto = getMiddlePoint(locations.get(index - 1), locations.get(index));
-			shrinkPriorArrow.shrinkto = 50;
+			shrinkPriorArrow.lengthto = 50;
 			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.MOVE, shrinkPriorArrow));
-			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.SHRINK, shrinkPriorArrow));
+			script.addScene(generateScene(sll_arrow.getAt(index-1), EShape.ARROW, EAction.LENGTH, shrinkPriorArrow));
 		}
 
 		// remove target's node from list (if the target node is the last node, remove its prior arrow)

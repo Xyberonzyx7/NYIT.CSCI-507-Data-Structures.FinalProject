@@ -4,9 +4,9 @@ public enum EAction {
 	ADD,
 	DELETE,
 	MOVE,
-	EXTEND,
-	SHRINK,
+	LENGTH,
 	ROTATE,
 	COLOR,
+	TEXT,
 	WAIT
 }

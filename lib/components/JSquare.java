@@ -15,8 +15,7 @@ public class JSquare extends JShape {
         this.color = Color.DARK_GRAY; // Default color (you can change it)
 	}
 
-	@Override
-    public void move(float dx, float dy) {
+    private void move(float dx, float dy) {
         // Move the square by dx units horizontally and dy units vertically
         now.x += dx;
         now.y += dy;
