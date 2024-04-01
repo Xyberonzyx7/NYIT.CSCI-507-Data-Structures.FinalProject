@@ -28,7 +28,7 @@ public class AnimationPlanner {
 
 	public Scene generateWaitScene(int delaystart){
 		Motion motion = new Motion();
-		motion.delaystart = 2000;
+		motion.delaystart = delaystart;
 		return generateScene(generateNullID(), EShape.NONE, EAction.WAIT, motion);
 	}
 
@@ -44,25 +44,25 @@ public class AnimationPlanner {
 		Motion highlight = new Motion();
 		highlight.colorto = flashColor;
 		scenes.add(generateScene(id, shape, action, highlight));
-		scenes.add(generateWaitScene(500));
+		scenes.add(generateWaitScene(250));
 
 		// unhighlight
 		Motion unhighlight = new Motion();
 		unhighlight.colorto = defaultColor;
 		scenes.add(generateScene(id, shape, action, unhighlight));
-		scenes.add(generateWaitScene(500));
+		scenes.add(generateWaitScene(250));
 
 		// highlight
 		scenes.add(generateScene(id, shape, action, highlight));
-		scenes.add(generateWaitScene(500));
+		scenes.add(generateWaitScene(250));
 
 		// unhighlight
 		scenes.add(generateScene(id, shape, action, unhighlight));
-		scenes.add(generateWaitScene(500));
+		scenes.add(generateWaitScene(250));
 
 		// highlight
 		scenes.add(generateScene(id, shape, action, highlight));
-		scenes.add(generateWaitScene(500));
+		scenes.add(generateWaitScene(250));
 
 		// unhighlight
 		scenes.add(generateScene(id, shape, action, unhighlight));

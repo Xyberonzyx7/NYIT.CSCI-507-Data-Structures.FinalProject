@@ -411,7 +411,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 			changeNumberMotion.showtext = Integer.toString(node.data.num);
 			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.TEXT, changeNumberMotion));
 
-			node.right = delete(script, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
+			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
 
 		}
 		// return node;
