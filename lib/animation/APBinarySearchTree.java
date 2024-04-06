@@ -405,7 +405,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 			// Node with two children: Get the inorder successor (smallest in the right subtree)
 			node.data.num = minValue(script, node.right);
 
-			// animation planning - flash the target node to indicate its value is about to chnage
+			// animation planning - flash the target node to indicate its value is about to change
 			script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, EAction.COLOR, Color.BLUE, Color.ORANGE));
 			Motion changeNumberMotion = new Motion();
 			changeNumberMotion.showtext = Integer.toString(node.data.num);
@@ -414,13 +414,13 @@ public class APBinarySearchTree extends AnimationPlanner {
 			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
 
 		}
-		// return node;
 		return;
 	}
 
 	private int minValue(Script script, TreeNode<ValuePair> node) {
+
 		int minValue = node.data.num;
-		while (node.left != null) {
+		while (true) {
 
 			// animation planning - highlight target
 			Motion highlightMotion = new Motion();
@@ -435,13 +435,15 @@ public class APBinarySearchTree extends AnimationPlanner {
 			unhighlightMotion.colorto = Color.BLUE;
 			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, unhighlightMotion));
 
-			minValue = node.left.data.num;
-			node = node.left;
-
+			minValue = node.data.num;
+			
 			// flashing leaf
 			if(node.left == null){
 				script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, EAction.COLOR, Color.BLUE, Color.ORANGE));
+				break;
 			}
+
+			node = node.left;
 		}
 		return minValue;
 	}

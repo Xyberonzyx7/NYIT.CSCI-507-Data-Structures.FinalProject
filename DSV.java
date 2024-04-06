@@ -1,13 +1,13 @@
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.stream.Collectors;
 import java.util.concurrent.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.swing.*;
 
 import lib.animation.*;
 import lib.components.*;
@@ -771,9 +771,6 @@ public class DSV {
 						runMoveTo(clip.id, clip.shape, clip.moveto);
 					break;
 					case DELETE:
-						// TimerCallback callback = () ->{
-						// 	runDelete(clip.id, clip.shape);
-						// }
 						runMoveTo(clip.id, clip.shape, clip.moveto);
 						runDelete(clip.id, clip.shape);
 					break;
@@ -781,7 +778,6 @@ public class DSV {
 						runLengthTo(clip.id, clip.shape, clip.lengthto);
 					break;
 					case ROTATE:
-						System.out.println("clip.id = " + clip.id + " clip.shape = " + clip.shape + " clip.rotateto = " + clip.rotateto);
 						runRotateTo(clip.id, clip.shape, clip.rotateto);
 					break;
 					case COLOR:
