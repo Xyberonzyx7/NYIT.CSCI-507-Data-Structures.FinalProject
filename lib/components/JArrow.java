@@ -1,7 +1,5 @@
  package lib.components;
 
-import javax.swing.*;
-
 import lib.tools.FPoint;
 
 import java.awt.*;
@@ -56,21 +54,6 @@ public class JArrow extends JShape {
 		}
 		extend(dlength);
 	}
-
-	// private void shrink(float dlength){
-	// 	arrowLength += dlength;
-	// 	repaint();
-	// }
-
-	// @Override
-	// public void shrinkto(float length){
-	// 	int step = 3;
-	// 	float dlength = (length - arrowLength) / (float)step;
-	// 	if(Math.abs(length - arrowLength) < 1){
-	// 		dlength = length - arrowLength;
-	// 	}
-	// 	shrink(dlength);
-	// }
 
 	private void move(float dx, float dy){
 		center.x += dx;

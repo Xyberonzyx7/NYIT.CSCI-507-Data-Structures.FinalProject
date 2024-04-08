@@ -329,18 +329,12 @@ public class APBinarySearchTree extends AnimationPlanner {
 					parentNode.left = null;
 					parentArrow.left = null;
 					node.data.num = Integer.MIN_VALUE;
-					// node = null;
-					// arrow = null;
 				}else if(dir == EDir.RIGHT){
 					parentNode.right = null;
 					parentArrow.right = null;
 					node.data.num = Integer.MIN_VALUE;
-					// node = null;
-					// arrow = null;
 				}else{
 					node.data.num = Integer.MIN_VALUE;
-					// node = null;
-					// arrow = null;
 				}
 
 				return;
