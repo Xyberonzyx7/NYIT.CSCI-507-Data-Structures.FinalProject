@@ -169,6 +169,27 @@ public class APBinarySearchTree extends AnimationPlanner {
 		// wait
 		script.addScene(generateWaitScene(2000));
 
+		// root is empty
+		if (node.data.num == Integer.MIN_VALUE) {
+
+			// data node
+			node.data.id = newNode.data.id;
+			node.data.num = newNode.data.num;
+			node.data.location = locationNode.data;
+			node.data.angle = newNode.data.angle;
+
+			// arrow node (won't use this one, but we need a root)
+			arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
+
+			// animation planning
+			Motion motion = new Motion();
+			motion.movefrom = new Point(0, 0);
+			motion.moveto = node.data.location;
+			motion.showtext = Integer.toString(num);
+			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.ADD, motion));
+			return script;
+		}
+
 		while (true) {
 
 			// animation planning highlight node to for comparing
@@ -297,16 +318,19 @@ public class APBinarySearchTree extends AnimationPlanner {
 				if(dir == EDir.LEFT){
 					parentNode.left = null;
 					parentArrow.left = null;
-					node = null;
-					arrow = null;
+					node.data.num = Integer.MIN_VALUE;
+					// node = null;
+					// arrow = null;
 				}else if(dir == EDir.RIGHT){
 					parentNode.right = null;
 					parentArrow.right = null;
-					node = null;
-					arrow = null;
+					node.data.num = Integer.MIN_VALUE;
+					// node = null;
+					// arrow = null;
 				}else{
-					node = null;
-					arrow = null;
+					node.data.num = Integer.MIN_VALUE;
+					// node = null;
+					// arrow = null;
 				}
 
 				return;
