@@ -25,11 +25,11 @@ public class DSV {
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
-	private HashMap<Integer, Timer> runColorToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runColorToTimerManager;		// Integer: clip id, Timer: timer
 	private HashMap<Integer, Timer> runRotateToTimerManager;	// Integer: clip id, Timer: timer
-	private HashMap<Integer, Timer> runMoveToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runMoveToTimerManager;		// Integer: clip id, Timer: timer
 	private HashMap<Integer, Timer> runLengthToTimerManager;	// Integer: clip id, Timer: timer
-	private HashMap<Integer, Timer> runTextToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runTextToTimerManager;		// Integer: clip id, Timer: timer
 
 	// main components
 	private JFrame frame;

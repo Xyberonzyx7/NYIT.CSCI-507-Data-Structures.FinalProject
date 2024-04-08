@@ -2,7 +2,6 @@ package lib.animation;
 
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.security.spec.EdDSAParameterSpec;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
