@@ -12,6 +12,7 @@ import lib.script.Motion;
 
 public class AnimationPlanner {
 	protected int objCount;	
+	protected final int wordHeight = 24;
 
 	public AnimationPlanner(){
 		objCount = 0;

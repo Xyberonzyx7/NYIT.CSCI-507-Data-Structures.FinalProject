@@ -76,6 +76,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 				motion.moveto = node.data.location;
 				motion.showtext = Integer.toString(nums[i]);
 				script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.ADD, motion));
+				script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 				continue;
 			}
 
@@ -96,6 +97,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 						motion.moveto = node.right.data.location;
 						motion.showtext = Integer.toString(node.right.data.num);
 						script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.ADD, motion));
+						script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 
 						Motion arrowMotion = new Motion();
 						arrowMotion.movefrom = new Point(0, 0);
@@ -103,6 +105,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 						arrowMotion.angle = arrow.right.data.angle;
 						arrowMotion.lengthto = arrow.right.data.num;
 						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
 						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
 						break;
 					} else {
@@ -126,6 +129,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 						motion.moveto = node.left.data.location;
 						motion.showtext = Integer.toString(node.left.data.num);
 						script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.ADD, motion));
+						script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 
 						Motion arrowMotion = new Motion();
 						arrowMotion.movefrom = new Point(0, 0);
@@ -133,6 +137,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 						arrowMotion.angle = arrow.left.data.angle;
 						arrowMotion.lengthto = arrow.left.data.num;
 						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
 						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
 						break;
 					} else {
@@ -187,6 +192,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 			motion.moveto = node.data.location;
 			motion.showtext = Integer.toString(num);
 			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.ADD, motion));
+			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 			return script;
 		}
 
@@ -222,6 +228,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					motion.moveto = node.right.data.location;
 					motion.showtext = Integer.toString(node.right.data.num);
 					script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.ADD, motion));
+					script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 
 					Motion arrowMotion = new Motion();
 					arrowMotion.movefrom = new Point(0, 0);
@@ -229,6 +236,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					arrowMotion.angle = arrow.right.data.angle;
 					arrowMotion.lengthto = arrow.right.data.num;
 					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
 					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
 					break;
 				} else {
@@ -252,6 +260,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					motion.moveto = node.left.data.location;
 					motion.showtext = Integer.toString(node.left.data.num);
 					script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.ADD, motion));
+					script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.MOVE, motion));
 
 					Motion arrowMotion = new Motion();
 					arrowMotion.movefrom = new Point(0, 0);
@@ -259,6 +268,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					arrowMotion.angle = arrow.left.data.angle;
 					arrowMotion.lengthto = arrow.left.data.num;
 					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
+					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
 					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
 					break;
 				} else {

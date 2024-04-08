@@ -57,6 +57,7 @@ public class APStack extends AnimationPlanner {
 			squareMotion.movefrom = new Point(0, 0);
 			squareMotion.moveto = locations.get(i);
 			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.ADD, squareMotion));
+			script.addScene(generateScene(map.get(i+1000), EShape.SQUARE, EAction.MOVE, squareMotion));
 		}
 
 		return script;
@@ -76,6 +77,7 @@ public class APStack extends AnimationPlanner {
 		circleMotion.moveto = locations.get(stack.size() - 1);
 		circleMotion.showtext = Integer.toString(number);
 		script.addScene(generateScene(stack.peek(), EShape.CIRCLE, EAction.ADD, circleMotion));
+		script.addScene(generateScene(stack.peek(), EShape.CIRCLE, EAction.MOVE, circleMotion));
 		return script;
 	}
 
@@ -90,6 +92,8 @@ public class APStack extends AnimationPlanner {
 		int popedID = stack.pop();
 		Motion circleMotion = new Motion();
 		circleMotion.moveto = disappearPoint;
+		script.addScene(generateScene(popedID, EShape.CIRCLE, EAction.MOVE, circleMotion));
+		script.addScene(generateWaitScene(1000));
 		script.addScene(generateScene(popedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
 		return script;
 	}

@@ -70,6 +70,7 @@ public class APLinkedList extends AnimationPlanner {
 			circleMotion.moveto = locations.get(i);
 			circleMotion.showtext = Integer.toString(nums[i]);
 			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.ADD, circleMotion)); 
+			script.addScene(generateScene(sll_node.getAt(i), EShape.CIRCLE, EAction.MOVE, circleMotion)); 
 		}
 
 		for(int i = 0; i < nums.length - 1; i++){
@@ -78,6 +79,7 @@ public class APLinkedList extends AnimationPlanner {
 			arrowMotion.moveto = new Point(getMiddlePoint(locations.get(i), locations.get(i+1)));
 			arrowMotion.angle = 180;
 			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.ADD, arrowMotion));
+			script.addScene(generateScene(sll_arrow.getAt(i), EShape.ARROW, EAction.MOVE, arrowMotion));
 		}
 		return script;
 	}
@@ -101,6 +103,7 @@ public class APLinkedList extends AnimationPlanner {
 		newNodeMotion.moveto = new Point((int) locations.get(0).getX(), LOWERY);
 		newNodeMotion.showtext = Integer.toString(data);
 		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.ADD, newNodeMotion));
+		script.addScene(generateScene(sll_node.getAt(index), EShape.CIRCLE, EAction.MOVE, newNodeMotion));
 
 		// move node from 0 to index
 		Motion newNodeMoveMotion = new Motion();
@@ -144,6 +147,7 @@ public class APLinkedList extends AnimationPlanner {
 		newArrowMotion.moveto = getMiddlePoint(new Point((int) locations.get(index).getX(), LOWERY), locations.get(index+1));
 		newArrowMotion.angle = 225;
 		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.ADD, newArrowMotion));
+		script.addScene(generateScene(sll_arrow.getAt(index), EShape.ARROW, EAction.MOVE, newArrowMotion));
 
 		script.addScene(generateWaitScene(2000));
 

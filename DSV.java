@@ -25,7 +25,11 @@ public class DSV {
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
-	private HashMap<Integer, Timer> timerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runColorToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runRotateToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runMoveToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runLengthToTimerManager;	// Integer: clip id, Timer: timer
+	private HashMap<Integer, Timer> runTextToTimerManager;	// Integer: clip id, Timer: timer
 
 	// main components
 	private JFrame frame;
@@ -67,7 +71,11 @@ public class DSV {
 		apLinkedList = new APLinkedList(RECT_ANIMATION);
 		apBinarySearchTree = new APBinarySearchTree(RECT_ANIMATION);
 		mapArrayCast = new HashMap<Integer, JShape>();
-		timerManager = new HashMap<>();
+		runColorToTimerManager = new HashMap<>();
+		runRotateToTimerManager = new HashMap<>();
+		runMoveToTimerManager = new HashMap<>();
+		runLengthToTimerManager = new HashMap<>();
+		runTextToTimerManager = new HashMap<>();
 	}
 
 	private void initFrame() {
@@ -765,13 +773,11 @@ public class DSV {
 				switch(clip.action){
 					case ADD:
 						runAdd(clip.id, clip.shape);
-						runMoveTo(clip.id, clip.shape, clip.moveto);
 					break;
 					case MOVE:
 						runMoveTo(clip.id, clip.shape, clip.moveto);
 					break;
 					case DELETE:
-						runMoveTo(clip.id, clip.shape, clip.moveto);
 						runDelete(clip.id, clip.shape);
 					break;
 					case LENGTH:
@@ -808,6 +814,13 @@ public class DSV {
 			return;
 		}
 
+		if (runColorToTimerManager.containsKey(id)) {
+			Timer existingTimer = runColorToTimerManager.get(id);
+			if (existingTimer.isRunning()){
+				existingTimer.stop();
+			}
+		}
+
 		Timer clipTimer = new Timer(100, new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
@@ -815,9 +828,12 @@ public class DSV {
 				panAnimation.repaint();
 				if(shape.c() == color){
 					((Timer) e.getSource()).stop();
+					runColorToTimerManager.remove(id);
 				}
 			}
 		});
+
+		runColorToTimerManager.put(id, clipTimer);
 		clipTimer.start();
 	}
 
@@ -826,8 +842,8 @@ public class DSV {
 			return;
 		}
 
-		if(timerManager.containsKey(id)){
-			Timer existingTimer = timerManager.get(id);
+		if(runRotateToTimerManager.containsKey(id)){
+			Timer existingTimer = runRotateToTimerManager.get(id);
 			if (existingTimer.isRunning()){
 				existingTimer.stop();
 			}
@@ -840,12 +856,12 @@ public class DSV {
 				panAnimation.repaint();
 				if(shape.a() == angle){
 					((Timer) e.getSource()).stop();
-					timerManager.remove(id);
+					runRotateToTimerManager.remove(id);
 				}
 			}
 		});
 		
-		timerManager.put(id, clipTimer);
+		runRotateToTimerManager.put(id, clipTimer);
 		clipTimer.start();
 	}
 
@@ -854,8 +870,8 @@ public class DSV {
 			return;
 		}
 
-		if(timerManager.containsKey(id)){
-			Timer existingTimer = timerManager.get(id);
+		if(runTextToTimerManager.containsKey(id)){
+			Timer existingTimer = runTextToTimerManager.get(id);
 			if(existingTimer.isRunning()){
 				existingTimer.stop();
 			}
@@ -868,12 +884,12 @@ public class DSV {
 				panAnimation.repaint();
 				if(shape.t() == text){
 					((Timer) e.getSource()).stop();
-					timerManager.remove(id);
+					runTextToTimerManager.remove(id);
 				}
 			}
 		});
 
-		timerManager.put(id, clipTimer);
+		runTextToTimerManager.put(id, clipTimer);
 		clipTimer.start();
 	}
 
@@ -881,6 +897,13 @@ public class DSV {
 
 		if(destination == null){
 			return;
+		}
+
+		if (runMoveToTimerManager.containsKey(id)) {
+			Timer existingTimer = runMoveToTimerManager.get(id);
+			if (existingTimer.isRunning()){
+				existingTimer.stop();
+			}
 		}
 
 		Timer clipTimer = new Timer(100, new ActionListener() {
@@ -893,24 +916,37 @@ public class DSV {
 				if (shape.x() == destination.getX() && shape.y() == destination.getY()) {
 					// Stop the timer for this specific clip
 					((Timer) e.getSource()).stop();
+					runMoveToTimerManager.remove(id);
 				}
 			}
 		});
 	
 		// Start the timer for this clip
+		runMoveToTimerManager.put(id, clipTimer);
 		clipTimer.start();
 	}
 
 	private void runLengthTo(int id, JShape shape, int length){
+
+		if (runLengthToTimerManager.containsKey(id)) {
+			Timer existingTimer = runLengthToTimerManager.get(id);
+			if (existingTimer.isRunning()){
+				existingTimer.stop();
+			}
+		}
+
 		Timer clipTimer = new Timer(100, new ActionListener(){
 			@Override
 			public void actionPerformed(ActionEvent e){
 				shape.lengthto(length);
 				if(shape.l() == length){
 					((Timer) e.getSource()).stop();
+					runLengthToTimerManager.remove(id);
 				}
 			}
 		});
+
+		runLengthToTimerManager.put(id, clipTimer);
 		clipTimer.start();
 	}
 
@@ -966,6 +1002,9 @@ public class DSV {
 					break;
 					case ARROW:
 						clip.shape = new JArrow((int) scene.movefrom.getX(), (int) scene.movefrom.getY(), scene.angle);
+					break;
+					case TEXT:
+						clip.shape = new JText((int) scene.movefrom.getX(), (int) scene.movefrom.getY());
 					break;
 					default:
 						clip.shape = null;

@@ -18,7 +18,6 @@ public class APQueue extends AnimationPlanner {
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
 	private int middleY;
-	private int capacity;
 	private Point disappearPoint;
 
 	public APQueue(Rectangle rectAnimationArea){
@@ -28,7 +27,6 @@ public class APQueue extends AnimationPlanner {
 		int x = nXMin;
 
 		// init variable
-		capacity = 0;
 		disappearPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
 		map = new HashMap<>();
@@ -43,7 +41,6 @@ public class APQueue extends AnimationPlanner {
 	public Script initQueue(int capacity){
 		Script script = new Script();
 
-		this.capacity = capacity;
 		queue = new CircularQueue(capacity);
 
 		// init map with squares
@@ -58,6 +55,7 @@ public class APQueue extends AnimationPlanner {
 			squareMotion.movefrom = new Point(0, 0);
 			squareMotion.moveto = locations.get(i);
 			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.ADD, squareMotion));
+			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.MOVE, squareMotion));
 		}
 
 		return script;
@@ -77,6 +75,7 @@ public class APQueue extends AnimationPlanner {
 		circleMotion.moveto = locations.get(queue.rearIndex());
 		circleMotion.showtext = Integer.toString(number);
 		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, circleMotion));
+		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.MOVE, circleMotion));
 		return script;
 	}
 
@@ -91,6 +90,8 @@ public class APQueue extends AnimationPlanner {
 		int dequeuedID = queue.dequeue();
 		Motion circleMotion = new Motion();
 		circleMotion.moveto = disappearPoint;
+		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.MOVE, circleMotion));
+		script.addScene(generateWaitScene(1000));
 		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
 
 		return script;
