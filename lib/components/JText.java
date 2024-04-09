@@ -79,7 +79,7 @@ public class JText extends JShape {
 		g.setColor(color);
 
 		// Draw the text at coordinates (x, y)
-		int tmp_y = (int)point.y;
+		int tmp_y = (int)(point.y - g.getFontMetrics().getHeight() / 2 - 4);
 		for (String line : text.split("\n")) {
 			g.drawString(line, (int)point.x, tmp_y += g.getFontMetrics().getHeight());
 		}

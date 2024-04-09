@@ -27,6 +27,37 @@ public class AnimationPlanner {
 		return -1;
 	}
 
+	public Scene generateAngleScene(int id, EShape shape, int angle){
+		Motion motion = new Motion();
+		motion.angle = angle;
+		return generateScene(id, shape, EAction.ROTATE, motion);
+	}
+
+	public Scene generateTextScene(int id, EShape shape, String txt){
+		Motion motion = new Motion();
+		motion.showtext = txt;
+		return generateScene(id, shape, EAction.TEXT, motion);
+	}
+
+	public Scene generateAddScene(int id, EShape shape, int x, int y, int angle){
+		Motion motion = new Motion();
+		motion.movefrom = new Point(x, y);
+		motion.angle = angle;
+		return generateScene(id, shape, EAction.ADD, motion);
+	}
+
+	public Scene generateAddScene(int id, EShape shape, int x, int y) {
+		Motion motion = new Motion();
+		motion.movefrom = new Point(x, y);
+		return generateScene(id, shape, EAction.ADD, motion);
+	}
+
+	public Scene generateMoveScene(int id, EShape shape, int x, int y){
+		Motion motion = new Motion();
+		motion.moveto = new Point(x, y);
+		return generateScene(id, shape, EAction.MOVE, motion);
+	}
+
 	public Scene generateWaitScene(int delaystart){
 		Motion motion = new Motion();
 		motion.delaystart = delaystart;
