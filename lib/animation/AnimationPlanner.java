@@ -58,9 +58,21 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.ADD, motion);
 	}
 
+	public Scene generateAddScene(int id, EShape shape, Point location) {
+		Motion motion = new Motion();
+		motion.movefrom = location;
+		return generateScene(id, shape, EAction.ADD, motion);
+	}
+
 	public Scene generateMoveScene(int id, EShape shape, int x, int y){
 		Motion motion = new Motion();
 		motion.moveto = new Point(x, y);
+		return generateScene(id, shape, EAction.MOVE, motion);
+	}
+
+	public Scene generateMoveScene(int id, EShape shape, Point location){
+		Motion motion = new Motion();
+		motion.moveto = location;
 		return generateScene(id, shape, EAction.MOVE, motion);
 	}
 

@@ -1,5 +1,6 @@
 package lib.animation;
 
+import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
@@ -15,8 +16,21 @@ public class APQueue extends AnimationPlanner {
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
+	private final int VERTICAL_SPACE = 60;
 	private int middleY;
 	private Point disappearPoint;
+	private int codeID;
+	private Rectangle codeArea;
+	private String code_enqueue;
+	private String code_dequeue;
+	private int pointerID;
+	private String pointer;
+	private int pointer_x;
+	private int pointer_y;
+	private int frontID;
+	private String frontTxt;
+	private int rearID;
+	private String rearTxt;
 
 	public APQueue(Rectangle rectAnimationArea){
 		middleY = (int)(rectAnimationArea.getHeight() / 2);
@@ -29,6 +43,41 @@ public class APQueue extends AnimationPlanner {
 		locations = new ArrayList<>();
 		map = new HashMap<>();
 
+		codeID = generateUniqueID();
+		pointerID = generateUniqueID();
+		frontID = generateUniqueID();
+		rearID = generateUniqueID();
+
+		codeArea = new Rectangle(rectAnimationArea.width - 350, 20, 350, 450);
+		pointer_x = codeArea.x - 40;
+		pointer_y = codeArea.y;
+
+		code_enqueue = "STANDBY LINE\n";
+		code_enqueue += "Algorithm ENQUEUE(Q, ITEM)\n";
+		code_enqueue += "{\n";
+		code_enqueue += "    if isFull() then\n";
+		code_enqueue += "        write (\"Overflow\");\n";
+		code_enqueue += "    else\n";
+		code_enqueue += "        r = (f + sz) mod N;\n";
+		code_enqueue += "        Q[r] = ITEM\n";
+		code_enqueue += "        sz = sz + 1\n";
+		code_enqueue += "}\n";
+
+		code_dequeue = "STANDBY LINE\n";
+		code_dequeue += "Algorithm DEQUE(Q, ref ITEM)\n";
+		code_dequeue += "{\n";
+		code_dequeue += "    if isEmpty() then\n";
+		code_dequeue += "        write (\"Underflow\")\n";
+		code_dequeue += "    else\n";
+		code_dequeue += "        ITEM = Q[f]\n";
+		code_dequeue += "        f = (f + 1) mod N\n";
+		code_dequeue += "        sz = sz - 1\n";
+		code_dequeue += "}\n";
+
+		frontTxt = "f";
+		rearTxt = "r";
+		pointer = ">>";
+
 		// get placeable locations
 		while(x <= nXMax){
 			locations.add(new Point(x, middleY));
@@ -39,15 +88,22 @@ public class APQueue extends AnimationPlanner {
 	public Script initQueue(int capacity){
 		Script script = new Script();
 
+		// add code and pointer to animation panel
+		script.addScene(generateAddScene(codeID, EShape.TEXT, codeArea.x, codeArea.y));
+		script.addScene(generateTextScene(codeID, EShape.TEXT, code_enqueue));
+		script.addScene(generateAddScene(pointerID, EShape.TEXT, pointer_x, pointer_y));
+		script.addScene(generateTextScene(pointerID, EShape.TEXT, pointer));
+		script.addScene(generateColorScene(pointerID, EShape.TEXT, Color.RED));
+		script.addScene(generateMoveScene(pointerID, EShape.TEXT, pointer_x, pointer_y));
+
 		queue = new CircularQueue(capacity);
 
-		// init map with squares
+		// add squares to animation panel
 		map.clear();
 		for(int i = 0; i < capacity; i++){
 			map.put(i, generateUniqueID());
 		}
 
-		// animation planning
 		for(int i = 0; i < capacity; i++){
 			Motion squareMotion = new Motion();
 			squareMotion.movefrom = new Point(0, 0);
@@ -56,42 +112,109 @@ public class APQueue extends AnimationPlanner {
 			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.MOVE, squareMotion));
 		}
 
+		// add front, rear to animation panel
+		script.addScene(generateAddScene(frontID, EShape.TEXT, locations.get(queue.frontIndex()).x, locations.get(queue.frontIndex()).y + VERTICAL_SPACE));
+		script.addScene(generateTextScene(frontID, EShape.TEXT, frontTxt));
+		script.addScene(generateAddScene(rearID, EShape.TEXT, locations.get(queue.frontIndex()).x, locations.get(queue.frontIndex()).y + VERTICAL_SPACE + 30));
+		script.addScene(generateTextScene(rearID, EShape.TEXT, rearTxt));
+
 		return script;
 	}
 
 	public Script enqueue(int number){
 		Script script = new Script();
 
+		script.addScene(generateChangeCodeScene(code_enqueue));
+
+		script.addScene(generateMoveCodePointerScene(3));	// code: if isFull() then
+		script.addScene(generateWaitScene(1000));
+
 		if(queue.isFull()){
+			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Overflow");
+			script.addScene(generateWaitScene(1000));
+			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
 
-		// add component to queue
 		queue.enqueue(generateUniqueID());
-		Motion circleMotion = new Motion();
-		circleMotion.movefrom = new Point(0, 0);
-		circleMotion.moveto = locations.get(queue.rearIndex());
-		circleMotion.showtext = Integer.toString(number);
-		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.ADD, circleMotion));
-		script.addScene(generateScene(queue.peekRear(), EShape.CIRCLE, EAction.MOVE, circleMotion));
+
+		// animaion
+		script.addScene(generateMoveCodePointerScene(5));		// code: else
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(6));		// code: r = (f+sz) mod N;
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveRearScene(queue.rearIndex()));
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(7));		// code: Q[r] = ITEM
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateAddScene(queue.peekRear(), EShape.CIRCLE, 0, 0));
+		script.addScene(generateMoveScene(queue.peekRear(), EShape.CIRCLE, locations.get(queue.rearIndex())));
+		script.addScene(generateTextScene(queue.peekRear(), EShape.CIRCLE, Integer.toString(number)));
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(8));		// code: sz = sz + 1
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(0));		// code: standby line
+
 		return script;
 	}
 
 	public Script dequeue(){
 		Script script = new Script();
 
+		script.addScene(generateChangeCodeScene(code_dequeue));
+
+		script.addScene(generateMoveCodePointerScene(3));		// code: if isEmpty() then
+		script.addScene(generateWaitScene(1000));
+
 		if(queue.isEmpty()){
+			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Underflow");
+			script.addScene(generateWaitScene(1000));
+			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
 
-		// dequeue component from the front index
 		int dequeuedID = queue.dequeue();
-		Motion circleMotion = new Motion();
-		circleMotion.moveto = disappearPoint;
-		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.MOVE, circleMotion));
+
+		script.addScene(generateMoveCodePointerScene(5));		// code: else
 		script.addScene(generateWaitScene(1000));
-		script.addScene(generateScene(dequeuedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
+		script.addScene(generateMoveCodePointerScene(6));		// code: item = q[f]
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveScene(dequeuedID, EShape.CIRCLE, disappearPoint));
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateDeleteScene(dequeuedID, EShape.CIRCLE));
+		script.addScene(generateMoveCodePointerScene(7));		// code: f = (f+1) mod N
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveFrontScene(queue.frontIndex()));
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(8));		// code: sz = sz - 1
+		script.addScene(generateWaitScene(1000));
+		script.addScene(generateMoveCodePointerScene(0));		// code: standby line
 
 		return script;
+	}
+
+	private Scene generateMoveCodePointerScene(int line){
+		Motion motion = new Motion();
+		motion.moveto = new Point(pointer_x, pointer_y + line * wordHeight);
+		return generateScene(pointerID, EShape.TEXT, EAction.MOVE, motion);
+	}
+
+	private Scene generateMoveFrontScene(int index){
+		Motion motion = new Motion();
+		motion.moveto = new Point(locations.get(index).x, locations.get(index).y + VERTICAL_SPACE);
+		return generateScene(frontID, EShape.TEXT, EAction.MOVE, motion);
+
+	}
+
+	private Scene generateMoveRearScene(int index){
+		Motion motion = new Motion();
+		motion.moveto = new Point(locations.get(index).x, locations.get(index).y + VERTICAL_SPACE + 30);
+		return generateScene(rearID, EShape.TEXT, EAction.MOVE, motion);
+	}
+
+	private Scene generateChangeCodeScene(String code) {
+		Motion motion = new Motion();
+		motion.showtext = code;
+		return generateScene(codeID, EShape.TEXT, EAction.TEXT, motion);
 	}
 }
