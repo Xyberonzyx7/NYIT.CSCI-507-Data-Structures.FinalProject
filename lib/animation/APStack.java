@@ -99,6 +99,7 @@ public class APStack extends AnimationPlanner {
 	}
 
 	public Script initStack(int capacity){
+
 		Script script = new Script();		
 
 		squares.setSize(capacity);
@@ -120,16 +121,6 @@ public class APStack extends AnimationPlanner {
 
 		script.addScene(generateMoveCodePointerScene(0));
 
-		// init map with squares
-		while(squares.isEmpty() == false){
-			int poppedID = squares.pop();
-			script.addScene(generateDeleteScene(poppedID, EShape.SQUARE));
-		}
-
-		while(circles.isEmpty() == false){
-			int poppedID = circles.pop();
-			script.addScene(generateDeleteScene(poppedID, EShape.CIRCLE));
-		}
 
 		for(int i = 0; i < capacity; i++){
 			squares.push(generateUniqueID());

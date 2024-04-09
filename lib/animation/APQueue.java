@@ -11,8 +11,8 @@ import lib.datastructure.CircularQueue;
 import lib.script.*;
 
 public class APQueue extends AnimationPlanner {
-	private HashMap<Integer, Integer> map;	// store square id
-	private CircularQueue queue;			// store circle id
+	private CircularQueue squares;	// squares' id
+	private CircularQueue circles;	// circles' id
 	private List<Point> locations;
 	private final int MARGIN = 100;
 	private final int HORIZONTAL_SPACE = 60;
@@ -39,19 +39,19 @@ public class APQueue extends AnimationPlanner {
 		int x = nXMin;
 
 		// init variable
+		
 		disappearPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
-		map = new HashMap<>();
-
+		
 		codeID = generateUniqueID();
 		pointerID = generateUniqueID();
 		frontID = generateUniqueID();
 		rearID = generateUniqueID();
-
+		
 		codeArea = new Rectangle(rectAnimationArea.width - 350, 20, 350, 450);
 		pointer_x = codeArea.x - 40;
 		pointer_y = codeArea.y;
-
+		
 		code_enqueue = "STANDBY LINE\n";
 		code_enqueue += "Algorithm ENQUEUE(Q, ITEM)\n";
 		code_enqueue += "{\n";
@@ -62,7 +62,7 @@ public class APQueue extends AnimationPlanner {
 		code_enqueue += "        Q[r] = ITEM\n";
 		code_enqueue += "        sz = sz + 1\n";
 		code_enqueue += "}\n";
-
+		
 		code_dequeue = "STANDBY LINE\n";
 		code_dequeue += "Algorithm DEQUE(Q, ref ITEM)\n";
 		code_dequeue += "{\n";
@@ -73,20 +73,24 @@ public class APQueue extends AnimationPlanner {
 		code_dequeue += "        f = (f + 1) mod N\n";
 		code_dequeue += "        sz = sz - 1\n";
 		code_dequeue += "}\n";
-
+		
 		frontTxt = "f";
 		rearTxt = "r";
 		pointer = ">>";
-
+		
 		// get placeable locations
 		while(x <= nXMax){
 			locations.add(new Point(x, middleY));
 			x += HORIZONTAL_SPACE;
 		}
 	}
-
+	
 	public Script initQueue(int capacity){
+		
 		Script script = new Script();
+		
+		circles = new CircularQueue(capacity);
+		squares = new CircularQueue(capacity);
 
 		// add code and pointer to animation panel
 		script.addScene(generateAddScene(codeID, EShape.TEXT, codeArea.x, codeArea.y));
@@ -96,26 +100,18 @@ public class APQueue extends AnimationPlanner {
 		script.addScene(generateColorScene(pointerID, EShape.TEXT, Color.RED));
 		script.addScene(generateMoveScene(pointerID, EShape.TEXT, pointer_x, pointer_y));
 
-		queue = new CircularQueue(capacity);
 
 		// add squares to animation panel
-		map.clear();
 		for(int i = 0; i < capacity; i++){
-			map.put(i, generateUniqueID());
-		}
-
-		for(int i = 0; i < capacity; i++){
-			Motion squareMotion = new Motion();
-			squareMotion.movefrom = new Point(0, 0);
-			squareMotion.moveto = locations.get(i);
-			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.ADD, squareMotion));
-			script.addScene(generateScene(map.get(i), EShape.SQUARE, EAction.MOVE, squareMotion));
+			squares.enqueue(generateUniqueID());
+			script.addScene(generateAddScene(squares.peekRear(), EShape.SQUARE, 0, 0));
+			script.addScene(generateMoveScene(squares.peekRear(), EShape.SQUARE, locations.get(i)));
 		}
 
 		// add front, rear to animation panel
-		script.addScene(generateAddScene(frontID, EShape.TEXT, locations.get(queue.frontIndex()).x, locations.get(queue.frontIndex()).y + VERTICAL_SPACE));
+		script.addScene(generateAddScene(frontID, EShape.TEXT, locations.get(circles.frontIndex()).x, locations.get(circles.frontIndex()).y + VERTICAL_SPACE));
 		script.addScene(generateTextScene(frontID, EShape.TEXT, frontTxt));
-		script.addScene(generateAddScene(rearID, EShape.TEXT, locations.get(queue.frontIndex()).x, locations.get(queue.frontIndex()).y + VERTICAL_SPACE + 30));
+		script.addScene(generateAddScene(rearID, EShape.TEXT, locations.get(circles.frontIndex()).x, locations.get(circles.frontIndex()).y + VERTICAL_SPACE + 30));
 		script.addScene(generateTextScene(rearID, EShape.TEXT, rearTxt));
 
 		return script;
@@ -129,27 +125,27 @@ public class APQueue extends AnimationPlanner {
 		script.addScene(generateMoveCodePointerScene(3));	// code: if isFull() then
 		script.addScene(generateWaitScene(1000));
 
-		if(queue.isFull()){
+		if(circles.isFull()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Overflow");
 			script.addScene(generateWaitScene(1000));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
 
-		queue.enqueue(generateUniqueID());
+		circles.enqueue(generateUniqueID());
 
 		// animaion
 		script.addScene(generateMoveCodePointerScene(5));		// code: else
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(6));		// code: r = (f+sz) mod N;
 		script.addScene(generateWaitScene(1000));
-		script.addScene(generateMoveRearScene(queue.rearIndex()));
+		script.addScene(generateMoveRearScene(circles.rearIndex()));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(7));		// code: Q[r] = ITEM
 		script.addScene(generateWaitScene(1000));
-		script.addScene(generateAddScene(queue.peekRear(), EShape.CIRCLE, 0, 0));
-		script.addScene(generateMoveScene(queue.peekRear(), EShape.CIRCLE, locations.get(queue.rearIndex())));
-		script.addScene(generateTextScene(queue.peekRear(), EShape.CIRCLE, Integer.toString(number)));
+		script.addScene(generateAddScene(circles.peekRear(), EShape.CIRCLE, 0, 0));
+		script.addScene(generateMoveScene(circles.peekRear(), EShape.CIRCLE, locations.get(circles.rearIndex())));
+		script.addScene(generateTextScene(circles.peekRear(), EShape.CIRCLE, Integer.toString(number)));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(8));		// code: sz = sz + 1
 		script.addScene(generateWaitScene(1000));
@@ -166,14 +162,14 @@ public class APQueue extends AnimationPlanner {
 		script.addScene(generateMoveCodePointerScene(3));		// code: if isEmpty() then
 		script.addScene(generateWaitScene(1000));
 
-		if(queue.isEmpty()){
+		if(circles.isEmpty()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Underflow");
 			script.addScene(generateWaitScene(1000));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
 
-		int dequeuedID = queue.dequeue();
+		int dequeuedID = circles.dequeue();
 
 		script.addScene(generateMoveCodePointerScene(5));		// code: else
 		script.addScene(generateWaitScene(1000));
@@ -184,7 +180,7 @@ public class APQueue extends AnimationPlanner {
 		script.addScene(generateDeleteScene(dequeuedID, EShape.CIRCLE));
 		script.addScene(generateMoveCodePointerScene(7));		// code: f = (f+1) mod N
 		script.addScene(generateWaitScene(1000));
-		script.addScene(generateMoveFrontScene(queue.frontIndex()));
+		script.addScene(generateMoveFrontScene(circles.frontIndex()));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(8));		// code: sz = sz - 1
 		script.addScene(generateWaitScene(1000));
@@ -203,7 +199,6 @@ public class APQueue extends AnimationPlanner {
 		Motion motion = new Motion();
 		motion.moveto = new Point(locations.get(index).x, locations.get(index).y + VERTICAL_SPACE);
 		return generateScene(frontID, EShape.TEXT, EAction.MOVE, motion);
-
 	}
 
 	private Scene generateMoveRearScene(int index){
