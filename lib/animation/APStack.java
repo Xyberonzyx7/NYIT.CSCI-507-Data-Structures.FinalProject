@@ -41,7 +41,7 @@ public class APStack extends AnimationPlanner {
 
 	public APStack(Rectangle rectAnimationArea){
 		component_x = (int) (rectAnimationArea.getWidth() / 2) - 150;
-		int nYMin = (int)(rectAnimationArea.getY() + MARGIN);
+		int nYMin = (int)(rectAnimationArea.getY() + MARGIN - 50);
 		int nYMax = (int)(rectAnimationArea.getY() + rectAnimationArea.getHeight() - MARGIN);
 		int y = nYMax;
 
