@@ -174,9 +174,11 @@ public class APStack extends AnimationPlanner {
 		script.addScene(generateMoveCodePointerScene(5));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(6)); 		// code: top = top + 1aitScene(1000));
+		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveDataPointerScene(circles.size()-1));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(7)); 		// code: stack [top] = item;
+		script.addScene(generateWaitScene(1000));
 
 		Motion circleMotion = new Motion();
 		circleMotion.movefrom = new Point(component_x, 0);
@@ -210,6 +212,7 @@ public class APStack extends AnimationPlanner {
 		script.addScene(generateMoveCodePointerScene(5)); // code: else
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(6)); // code: item = stack[top]
+		script.addScene(generateWaitScene(1000));
 
 		// pop component from stack
 		Motion circleMotion = new Motion();
@@ -219,10 +222,10 @@ public class APStack extends AnimationPlanner {
 		script.addScene(generateScene(poppedID, EShape.CIRCLE, EAction.DELETE, circleMotion));
 
 		script.addScene(generateMoveCodePointerScene(7)); // code: top = top - 1
+		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveDataPointerScene(circles.size() - 1));
 		script.addScene(generateWaitScene(1000));
 		script.addScene(generateMoveCodePointerScene(0)); // code: standby
-		script.addScene(generateWaitScene(1000));
 		return script;
 	}
 

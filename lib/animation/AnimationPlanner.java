@@ -39,6 +39,12 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.TEXT, motion);
 	}
 
+	public Scene generateColorScene(int id, EShape shape, Color color){
+		Motion motion = new Motion();
+		motion.colorto = color;	
+		return generateScene(id, shape, EAction.COLOR, motion);
+	}
+
 	public Scene generateAddScene(int id, EShape shape, int x, int y, int angle){
 		Motion motion = new Motion();
 		motion.movefrom = new Point(x, y);
