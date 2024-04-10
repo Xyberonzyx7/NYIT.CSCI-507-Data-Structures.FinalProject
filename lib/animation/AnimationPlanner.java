@@ -2,7 +2,6 @@ package lib.animation;
 
 import java.awt.Color;
 import java.awt.Point;
-import java.awt.image.AreaAveragingScaleFilter;
 import java.util.List;
 import java.util.ArrayList;
 

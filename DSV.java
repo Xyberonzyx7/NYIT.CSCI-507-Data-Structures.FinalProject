@@ -41,7 +41,7 @@ public class DSV {
 	private JPanel panOPStack;
 	private JPanel panOPLinkedList;
 	private JPanel panOPBinarySearchTree;
-	private JPanel panOPGraph;
+	// private JPanel panOPGraph;
 
 	// variables
 	private APArray apArray;
@@ -60,7 +60,7 @@ public class DSV {
 		initQueuePanel();
 		initLinkedListPanel();
 		initBinarySearchTreePanel();
-		initGraphPanel();
+		// initGraphPanel();
 		initFrame();
 	}
 
@@ -94,7 +94,7 @@ public class DSV {
 		frame.add(panOPQueue);
 		frame.add(panOPLinkedList);
 		frame.add(panOPBinarySearchTree);
-		frame.add(panOPGraph);
+		// frame.add(panOPGraph);
 
 		frame.setVisible(true);
 	}
@@ -688,12 +688,12 @@ public class DSV {
 		panOPBinarySearchTree.add(btn_delete);
 	}
 
-	private void initGraphPanel() {
-		panOPGraph = new JPanel();
-		panOPGraph.setLayout(null);
-		panOPGraph.setBounds(1000, 30, 200, 770);
-		panOPGraph.setVisible(false);
-	}
+	// private void initGraphPanel() {
+	// 	panOPGraph = new JPanel();
+	// 	panOPGraph.setLayout(null);
+	// 	panOPGraph.setBounds(1000, 30, 200, 770);
+	// 	panOPGraph.setVisible(false);
+	// }
 
 	private void showSelectedPanel(EOPPanel panel) {
 		switch (panel) {
@@ -722,11 +722,11 @@ public class DSV {
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPBinarySearchTree;
 				break;
-			case GRAPH:
-				panOPGraph.setVisible(true);
-				panOPCurrent.setVisible(false);
-				panOPCurrent = panOPGraph;
-				break;
+			// case GRAPH:
+			// 	panOPGraph.setVisible(true);
+			// 	panOPCurrent.setVisible(false);
+			// 	panOPCurrent = panOPGraph;
+			// 	break;
 			default:
 				panOPCurrent.setVisible(true);
 				break;
@@ -749,8 +749,7 @@ public class DSV {
 		STACK,
 		QUEUE,
 		LINKEDLIST,
-		TREE,
-		GRAPH
+		TREE
 	}
 
 	private void runMovie(Movie movie) {
