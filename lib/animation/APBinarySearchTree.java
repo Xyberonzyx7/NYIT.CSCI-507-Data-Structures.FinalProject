@@ -427,7 +427,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 			node.data.num = minValue(script, node.right);
 
 			// animation planning - flash the target node to indicate its value is about to change
-			script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, EAction.COLOR, Color.BLUE, Color.ORANGE));
+			script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.ORANGE));
 			Motion changeNumberMotion = new Motion();
 			changeNumberMotion.showtext = Integer.toString(node.data.num);
 			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.TEXT, changeNumberMotion));
@@ -490,7 +490,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 			
 			// flashing leaf
 			if(node.left == null){
-				script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, EAction.COLOR, Color.BLUE, Color.ORANGE));
+				script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.ORANGE));
 				break;
 			}
 

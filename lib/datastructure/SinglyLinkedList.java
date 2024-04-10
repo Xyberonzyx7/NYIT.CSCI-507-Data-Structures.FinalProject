@@ -19,13 +19,15 @@ public class SinglyLinkedList {
 		return count;
 	}
 
+	public int getHead(){
+		return head.data;	
+	}
+
 	public int getAt(int index){
 		Node current = head;
 		int i = 0;
 		while(current != null){
-
 			if(i == index) return current.data;
-
 			current = current.next;
 			i++;
 		}
@@ -34,62 +36,37 @@ public class SinglyLinkedList {
 
 	public void insertAt(int index, int data) {
 		Node newNode = new Node(data);
-		if(index == 0){
+
+		if (index == 0) {
 			newNode.next = head;
 			head = newNode;
-			if(tail == null){
-				tail = newNode;
-			}
-		}
-		else{
+		} else {
 			Node current = head;
-			for(int i = 0; i < index - 1; i++){
-				if(current != null){
-					current = current.next;
-				}
-				else{
-					return;
-				}
+			for (int i = 0; i < index - 1 && current != null; i++) {
+				current = current.next;
 			}
-			newNode.next = current.next;
-			current.next = newNode;
-			if(newNode.next == null){
-				tail = newNode;
+			if (current != null) {
+				newNode.next = current.next;
+				current.next = newNode;
 			}
 		}
 	}
 
 	public void removeAt(int index) {
+		if (head == null) {
+			return;
+		}
+
 		if (index == 0) {
-			if (head != null) {
-				head = head.next;
-				if (head == null) {
-					tail = null;
-				}
-			}
+			head = head.next;
 		} else {
 			Node current = head;
-			for (int i = 0; i < index - 1; i++) {
-				if (current != null && current.next != null) {
-					current = current.next;
-				} else {
-					return;
-				}
+			for (int i = 0; i < index - 1 && current != null; i++) {
+				current = current.next;
 			}
-			if (current.next != null) {
+			if (current != null && current.next != null) {
 				current.next = current.next.next;
-				if (current.next == null) {
-					tail = current;
-				}
 			}
-		}
-	}
-
-	public void print(){
-		Node current = head;
-		while(current != null){
-			System.out.println(current.data);
-			current = current.next;
 		}
 	}
 }
@@ -100,5 +77,6 @@ class Node{
 
 	public Node(int data){
 		this.data = data;
+		this.next = null;
 	}
 }

@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 import lib.datastructure.CircularQueue;
@@ -39,7 +38,6 @@ public class APQueue extends AnimationPlanner {
 		int x = nXMin;
 
 		// init variable
-		
 		disappearPoint = new Point(-20, -20);
 		locations = new ArrayList<>();
 		

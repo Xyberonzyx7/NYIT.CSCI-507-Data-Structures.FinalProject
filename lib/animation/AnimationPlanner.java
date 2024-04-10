@@ -2,6 +2,7 @@ package lib.animation;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.awt.image.AreaAveragingScaleFilter;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -27,9 +28,15 @@ public class AnimationPlanner {
 		return -1;
 	}
 
-	public Scene generateAngleScene(int id, EShape shape, int angle){
+	public Scene generateLengthScene(int id, EShape shape, int length){
 		Motion motion = new Motion();
-		motion.angle = angle;
+		motion.lengthto = length;
+		return generateScene(id, shape, EAction.LENGTH, motion);
+	}
+
+	public Scene generateRotateScene(int id, EShape shape, double angle){
+		Motion motion = new Motion();
+		motion.rotateto = angle;
 		return generateScene(id, shape, EAction.ROTATE, motion);
 	}
 
@@ -45,7 +52,7 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.COLOR, motion);
 	}
 
-	public Scene generateAddScene(int id, EShape shape, int x, int y, int angle){
+	public Scene generateAddScene(int id, EShape shape, int x, int y, double angle){
 		Motion motion = new Motion();
 		motion.movefrom = new Point(x, y);
 		motion.angle = angle;
@@ -87,35 +94,50 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.DELETE, motion);
 	}
 
-	public List<Scene> generateFlashingScene(int id, EShape shape, EAction action, Color defaultColor, Color flashColor){
+	// highlight for a short period of time
+	public List<Scene> generateHighlightScene(int id, EShape shape, Color defaultColor, Color highlightColor){
+		List<Scene> scenes = new ArrayList<>();
+
+		Motion highlight = new Motion();
+		highlight.colorto = highlightColor;
+		scenes.add(generateScene(id, shape, EAction.COLOR, highlight));
+		scenes.add(generateWaitScene(1000));
+
+		Motion unhighlight = new Motion();
+		unhighlight.colorto = defaultColor;
+		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
+		return scenes;
+	}
+
+	public List<Scene> generateFlashingScene(int id, EShape shape, Color defaultColor, Color flashColor){
 		List<Scene> scenes = new ArrayList<>();
 
 		// highlight
 		Motion highlight = new Motion();
 		highlight.colorto = flashColor;
-		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, highlight));
 		scenes.add(generateWaitScene(250));
 
 		// unhighlight
 		Motion unhighlight = new Motion();
 		unhighlight.colorto = defaultColor;
-		scenes.add(generateScene(id, shape, action, unhighlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
 		scenes.add(generateWaitScene(250));
 
 		// highlight
-		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, highlight));
 		scenes.add(generateWaitScene(250));
 
 		// unhighlight
-		scenes.add(generateScene(id, shape, action, unhighlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
 		scenes.add(generateWaitScene(250));
 
 		// highlight
-		scenes.add(generateScene(id, shape, action, highlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, highlight));
 		scenes.add(generateWaitScene(250));
 
 		// unhighlight
-		scenes.add(generateScene(id, shape, action, unhighlight));
+		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
 
 		return scenes;
 	}

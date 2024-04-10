@@ -46,7 +46,7 @@ public class APArray extends AnimationPlanner{
 		code += "Algorithm SET(ARRAY, INDEX, ITEM):\n";
 		code += "{\n";
 		code += "    if (INDEX > MAXSIZE or INDEX < 0) then\n";
-		code += "        write (\"Out Range\");\n";
+		code += "        write (\"index out of range\");\n";
 		code += "    else\n";
 		code += "        ARRAY[INDEX] = ITEM;\n";
 		code += "}";
