@@ -16,8 +16,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 	List<Point> locations;
 	Tree<Point> locationsTree;
-	Tree<ValuePair> dataTree; // int: id, int: data, Point: location
-	Tree<ValuePair> arrowTree; // int: id, int: arrow length, Point: location
+	Tree<ValuePair> dataTree; 	// int: id, int: data, Point: location
+	Tree<ValuePair> arrowTree; 	// int: id, int: arrow length, Point: location
 	private final int VERTICAL_SPACE = 110;
 	private final int LEVELLIMIT = 5;
 	private final Point STANDBYPOINT = new Point(110, 110);
@@ -30,7 +30,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		while (level < 5) {
 			int dx = (int) (rectAnimationArea.getWidth() / (Math.pow(2, level) + 1));
 			for (int i = 1; i <= Math.pow(2, level); i++) {
-				locations.add(new Point(dx * i, ((level + 1) * VERTICAL_SPACE)));
+				locations.add(new Point(dx * i, ((level + 2) * VERTICAL_SPACE)));
 			}
 			level++;
 		}
@@ -71,12 +71,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 				arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
 
 				// animation planning
-				Motion motion = new Motion();
-				motion.movefrom = new Point(0, 0);
-				motion.moveto = node.data.location;
-				motion.showtext = Integer.toString(nums[i]);
-				script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.ADD, motion));
-				script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.MOVE, motion));
+				script.addScene(generateInitNodeScene(node));
 				continue;
 			}
 
@@ -91,22 +86,9 @@ public class APBinarySearchTree extends AnimationPlanner {
 								getMiddlePoint(node.data.location, node.right.data.location),
 								getAngle(node.data.location, node.right.data.location));
 
-						// animation planning
-						Motion motion = new Motion();
-						motion.movefrom = new Point(0, 0);
-						motion.moveto = node.right.data.location;
-						motion.showtext = Integer.toString(node.right.data.num);
-						script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.ADD, motion));
-						script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.MOVE, motion));
-
-						Motion arrowMotion = new Motion();
-						arrowMotion.movefrom = new Point(0, 0);
-						arrowMotion.moveto = arrow.right.data.location;
-						arrowMotion.angle = arrow.right.data.angle;
-						arrowMotion.lengthto = arrow.right.data.num;
-						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
-						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-						script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
+						// animation
+						script.addScene(generateInitNodeScene(node.right));	
+						script.addScene(generateInitArrowScene(arrow.right));
 						break;
 					} else {
 						node = node.right;
@@ -124,21 +106,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 								getAngle(node.data.location, node.left.data.location));
 
 						// animation planning
-						Motion motion = new Motion();
-						motion.movefrom = new Point(0, 0);
-						motion.moveto = node.left.data.location;
-						motion.showtext = Integer.toString(node.left.data.num);
-						script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.ADD, motion));
-						script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.MOVE, motion));
-
-						Motion arrowMotion = new Motion();
-						arrowMotion.movefrom = new Point(0, 0);
-						arrowMotion.moveto = arrow.left.data.location;
-						arrowMotion.angle = arrow.left.data.angle;
-						arrowMotion.lengthto = arrow.left.data.num;
-						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
-						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-						script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
+						script.addScene(generateInitNodeScene(node.left));
+						script.addScene(generateInitArrowScene(arrow.left));
 						break;
 					} else {
 						node = node.left;
@@ -164,15 +133,12 @@ public class APBinarySearchTree extends AnimationPlanner {
 		newNode.data = new ValuePair(generateUniqueID(), num, STANDBYPOINT, 0);
 
 		// animation
-		Motion standbyMotion = new Motion();
-		standbyMotion.movefrom = new Point(0, 0);
-		standbyMotion.moveto = STANDBYPOINT;
-		standbyMotion.showtext = Integer.toString(num);
-		script.addScene(generateScene(newNode.data.id, EShape.CIRCLE, EAction.ADD, standbyMotion));
-		script.addScene(generateScene(newNode.data.id, EShape.CIRCLE, EAction.MOVE, standbyMotion));
+		script.addScene(generateAddScene(newNode.data.id, EShape.CIRCLE, 0, 0));
+		script.addScene(generateMoveScene(newNode.data.id, EShape.CIRCLE, STANDBYPOINT));
+		script.addScene(generateTextScene(newNode.data.id, EShape.CIRCLE, Integer.toString(num)));
 
 		// wait
-		script.addScene(generateWaitScene(2000));
+		script.addScene(generateWaitScene(1000));
 
 		// root is empty
 		if (node.data.num == Integer.MIN_VALUE) {
@@ -187,29 +153,13 @@ public class APBinarySearchTree extends AnimationPlanner {
 			arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
 
 			// animation planning
-			Motion motion = new Motion();
-			motion.movefrom = new Point(0, 0);
-			motion.moveto = node.data.location;
-			motion.showtext = Integer.toString(num);
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.ADD, motion));
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.MOVE, motion));
+			script.addScene(generateMoveScene(node.data.id, EShape.CIRCLE, node.data.location));
 			return script;
 		}
 
 		while (true) {
 
-			// animation planning highlight node to for comparing
-			Motion highlight = new Motion();
-			highlight.colorto = Color.RED;
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, highlight));
-
-			// wait
-			script.addScene(generateWaitScene(2000));
-
-			// unhighlight self
-			Motion unHighlight = new Motion();
-			unHighlight.colorto = Color.BLUE;
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, unHighlight));
+			script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
 
 			if (num > node.data.num) {
 				if (node.right == null) {
@@ -221,23 +171,10 @@ public class APBinarySearchTree extends AnimationPlanner {
 							getMiddlePoint(node.data.location, node.right.data.location),
 							getAngle(node.data.location, node.right.data.location));
 
+					
 					// animation planning
-					Motion motion = new Motion();
-					motion.movefrom = new Point(0, 0);
-					// motion.moveto = locationNode.right.data;
-					motion.moveto = node.right.data.location;
-					motion.showtext = Integer.toString(node.right.data.num);
-					script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.ADD, motion));
-					script.addScene(generateScene(node.right.data.id, EShape.CIRCLE, EAction.MOVE, motion));
-
-					Motion arrowMotion = new Motion();
-					arrowMotion.movefrom = new Point(0, 0);
-					arrowMotion.moveto = arrow.right.data.location;
-					arrowMotion.angle = arrow.right.data.angle;
-					arrowMotion.lengthto = arrow.right.data.num;
-					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
-					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-					script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
+					script.addScene(generateAddNodeScene(node.right));
+					script.addScene(generateAddArrowScene(arrow.right));
 					break;
 				} else {
 					node = node.right;
@@ -254,22 +191,10 @@ public class APBinarySearchTree extends AnimationPlanner {
 							getMiddlePoint(node.data.location, node.left.data.location),
 							getAngle(node.data.location, node.left.data.location));
 
+					
 					// animation planning
-					Motion motion = new Motion();
-					motion.movefrom = new Point(0, 0);
-					motion.moveto = node.left.data.location;
-					motion.showtext = Integer.toString(node.left.data.num);
-					script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.ADD, motion));
-					script.addScene(generateScene(node.left.data.id, EShape.CIRCLE, EAction.MOVE, motion));
-
-					Motion arrowMotion = new Motion();
-					arrowMotion.movefrom = new Point(0, 0);
-					arrowMotion.moveto = arrow.left.data.location;
-					arrowMotion.angle = arrow.left.data.angle;
-					arrowMotion.lengthto = arrow.left.data.num;
-					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ADD, arrowMotion));
-					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-					script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
+					script.addScene(generateAddNodeScene(node.left));
+					script.addScene(generateAddArrowScene(arrow.left));
 					break;
 				} else {
 					node = node.left;
@@ -301,17 +226,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 		// animation planning
 		// highlight current node
-		Motion highlight = new Motion();
-		highlight.colorto = Color.RED;
-		script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, highlight));
-
-		// wait
-		script.addScene(generateWaitScene(2000));
-
-		// unhighlight current node
-		Motion unhighlight = new Motion();
-		unhighlight.colorto = Color.BLUE;
-		script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, unhighlight));
+		script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
 
 		if (num < node.data.num) {
 			delete(script, EDir.LEFT, node, node.left, arrow, arrow.left, location, location.left, num);
@@ -340,18 +255,13 @@ public class APBinarySearchTree extends AnimationPlanner {
 				return;
 			}
 			else if(node.left == null && node.right != null){
-
-				// animation planning - parent node connects to node.right
-				Motion arrowMotion = new Motion();
-				arrowMotion.moveto = getMiddlePoint(parentNode.data.location, node.right.data.location);
-				arrowMotion.lengthto = getLength(parentNode.data.location, node.right.data.location) - 50;
-				arrowMotion.rotateto = getAngle(parentNode.data.location, node.right.data.location);
-				script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-				script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
-				script.addScene(generateScene(arrow.right.data.id, EShape.ARROW, EAction.ROTATE, arrowMotion));
+				arrow.right.data.location = getMiddlePoint(parentNode.data.location, node.right.data.location);
+				arrow.right.data.num = getLength(parentNode.data.location, node.right.data.location) - 50;
+				arrow.right.data.angle = getAngle(parentNode.data.location, node.right.data.location);
+				script.addScene(generateAdjustArrowScene(arrow.right));
 
 				// wait
-				script.addScene(generateWaitScene(2000));
+				script.addScene(generateWaitScene(1000));
 
 				// animation planning - delete target node and arrow
 				script.addScene(generateDeleteScene(node.data.id, EShape.CIRCLE));
@@ -383,17 +293,13 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 			}else if(node.left != null && node.right == null){
 
-				// animation planning - parent node connects to node.left
-				Motion arrowMotion = new Motion();
-				arrowMotion.moveto = getMiddlePoint(parentNode.data.location, node.left.data.location);
-				arrowMotion.lengthto = getLength(parentNode.data.location, node.left.data.location) - 50;
-				arrowMotion.rotateto = getAngle(parentNode.data.location, node.left.data.location);
-				script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.MOVE, arrowMotion));
-				script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.LENGTH, arrowMotion));
-				script.addScene(generateScene(arrow.left.data.id, EShape.ARROW, EAction.ROTATE, arrowMotion));
+				arrow.left.data.location = getMiddlePoint(parentNode.data.location, node.left.data.location);
+				arrow.left.data.num = getLength(parentNode.data.location, node.left.data.location) - 50;
+				arrow.left.data.angle = getAngle(parentNode.data.location, node.left.data.location);
+				script.addScene(generateAdjustArrowScene(arrow.left));
 
 				// wait
-				script.addScene(generateWaitScene(2000));
+				script.addScene(generateWaitScene(1000));
 
 				// animation planning - delete target node and arrow
 				script.addScene(generateDeleteScene(node.data.id, EShape.CIRCLE));
@@ -428,9 +334,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 			// animation planning - flash the target node to indicate its value is about to change
 			script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.ORANGE));
-			Motion changeNumberMotion = new Motion();
-			changeNumberMotion.showtext = Integer.toString(node.data.num);
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.TEXT, changeNumberMotion));
+			script.addScene(generateTextScene(node.data.id, EShape.CIRCLE, Integer.toString(node.data.num)));
 
 			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
 
@@ -450,19 +354,9 @@ public class APBinarySearchTree extends AnimationPlanner {
 		repositionArrow.data.num = getLength(parentNode.data.location, repositionLocation.data) - 50;
 		repositionArrow.data.location = getMiddlePoint(parentNode.data.location, repositionLocation.data);
 
-		// animation planning - child node reposition to target node's location, as well
-		// as its arrow
-		Motion nodeReposition = new Motion();
-		nodeReposition.moveto = repositionNode.data.location;
-		script.addScene(generateScene(repositionNode.data.id, EShape.CIRCLE, EAction.MOVE, nodeReposition));
-
-		Motion arrowReposition = new Motion();
-		arrowReposition.moveto = repositionArrow.data.location;
-		arrowReposition.lengthto = repositionArrow.data.num;
-		arrowReposition.rotateto = repositionArrow.data.angle;
-		script.addScene(generateScene(repositionArrow.data.id, EShape.ARROW, EAction.MOVE, arrowReposition));
-		script.addScene(generateScene(repositionArrow.data.id, EShape.ARROW, EAction.LENGTH, arrowReposition));
-		script.addScene(generateScene(repositionArrow.data.id, EShape.ARROW, EAction.ROTATE, arrowReposition));
+		// animaion planning
+		script.addScene(generateMoveScene(repositionNode.data.id, EShape.CIRCLE, repositionNode.data.location));
+		script.addScene(generateAdjustArrowScene(repositionArrow));
 
 		reposition(script, repositionNode, repositionNode.right, repositionArrow.right, repositionLocation.right);
 		reposition(script, repositionNode, repositionNode.left, repositionArrow.left, repositionLocation.left);
@@ -473,18 +367,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		int minValue = node.data.num;
 		while (true) {
 
-			// animation planning - highlight target
-			Motion highlightMotion = new Motion();
-			highlightMotion.colorto = Color.RED;
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, highlightMotion));
-
-			// wait 
-			script.addScene(generateWaitScene(2000));
-
-			// unhighlight target
-			Motion unhighlightMotion = new Motion();
-			unhighlightMotion.colorto = Color.BLUE;
-			script.addScene(generateScene(node.data.id, EShape.CIRCLE, EAction.COLOR, unhighlightMotion));
+			script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
 
 			minValue = node.data.num;
 			
@@ -507,6 +390,45 @@ public class APBinarySearchTree extends AnimationPlanner {
 		node.left = generateNLevelTree(N, currentLevel + 1);
 		node.right = generateNLevelTree(N, currentLevel + 1);
 		return node;
+	}
+
+	private List<Scene> generateInitNodeScene(TreeNode<ValuePair> node) {
+		List<Scene> scenes = new ArrayList<>();
+		scenes.add(generateAddScene(node.data.id, EShape.CIRCLE, 0, 0));
+		scenes.add(generateMoveScene(node.data.id, EShape.CIRCLE, node.data.location));
+		scenes.add(generateTextScene(node.data.id, EShape.CIRCLE, Integer.toString(node.data.num)));
+		return scenes;
+	}
+
+	private List<Scene> generateInitArrowScene(TreeNode<ValuePair> arrow){
+		List<Scene> scenes = new ArrayList<>();
+		scenes.add(generateAddScene(arrow.data.id, EShape.ARROW, 0, 0, arrow.data.angle));
+		scenes.add(generateMoveScene(arrow.data.id, EShape.ARROW, arrow.data.location));
+		scenes.add(generateLengthScene(arrow.data.id, EShape.ARROW, arrow.data.num));
+		return scenes;
+	}
+
+	private List<Scene> generateAddNodeScene(TreeNode<ValuePair> node){
+		List<Scene> scenes = new ArrayList<>();
+		scenes.add(generateAddScene(node.data.id, EShape.CIRCLE, 0, 0));
+		scenes.add(generateMoveScene(node.data.id, EShape.CIRCLE, node.data.location));
+		return scenes;
+	}
+
+	private List<Scene> generateAddArrowScene(TreeNode<ValuePair> arrow){
+		List<Scene> scenes = new ArrayList<>();
+		scenes.add(generateAddScene(arrow.data.id, EShape.ARROW, 0, 0, arrow.data.angle));
+		scenes.add(generateMoveScene(arrow.data.id, EShape.ARROW, arrow.data.location));
+		scenes.add(generateLengthScene(arrow.data.id, EShape.ARROW, arrow.data.num));
+		return scenes;
+	}
+
+	private List<Scene> generateAdjustArrowScene(TreeNode<ValuePair> arrow){
+		List<Scene> scenes = new ArrayList<>();
+		scenes.add(generateMoveScene(arrow.data.id, EShape.ARROW, arrow.data.location));
+		scenes.add(generateLengthScene(arrow.data.id, EShape.ARROW, arrow.data.num));
+		scenes.add(generateRotateScene(arrow.data.id, EShape.ARROW, arrow.data.angle));
+		return scenes;
 	}
 
 	private void assignLocationsToTree(TreeNode<Point> node, ArrayDeque<TreeNode<Point>> visitedQueue, int[] count) {
@@ -540,7 +462,7 @@ class ValuePair {
 	public int id;
 	public int num;
 	public Point location;
-	public double angle;
+	public double angle;	// could be used as starting angle or rotate-to angle
 
 	public ValuePair(int id, int num, Point location, double angle) {
 		this.id = id;

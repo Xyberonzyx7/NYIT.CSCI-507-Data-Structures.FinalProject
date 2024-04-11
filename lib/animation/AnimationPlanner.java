@@ -64,6 +64,13 @@ public class AnimationPlanner {
 		return generateScene(id, shape, EAction.ADD, motion);
 	}
 
+	public Scene generateAddScene(int id, EShape shape, Point location, double angle){
+		Motion motion = new Motion();
+		motion.movefrom = location;
+		motion.angle = angle;
+		return generateScene(id, shape, EAction.ADD, motion);
+	}
+
 	public Scene generateAddScene(int id, EShape shape, Point location) {
 		Motion motion = new Motion();
 		motion.movefrom = location;
