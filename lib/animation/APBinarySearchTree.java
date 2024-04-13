@@ -10,8 +10,8 @@ import java.util.ArrayDeque;
 // import lib.datastructure.Tree;
 import lib.script.*;
 import lib.tools.QuickSort;
+import lib.tools.ReorderForBST;
 import lib.datastructure.TreeNode;
-import lib.datastructure.ReorderForBST;
 import lib.datastructure.Tree;
 
 public class APBinarySearchTree extends AnimationPlanner {

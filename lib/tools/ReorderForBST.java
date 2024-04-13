@@ -1,6 +1,5 @@
-package lib.datastructure;
+package lib.tools;
 
-import java.lang.reflect.Array;
 import java.util.ArrayDeque;
 
 class CNode {
