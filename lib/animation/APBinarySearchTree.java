@@ -76,7 +76,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		code_add += "    return NODE;\n";
 		code_add += "}\n";
 
-		code_delete = "STANDBY LINE";
+		code_delete = "STANDBY LINE\n";
 		code_delete += "Algorithm DELETE(NODE, VALUE)\n";
 		code_delete += "{\n";
 		code_delete += "    if (NODE == null) then\n";
@@ -334,8 +334,6 @@ public class APBinarySearchTree extends AnimationPlanner {
 				script.addScene(generateDeleteScene(newNode.data.id, EShape.CIRCLE));
 				script.addScene(generateWaitScene(1000));
 				script.addScene(generateMoveCodePointerScene(12));
-
-
 				break;
 			}
 		}
@@ -355,29 +353,57 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 		delete(script, EDir.NONE, node, node, arrow, arrow, location, location, num);
 
+		script.addScene(generateMoveCodePointerScene(0));
+
 		return script;
 	}
 
 	private void delete(Script script, EDir dir, TreeNode<ValuePair> parentNode, TreeNode<ValuePair> node, TreeNode<ValuePair> parentArrow, TreeNode<ValuePair> arrow, TreeNode<Point> parentLocation, TreeNode<Point> location, int num) {
+
 		if (node == null) {
+			script.addScene(generateMoveCodePointerScene(1));
+			script.addScene(generateMoveCodePointerScene(3));
+			script.addScene(generateMoveCodePointerScene(4));
 			return;
 		}
 
 		// animation planning
 		// highlight current node
+		script.addScene(generateMoveCodePointerScene(1));
+		script.addScene(generateMoveCodePointerScene(3));
 		script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
-
+		script.addScene(generateMoveCodePointerScene(5));
+		script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
 		if (num < node.data.num) {
+			script.addScene(generateMoveCodePointerScene(6));
 			delete(script, EDir.LEFT, node, node.left, arrow, arrow.left, location, location.left, num);
-		} else if (num > node.data.num) {
+			return;
+		} 
+		
+		script.addScene(generateMoveCodePointerScene(7));
+		script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+		if (num > node.data.num) {
+			script.addScene(generateMoveCodePointerScene(8));
 			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, num);
-		} else {
+			return;
+		}
+		
+		script.addScene(generateMoveCodePointerScene(9));
+
+		if (num == node.data.num){
+
+			script.addScene(generateMoveCodePointerScene(10));
+			script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+
 			// Node with only one child or no child
 			if (node.left == null && node.right == null) {
+
+				script.addScene(generateMoveCodePointerScene(11));
 
 				// animation planning - directly remove
 				script.addScene(generateDeleteScene(node.data.id, EShape.CIRCLE));
 				script.addScene(generateDeleteScene(arrow.data.id, EShape.ARROW));
+				script.addScene(generateWaitScene(1000));
 
 				if(dir == EDir.LEFT){
 					parentNode.left = null;
@@ -392,7 +418,11 @@ public class APBinarySearchTree extends AnimationPlanner {
 				}
 				return;
 			}
-			else if(node.left == null && node.right != null){
+
+			if(node.left == null && node.right != null){
+
+				script.addScene(generateMoveCodePointerScene(11));
+
 				arrow.right.data.location = getMiddlePoint(parentNode.data.location, node.right.data.location);
 				arrow.right.data.num = getLength(parentNode.data.location, node.right.data.location) - 50;
 				arrow.right.data.angle = getAngle(parentNode.data.location, node.right.data.location);
@@ -427,9 +457,17 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = null;
 					arrow = null;
 				}
+				script.addScene(generateWaitScene(1000));
 				return;
 
-			}else if(node.left != null && node.right == null){
+			}
+			
+			script.addScene(generateMoveCodePointerScene(12));
+			script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+			
+			if(node.left != null && node.right == null){
+
+				script.addScene(generateMoveCodePointerScene(13));
 
 				arrow.left.data.location = getMiddlePoint(parentNode.data.location, node.left.data.location);
 				arrow.left.data.num = getLength(parentNode.data.location, node.left.data.location) - 50;
@@ -463,17 +501,23 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = null;
 					arrow = null;
 				}
+				script.addScene(generateWaitScene(1000));
 				return;
 			}
 
+			script.addScene(generateMoveCodePointerScene(14));
+
 			// Node with two children: Get the inorder successor (smallest in the right subtree)
+			script.addScene(generateMoveCodePointerScene(15));
 			node.data.num = minValue(script, node.right);
 
 			// animation planning - flash the target node to indicate its value is about to change
 			script.addScene(generateFlashingScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.ORANGE));
 			script.addScene(generateTextScene(node.data.id, EShape.CIRCLE, Integer.toString(node.data.num)));
-
+			
+			script.addScene(generateMoveCodePointerScene(16));
 			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
+			script.addScene(generateMoveCodePointerScene(17));
 		}
 		return;
 	}
