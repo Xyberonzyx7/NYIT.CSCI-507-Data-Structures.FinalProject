@@ -21,7 +21,8 @@ public class DSV {
 	private final Rectangle RECT_SCREEN = new Rectangle(0, 0, 1200, 800);
 	private final Rectangle RECT_ANIMATION = new Rectangle(0, 0, 1000, 770);
 	private final Rectangle RECT_DROPDOWN = new Rectangle(1000, 0, 200, 30);
-	private final Rectangle RECT_OPERATION = new Rectangle(1000, 30, 200, 770);
+	private final Rectangle RECT_OPERATION = new Rectangle(1000, 30, 200, 630);
+	private final Rectangle RECT_PLAY = new Rectangle(1000, 650, 200, 170);
 
 	private final Font TITLEFONT = new Font("Arial", Font.BOLD, 14);
 
@@ -41,7 +42,8 @@ public class DSV {
 	private JPanel panOPStack;
 	private JPanel panOPLinkedList;
 	private JPanel panOPBinarySearchTree;
-	// private JPanel panOPGraph;
+	private JPanel panPlay;
+	
 
 	// variables
 	private APArray apArray;
@@ -49,7 +51,9 @@ public class DSV {
 	private APQueue apQueue;
 	private APLinkedList apLinkedList;
 	private APBinarySearchTree apBinarySearchTree;
-	HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
+	private HashMap<Integer, JShape> mapArrayCast; // key: id, value: shape
+
+	private double delayMultiplier;
 
 	public DSV() {
 		initVariable();
@@ -60,7 +64,7 @@ public class DSV {
 		initQueuePanel();
 		initLinkedListPanel();
 		initBinarySearchTreePanel();
-		// initGraphPanel();
+		initPlayPanel();
 		initFrame();
 	}
 
@@ -76,6 +80,8 @@ public class DSV {
 		runMoveToTimerManager = new HashMap<>();
 		runLengthToTimerManager = new HashMap<>();
 		runTextToTimerManager = new HashMap<>();
+
+		delayMultiplier = 1;
 	}
 
 	private void initFrame() {
@@ -94,7 +100,7 @@ public class DSV {
 		frame.add(panOPQueue);
 		frame.add(panOPLinkedList);
 		frame.add(panOPBinarySearchTree);
-		// frame.add(panOPGraph);
+		frame.add(panPlay);
 
 		frame.setVisible(true);
 		frame.setResizable(false);
@@ -590,7 +596,7 @@ public class DSV {
 		JButton btn_delete = new JButton("Delete");
 		lb_init.setFont(TITLEFONT);
 		ta_init.setText("[10,20,30,40,50,60,70]");	
-		ta_init.setPlaceholder("[10,20,30,40,50,60,70]");
+		ta_init.setPlaceholder("e.g. [10,20,30,40,50,60,70]");
 		lb_add.setFont(TITLEFONT);
 		tf_add.setPlaceholder("e.g. 80");
 		lb_delete.setFont(TITLEFONT);
@@ -689,12 +695,45 @@ public class DSV {
 		panOPBinarySearchTree.add(btn_delete);
 	}
 
-	// private void initGraphPanel() {
-	// 	panOPGraph = new JPanel();
-	// 	panOPGraph.setLayout(null);
-	// 	panOPGraph.setBounds(1000, 30, 200, 770);
-	// 	panOPGraph.setVisible(false);
-	// }
+	private void initPlayPanel(){
+
+		// new panel
+		panPlay = new JPanel();
+		panPlay.setLayout(null);
+		panPlay.setBounds(RECT_PLAY);
+		panPlay.setVisible(true);
+
+		// new components
+		AutoLayout autolayout = new AutoLayout();
+		JLabel lb_speed = new JLabel("Speed");
+		String[] choices = Arrays.stream(
+			ESpeed.values())
+			.map(Enum::name)
+			.collect(Collectors.toList())
+			.toArray(new String[0]);
+		JComboBox<String> comboBox = new JComboBox<>(choices);
+		comboBox.setLightWeightPopupEnabled(false);
+		comboBox.setSelectedIndex(2);
+		comboBox.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e){
+				updatePlaySpeed(ESpeed.values()[comboBox.getSelectedIndex()]);
+			}
+		});
+		JButton btn_play = new JButton("PLAY / PAUSE");
+		lb_speed.setFont(TITLEFONT);
+		lb_speed.setVisible(true);
+
+		// auto layout
+		autolayout.setBounds();
+		autolayout.setBounds(lb_speed);
+		autolayout.setBounds(comboBox);
+		autolayout.setBounds(btn_play);
+
+		panPlay.add(lb_speed);
+		panPlay.add(comboBox);
+		panPlay.add(btn_play);
+	}
 
 	private void showSelectedPanel(EOPPanel panel) {
 		switch (panel) {
@@ -723,11 +762,6 @@ public class DSV {
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPBinarySearchTree;
 				break;
-			// case GRAPH:
-			// 	panOPGraph.setVisible(true);
-			// 	panOPCurrent.setVisible(false);
-			// 	panOPCurrent = panOPGraph;
-			// 	break;
 			default:
 				panOPCurrent.setVisible(true);
 				break;
@@ -751,6 +785,14 @@ public class DSV {
 		QUEUE,
 		LINKEDLIST,
 		TREE
+	}
+
+	private enum ESpeed{
+		VERY_SLOW,
+		SLOW,
+		NORMAL,
+		FAST,
+		VERY_FAST
 	}
 
 	private void runMovie(Movie movie) {
@@ -801,7 +843,7 @@ public class DSV {
 
 				if(i >= clips.size()) executor.shutdown();
 				else{
-					executor.schedule(this, movie.getClips().get(i).delaystart, TimeUnit.MILLISECONDS);
+					executor.schedule(this, (long)(movie.getClips().get(i).delaystart * delayMultiplier), TimeUnit.MILLISECONDS);
 				}
 			}
 		};
@@ -1028,6 +1070,35 @@ public class DSV {
 		return movie;
 	}
 
+	private void updatePlaySpeed(ESpeed speed){
+		switch(speed){
+			case VERY_SLOW:
+				JShape.step = 9;	
+				delayMultiplier = 3;
+			break;
+			case SLOW:
+				JShape.step = 6;	
+				delayMultiplier = 2;
+			break;
+			case NORMAL:
+				JShape.step = 3;	
+				delayMultiplier = 1;
+			break;
+			case FAST:
+				JShape.step = 2;	
+				delayMultiplier = 0.5;
+			break;
+			case VERY_FAST:
+				JShape.step = 1;	
+				delayMultiplier = 0.5;
+			break;
+			default:
+				JShape.step = 3;	
+				delayMultiplier = 1;
+			break;
+		}
+	}
+
 	interface TimerCallback{
 		void onTimerComplete();
 	}
@@ -1075,7 +1146,7 @@ class AutoLayout {
 	private final int X = 2;
 	private int y;
 	private final int W = 180;
-	private final int H = 30;
+	private final int H = 26;
 
 	public AutoLayout() {
 		this.y = 2;

@@ -6,6 +6,8 @@ import java.awt.*;
 public class JShape extends JPanel {
 
 	private final Rectangle RECT_ANIMATION = new Rectangle(0, 0, 1000, 770);
+	public static double step = 3;
+	protected final int TOLERANCE_PIXEL = 3;
 
 	public JShape(){
 		setBackground(new Color(0, 0, 0, 0));

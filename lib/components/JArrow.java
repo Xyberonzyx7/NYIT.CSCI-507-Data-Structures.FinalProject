@@ -31,7 +31,6 @@ public class JArrow extends JShape {
 
 	@Override
 	public void rotateto(double angle){
-		double step = 3;
 		angle = Math.toRadians(angle); // convert from degree to radian
 		double dangle = (angle - arrowAngle) / (double)step;
 		if(Math.abs(angle - arrowAngle) < 0.01){
@@ -47,9 +46,8 @@ public class JArrow extends JShape {
 
 	@Override
 	public void lengthto(float length){
-		int step = 3;
 		float dlength = (length - arrowLength) / (float)step;
-		if(Math.abs(length - arrowLength) < 1){
+		if(Math.abs(length - arrowLength) < TOLERANCE_PIXEL){
 			dlength = length - arrowLength;
 		}
 		extend(dlength);
@@ -63,15 +61,14 @@ public class JArrow extends JShape {
 
 	@Override
 	public void moveto(float x, float y){
-		int step = 3;
 		float dx = (x - center.x) / (float) step;
 		float dy = (y - center.y) / (float) step;
 
-		if (Math.abs(x - center.x) < 1) {
+		if (Math.abs(x - center.x) < TOLERANCE_PIXEL) {
 			dx = x - center.x;
 		}
 
-		if (Math.abs(y - center.y) < 1) {
+		if (Math.abs(y - center.y) < TOLERANCE_PIXEL) {
 			dy = y - center.y;
 		}
 

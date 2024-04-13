@@ -20,15 +20,14 @@ public class JText extends JShape {
 
 	@Override
 	public void moveto(float x, float y){
-		int step = 3;
 		float dx = (x - point.x) / (float) step;
 		float dy = (y - point.y) / (float) step;
 
-		if(Math.abs(x - point.x) < 1){
+		if(Math.abs(x - point.x) < TOLERANCE_PIXEL){
 			dx = x - point.x;
 		}
 
-		if(Math.abs(y - point.y) < 1){
+		if(Math.abs(y - point.y) < TOLERANCE_PIXEL){
 			dy = y - point.y;
 		}
 		move(dx, dy);

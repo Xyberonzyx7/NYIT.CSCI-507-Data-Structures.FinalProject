@@ -25,15 +25,14 @@ public class JSquare extends JShape {
 	@Override
 	public void moveto(float x, float y){
 		
-		int step = 3;
 		float dx = (x - now.x) / (float)step;
 		float dy = (y - now.y) / (float)step;
 
-		if (Math.abs(x - now.x) < 1) {
+		if (Math.abs(x - now.x) < TOLERANCE_PIXEL) {
 			dx = x - now.x;
 		}
 
-		if (Math.abs(y - now.y) < 1) {
+		if (Math.abs(y - now.y) < TOLERANCE_PIXEL) {
 			dy = y - now.y;
 		}
 
