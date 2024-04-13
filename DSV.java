@@ -579,7 +579,7 @@ public class DSV {
 
 		// new components
 		AutoLayout autoLayout = new AutoLayout();
-		JLabel lb_init = new JLabel("Initialize");
+		JLabel lb_init = new JLabel("Initialize (auto BST)");
 		JPlaceholderTextArea ta_init = new JPlaceholderTextArea();
 		JButton btn_init = new JButton("Initialize");
 		JLabel lb_add = new JLabel("Add");
@@ -589,12 +589,12 @@ public class DSV {
 		JPlaceholderTextField tf_delete = new JPlaceholderTextField();
 		JButton btn_delete = new JButton("Delete");
 		lb_init.setFont(TITLEFONT);
-		ta_init.setText("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");	
-		ta_init.setPlaceholder("[47, 32, 63, 19, 41, 55, 79, 10, 23, 37, 44, 53, 59, 70, 96, 7, 12, 20, 30, 34, 38, 43, 45, 52, 54, 57, 60, 69, 74, 91, 97]");
+		ta_init.setText("[10,20,30,40,50,60,70]");	
+		ta_init.setPlaceholder("[10,20,30,40,50,60,70]");
 		lb_add.setFont(TITLEFONT);
-		tf_add.setPlaceholder("e.g. 100");
+		tf_add.setPlaceholder("e.g. 80");
 		lb_delete.setFont(TITLEFONT);
-		tf_delete.setPlaceholder("e.g. 100");
+		tf_delete.setPlaceholder("e.g. 40");
 		btn_init.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

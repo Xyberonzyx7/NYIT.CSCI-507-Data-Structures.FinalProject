@@ -9,7 +9,9 @@ import java.util.ArrayDeque;
 
 // import lib.datastructure.Tree;
 import lib.script.*;
+import lib.tools.QuickSort;
 import lib.datastructure.TreeNode;
+import lib.datastructure.ReorderForBST;
 import lib.datastructure.Tree;
 
 public class APBinarySearchTree extends AnimationPlanner {
@@ -102,6 +104,13 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 	public Script initBinarySearchTree(int[] nums) {
 		Script script = new Script();
+
+		// ensure that the user’s input data matches the criteria of the binary search tree
+		QuickSort qs = new QuickSort();
+		qs.quickSort(nums, 0, nums.length - 1);
+		ReorderForBST reorderForBST = new ReorderForBST();
+		reorderForBST.sortedArrayToBSTArray(nums);
+
 		TreeNode<ValuePair> arrow = arrowTree.root;
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> locationNode = locationsTree.root;
