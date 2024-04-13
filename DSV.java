@@ -97,6 +97,7 @@ public class DSV {
 		// frame.add(panOPGraph);
 
 		frame.setVisible(true);
+		frame.setResizable(false);
 	}
 
 	private void initAnimationArea() {

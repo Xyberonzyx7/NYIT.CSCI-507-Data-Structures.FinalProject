@@ -75,7 +75,7 @@ public class JText extends JShape {
 	protected void paintComponent(Graphics g) {
 
 		super.paintComponent(g); // Set font and color (optional)
-		g.setFont(new Font("Arial", Font.PLAIN, 20));
+		g.setFont(new Font("Arial", Font.PLAIN, 16));
 		g.setColor(color);
 
 		// Draw the text at coordinates (x, y)

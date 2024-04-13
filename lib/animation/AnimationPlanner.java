@@ -12,10 +12,11 @@ import lib.script.Motion;
 
 public class AnimationPlanner {
 	protected int objCount;	
-	protected final int wordHeight = 24;
+	protected int wordHeight;
 
 	public AnimationPlanner(){
 		objCount = 0;
+		wordHeight = 19;
 	}
 
 	public int generateUniqueID(){
