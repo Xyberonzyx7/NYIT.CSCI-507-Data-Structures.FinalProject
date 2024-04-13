@@ -3,6 +3,8 @@ package lib.animation;
 import java.awt.Color;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.net.CookieStore;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ArrayDeque;
@@ -18,9 +20,17 @@ public class APBinarySearchTree extends AnimationPlanner {
 	Tree<Point> locationsTree;
 	Tree<ValuePair> dataTree; 	// int: id, int: data, Point: location
 	Tree<ValuePair> arrowTree; 	// int: id, int: arrow length, Point: location
-	private final int VERTICAL_SPACE = 110;
+	private final int VERTICAL_SPACE = 80;
 	private final int LEVELLIMIT = 5;
 	private final Point STANDBYPOINT = new Point(110, 110);
+	private Rectangle codeArea;
+	private int codeID;
+	private String code_add;
+	private String code_delete;
+	private int pointerID;
+	private String pointer;
+	private int pointer_x;
+	private int pointer_y;
 
 	public APBinarySearchTree(Rectangle rectAnimationArea) {
 
@@ -30,7 +40,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		while (level < 5) {
 			int dx = (int) (rectAnimationArea.getWidth() / (Math.pow(2, level) + 1));
 			for (int i = 1; i <= Math.pow(2, level); i++) {
-				locations.add(new Point(dx * i, ((level + 2) * VERTICAL_SPACE)));
+				locations.add(new Point(dx * i, ((level + 4) * VERTICAL_SPACE) + 40));
 			}
 			level++;
 		}
@@ -47,14 +57,62 @@ public class APBinarySearchTree extends AnimationPlanner {
 		// arrow tree
 		arrowTree = new Tree<>();
 		arrowTree.root = new TreeNode<ValuePair>(null);
+
+		// other variables
+		codeArea = new Rectangle(rectAnimationArea.width - 410, 20, 410, 450);
+		codeID = generateUniqueID();
+		code_add = "STANDBY LINE\n";
+		code_add += "Algorithm ADD(NODE, VALUE)\n";
+		code_add += "{\n";
+		code_add += "    if (NODE.value > VALUE) then\n";
+		code_add += "        NODE.left = ADD(NODE.left, VALUE);\n";
+		code_add += "    else if (NODE.value < VALUE) then\n";
+		code_add += "        NODE.right = ADD(NODE.right, VALUE);\n";
+		code_add += "    else if (NODE.value == VALUE) then\n";
+		code_add += "        write (\"duplicate data\")\n";
+		code_add += "    else\n";
+		code_add += "        // (NODE == null)\n";
+		code_add += "        NODE = new TreeNode(VALUE);\n";
+		code_add += "    return NODE;\n";
+		code_add += "}\n";
+
+		code_delete = "STANDBY LINE";
+		code_delete += "Algorithm DELETE(NODE, VALUE)\n";
+		code_delete += "{\n";
+		code_delete += "    if (NODE == null) then\n";
+		code_delete += "        return NODE;\n";
+		code_delete += "    else if (NODE.value > VALUE) then\n";
+		code_delete += "        NODE.left = DELETE(NODE.left, VALUE);\n";
+		code_delete += "    else if (NODE.value < VALUE) then\n";
+		code_delete += "        NODE.right = DELETE(NODE.right, VALUE);\n";
+		code_delete += "    else\n";
+		code_delete += "        if (NODE.left == null) then\n";
+		code_delete += "            return NODE.right;\n";
+		code_delete += "        else if (NODE.right == null) then\n";
+		code_delete += "            return NODE.left;\n";
+		code_delete += "        else\n";
+		code_delete += "            NODE.value = min value of NODE.right;\n";
+		code_delete += "            NODE.right = DELETE(NODE.right, NODE.value);\n";
+		code_delete += "    return NODE\n";
+		code_delete += "}	\n";
+
+		pointerID = generateUniqueID();
+		pointer = ">>";
+		pointer_x = codeArea.x - 40;
+		pointer_y = codeArea.y;
 	}
 
 	public Script initBinarySearchTree(int[] nums) {
 		Script script = new Script();
-
 		TreeNode<ValuePair> arrow = arrowTree.root;
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> locationNode = locationsTree.root;
+
+		script.addScene(generateAddScene(codeID, EShape.TEXT, codeArea.x, codeArea.y));
+		script.addScene(generateChangeCodeScene(code_add));
+		script.addScene(generateAddScene(pointerID, EShape.TEXT, pointer_x, pointer_y));
+		script.addScene(generateTextScene(pointerID, EShape.TEXT, pointer));
+		script.addScene(generateColorScene(pointerID, EShape.TEXT, Color.RED));
 
 		for (int i = 0; i < nums.length; i++) {
 
@@ -128,6 +186,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> locationNode = locationsTree.root;
 
+		script.addScene(generateChangeCodeScene(code_add));
+
 		// new node to standby position
 		TreeNode<ValuePair> newNode = new TreeNode<>(null);
 		newNode.data = new ValuePair(generateUniqueID(), num, STANDBYPOINT, 0);
@@ -143,6 +203,12 @@ public class APBinarySearchTree extends AnimationPlanner {
 		// root is empty
 		if (node.data.num == Integer.MIN_VALUE) {
 
+			script.addScene(generateMoveCodePointerScene(3));
+			script.addScene(generateMoveCodePointerScene(5));
+			script.addScene(generateMoveCodePointerScene(7));
+			script.addScene(generateMoveCodePointerScene(9));
+			script.addScene(generateMoveCodePointerScene(11));	// code: node = new treenode(value);
+
 			// data node
 			node.data.id = newNode.data.id;
 			node.data.num = newNode.data.num;
@@ -154,35 +220,32 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 			// animation planning
 			script.addScene(generateMoveScene(node.data.id, EShape.CIRCLE, node.data.location));
+			script.addScene(generateWaitScene(1000));
+
+			script.addScene(generateMoveCodePointerScene(12));	// code: return Node;
+			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
 
 		while (true) {
 
-			script.addScene(generateHighlightScene(node.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
-
-			if (num > node.data.num) {
-				if (node.right == null) {
-					node.right = newNode;
-					node.right.data.location = locationNode.right.data;
-					arrow.right = new TreeNode<ValuePair>(null);
-					arrow.right.data = new ValuePair(generateUniqueID(),
-							getLength(node.data.location, node.right.data.location) - 50,
-							getMiddlePoint(node.data.location, node.right.data.location),
-							getAngle(node.data.location, node.right.data.location));
-
-					
-					// animation planning
-					script.addScene(generateAddNodeScene(node.right));
-					script.addScene(generateAddArrowScene(arrow.right));
-					break;
-				} else {
-					node = node.right;
-					locationNode = locationNode.right;
-					arrow = arrow.right;
-				}
-			} else if (num < node.data.num) {
+			script.addScene(generateMoveCodePointerScene(1));	// code: Algorithm ADD
+			
+			if (num < node.data.num) {
+				script.addScene(generateMoveCodePointerScene(3));	// code: if (node.value > value) then
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
 				if (node.left == null) {
+					script.addScene(generateMoveCodePointerScene(4));
+					script.addScene(generateMoveCodePointerScene(1));
+					script.addScene(generateMoveCodePointerScene(3));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(5));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(7));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(9));
+					script.addScene(generateMoveCodePointerScene(11));
+
 					node.left = newNode;
 					node.left.data.location = locationNode.left.data;
 					arrow.left = new TreeNode<ValuePair>(null);
@@ -195,16 +258,90 @@ public class APBinarySearchTree extends AnimationPlanner {
 					// animation planning
 					script.addScene(generateAddNodeScene(node.left));
 					script.addScene(generateAddArrowScene(arrow.left));
+					script.addScene(generateWaitScene(1000));
+
+					script.addScene(generateMoveCodePointerScene(12));
 					break;
+
 				} else {
+					script.addScene(generateMoveCodePointerScene(4));
 					node = node.left;
 					locationNode = locationNode.left;
 					arrow = arrow.left;
 				}
-			} else {
+
+				script.addScene(generateColorScene(node.data.id, EShape.CIRCLE, Color.BLUE));
+				continue;
+			} 
+			
+			
+			if (num > node.data.num) {
+				script.addScene(generateMoveCodePointerScene(3));
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
+				script.addScene(generateMoveCodePointerScene(5));
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
+				if (node.right == null) {
+					
+					script.addScene(generateMoveCodePointerScene(6));
+					script.addScene(generateMoveCodePointerScene(1));
+					script.addScene(generateMoveCodePointerScene(3));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(5));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(7));
+					script.addScene(generateHighlightScene(newNode.data.id, EShape.CIRCLE, Color.BLUE, Color.RED));
+					script.addScene(generateMoveCodePointerScene(9));
+					script.addScene(generateMoveCodePointerScene(11));
+
+					node.right = newNode;
+					node.right.data.location = locationNode.right.data;
+					arrow.right = new TreeNode<ValuePair>(null);
+					arrow.right.data = new ValuePair(generateUniqueID(),
+							getLength(node.data.location, node.right.data.location) - 50,
+							getMiddlePoint(node.data.location, node.right.data.location),
+							getAngle(node.data.location, node.right.data.location));
+					
+					// animation planning
+					script.addScene(generateAddNodeScene(node.right));
+					script.addScene(generateAddArrowScene(arrow.right));
+					script.addScene(generateWaitScene(1000));
+
+					script.addScene(generateMoveCodePointerScene(12));
+					break;
+
+				} else {
+
+					script.addScene(generateMoveCodePointerScene(6));
+
+					node = node.right;
+					locationNode = locationNode.right;
+					arrow = arrow.right;
+				}
+
+				script.addScene(generateColorScene(node.data.id, EShape.CIRCLE, Color.BLUE));
+				continue;
+			} 
+			
+			if (num == node.data.num){
+
+				script.addScene(generateMoveCodePointerScene(3));
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
+				script.addScene(generateMoveCodePointerScene(5));
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
+				script.addScene(generateMoveCodePointerScene(7));
+				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
+				script.addScene(generateMoveCodePointerScene(8));
+				script.addScene(generateDeleteScene(newNode.data.id, EShape.CIRCLE));
+				script.addScene(generateWaitScene(1000));
+				script.addScene(generateMoveCodePointerScene(12));
+
+
 				break;
 			}
 		}
+
+		script.addScene(generateMoveCodePointerScene(0));
+
 		return script;
 	}
 
@@ -213,6 +350,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 		TreeNode<ValuePair> arrow = arrowTree.root;
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> location = locationsTree.root;
+
+		script.addScene(generateChangeCodeScene(code_delete));
 
 		delete(script, EDir.NONE, node, node, arrow, arrow, location, location, num);
 
@@ -251,7 +390,6 @@ public class APBinarySearchTree extends AnimationPlanner {
 				}else{
 					node.data.num = Integer.MIN_VALUE;
 				}
-
 				return;
 			}
 			else if(node.left == null && node.right != null){
@@ -325,7 +463,6 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = null;
 					arrow = null;
 				}
-
 				return;
 			}
 
@@ -337,7 +474,6 @@ public class APBinarySearchTree extends AnimationPlanner {
 			script.addScene(generateTextScene(node.data.id, EShape.CIRCLE, Integer.toString(node.data.num)));
 
 			delete(script, EDir.RIGHT, node, node.right, arrow, arrow.right, location, location.right, node.data.num);
-
 		}
 		return;
 	}
@@ -449,6 +585,50 @@ public class APBinarySearchTree extends AnimationPlanner {
 		} else {
 			return;
 		}
+	}
+
+	private Scene generateChangeCodeScene(String code) {
+		Motion motion = new Motion();
+		motion.showtext = code;
+		return generateScene(codeID, EShape.TEXT, EAction.TEXT, motion);
+	}
+
+	private List<Scene> generateMoveCodePointerScene(int line){
+		List<Scene> scenes = new ArrayList<>();
+		Motion motion = new Motion();
+		motion.moveto = new Point(pointer_x, pointer_y + wordHeight * line);
+		scenes.add(generateScene(pointerID, EShape.TEXT, EAction.MOVE, motion));
+		scenes.add(generateWaitScene(1000));
+		return scenes;
+	}
+
+	private List<Scene> generateDoubleHighlightScene(int id1, int id2, Color unhighlight, Color highlight){
+		List<Scene> scenes = new ArrayList<>();
+		Motion highlightMotion = new Motion();
+		highlightMotion.colorto = highlight;
+		scenes.add(generateColorScene(id1, EShape.CIRCLE, highlight));
+		scenes.add(generateColorScene(id2, EShape.CIRCLE, highlight));
+		scenes.add(generateWaitScene(1000));
+		scenes.add(generateColorScene(id1, EShape.CIRCLE, unhighlight));
+		scenes.add(generateColorScene(id2, EShape.CIRCLE, unhighlight));
+		scenes.add(generateWaitScene(1000));
+		return scenes;
+	}
+
+	@Override
+	public List<Scene> generateHighlightScene(int id, EShape shape, Color defaultColor, Color highlightColor){
+		List<Scene> scenes = new ArrayList<>();
+
+		Motion highlight = new Motion();
+		highlight.colorto = highlightColor;
+		scenes.add(generateScene(id, shape, EAction.COLOR, highlight));
+		scenes.add(generateWaitScene(1000));
+
+		Motion unhighlight = new Motion();
+		unhighlight.colorto = defaultColor;
+		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
+		scenes.add(generateWaitScene(1000));
+		return scenes;
 	}
 }
 
