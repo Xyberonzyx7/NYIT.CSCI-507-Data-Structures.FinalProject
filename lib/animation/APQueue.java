@@ -126,6 +126,7 @@ public class APQueue extends AnimationPlanner {
 		if(circles.isFull()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Overflow");
 			script.addScene(generateWaitScene(1000));
+			script.addScene(generatePopup("Overflow"));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
@@ -163,6 +164,7 @@ public class APQueue extends AnimationPlanner {
 		if(circles.isEmpty()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Underflow");
 			script.addScene(generateWaitScene(1000));
+			script.addScene(generatePopup("Underflow"));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
 		}
