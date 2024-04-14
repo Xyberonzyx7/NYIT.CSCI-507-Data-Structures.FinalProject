@@ -156,6 +156,7 @@ public class APStack extends AnimationPlanner {
 		if(circles.isFull()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write("overflow");
 			script.addScene(generateWaitScene(1000));
+			script.addScene(generatePopup("Overflow"));
 			script.addScene(generateMoveCodePointerScene(0)); 	// code: standby
 			return script;
 		}
@@ -194,6 +195,7 @@ public class APStack extends AnimationPlanner {
 		if(circles.isEmpty()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("underflow")
 			script.addScene(generateWaitScene(1000));
+			script.addScene(generatePopup("Underflow"));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby
 			return script;
 		}
