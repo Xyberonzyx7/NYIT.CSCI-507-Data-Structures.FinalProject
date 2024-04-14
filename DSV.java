@@ -64,7 +64,7 @@ public class DSV {
 		initQueuePanel();
 		initLinkedListPanel();
 		initBinarySearchTreePanel();
-		initPlayPanel();
+		initPlaySpeedPanel();
 		initFrame();
 	}
 
@@ -695,7 +695,7 @@ public class DSV {
 		panOPBinarySearchTree.add(btn_delete);
 	}
 
-	private void initPlayPanel(){
+	private void initPlaySpeedPanel(){
 
 		// new panel
 		panPlay = new JPanel();
@@ -735,26 +735,31 @@ public class DSV {
 	private void showSelectedPanel(EOPPanel panel) {
 		switch (panel) {
 			case ARRAY:
+				if(panOPCurrent == panOPArray) return;
 				panOPArray.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPArray;
 				break;				
 			case STACK:
+				if(panOPCurrent == panOPStack) return;
 				panOPStack.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPStack;
 				break;
 			case QUEUE:
+				if(panOPCurrent == panOPQueue) return;
 				panOPQueue.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPQueue;
 				break;
 			case LINKEDLIST:
+				if(panOPCurrent == panOPLinkedList) return;
 				panOPLinkedList.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPLinkedList;
 				break;
 			case TREE:
+				if(panOPCurrent == panOPBinarySearchTree) return;
 				panOPBinarySearchTree.setVisible(true);
 				panOPCurrent.setVisible(false);
 				panOPCurrent = panOPBinarySearchTree;
