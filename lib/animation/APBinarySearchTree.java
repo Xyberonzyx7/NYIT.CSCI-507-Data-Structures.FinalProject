@@ -112,6 +112,14 @@ public class APBinarySearchTree extends AnimationPlanner {
 		ReorderForBST reorderForBST = new ReorderForBST();
 		reorderForBST.sortedArrayToBSTArray(nums);
 
+		// reset
+		dataTree = new Tree<>();
+		dataTree.root = new TreeNode<ValuePair>(null);
+
+		// arrow tree
+		arrowTree = new Tree<>();
+		arrowTree.root = new TreeNode<ValuePair>(null);
+
 		TreeNode<ValuePair> arrow = arrowTree.root;
 		TreeNode<ValuePair> node = dataTree.root;
 		TreeNode<Point> locationNode = locationsTree.root;
