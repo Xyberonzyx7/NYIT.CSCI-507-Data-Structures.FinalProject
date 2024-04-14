@@ -46,7 +46,7 @@ public class APArray extends AnimationPlanner{
 		code += "Algorithm SET(ARRAY, INDEX, ITEM):\n";
 		code += "{\n";
 		code += "    if (INDEX > MAXSIZE or INDEX < 0) then\n";
-		code += "        write (\"index out of range\");\n";
+		code += "        write (\"Index Out of Range\");\n";
 		code += "    else\n";
 		code += "        ARRAY[INDEX] = ITEM;\n";
 		code += "}";
@@ -115,6 +115,8 @@ public class APArray extends AnimationPlanner{
 
 		if(index >= capacity || index < 0){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("Out Range");
+			script.addScene(generateWaitScene(1000));
+			script.addScene(generatePopup("Index Out of Range"));
 			script.addScene(generateWaitScene(1000));
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby
 			return script;

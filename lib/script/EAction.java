@@ -8,5 +8,6 @@ public enum EAction {
 	ROTATE,
 	COLOR,
 	TEXT,
+	POPUP,
 	WAIT
 }

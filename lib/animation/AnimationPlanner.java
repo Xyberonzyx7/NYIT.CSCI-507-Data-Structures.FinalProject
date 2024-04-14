@@ -28,6 +28,10 @@ public class AnimationPlanner {
 		return -1;
 	}
 
+	public int generatePopupID(){
+		return -2;
+	}
+
 	public Scene generateLengthScene(int id, EShape shape, int length){
 		Motion motion = new Motion();
 		motion.lengthto = length;
@@ -147,6 +151,12 @@ public class AnimationPlanner {
 		scenes.add(generateScene(id, shape, EAction.COLOR, unhighlight));
 
 		return scenes;
+	}
+
+	public Scene generatePopup(String msg){
+		Motion popupMotion = new Motion();
+		popupMotion.showtext = msg;
+		return generateScene(generatePopupID(), EShape.POPUP, EAction.POPUP, popupMotion);
 	}
 
 	public Scene generateScene(int id, EShape shape, EAction action, Motion motion){

@@ -5,5 +5,6 @@ public enum EShape {
 	CIRCLE,
 	ARROW,
 	TEXT,
+	POPUP,
 	NONE,
 }

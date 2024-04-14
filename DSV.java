@@ -836,6 +836,9 @@ public class DSV {
 					case TEXT:
 						runTextTo(clip.id, clip.shape, clip.showtext);
 					break;
+					case POPUP:
+						popHint(clip.showtext);
+					break;
 					case WAIT:
 						// do nothing
 					break;
