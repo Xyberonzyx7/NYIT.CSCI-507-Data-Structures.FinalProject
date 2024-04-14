@@ -712,6 +712,7 @@ public class DSV {
 			.collect(Collectors.toList())
 			.toArray(new String[0]);
 		JComboBox<String> comboBox = new JComboBox<>(choices);
+		lb_speed.setFont(TITLEFONT);
 		comboBox.setLightWeightPopupEnabled(false);
 		comboBox.setSelectedIndex(2);
 		comboBox.addActionListener(new ActionListener() {
@@ -720,19 +721,15 @@ public class DSV {
 				updatePlaySpeed(ESpeed.values()[comboBox.getSelectedIndex()]);
 			}
 		});
-		JButton btn_play = new JButton("PLAY / PAUSE");
-		lb_speed.setFont(TITLEFONT);
-		lb_speed.setVisible(true);
+
 
 		// auto layout
 		autolayout.setBounds();
 		autolayout.setBounds(lb_speed);
 		autolayout.setBounds(comboBox);
-		autolayout.setBounds(btn_play);
 
 		panPlay.add(lb_speed);
 		panPlay.add(comboBox);
-		panPlay.add(btn_play);
 	}
 
 	private void showSelectedPanel(EOPPanel panel) {
