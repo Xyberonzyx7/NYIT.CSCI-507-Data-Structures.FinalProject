@@ -175,7 +175,7 @@ public class DSV {
 		btn_create.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szDefault = ta_default.getText();
+				String szDefault = ta_default.getText().trim();
 
 				if (szDefault.isEmpty()) {
 					popHint("Default array is not valid.");
@@ -203,8 +203,8 @@ public class DSV {
 		btn_modify.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szIndex = tf_index.getText();
-				String szNumber = tf_num.getText();
+				String szIndex = tf_index.getText().trim();
+				String szNumber = tf_num.getText().trim();
 
 				if (szIndex.isEmpty() || szNumber.isEmpty()) {
 					popHint("Index or Number is not valid.");
@@ -273,7 +273,7 @@ public class DSV {
 		btn_init.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				String szSize = tf_size.getText();
+				String szSize = tf_size.getText().trim();
 				if(szSize.isEmpty()){
 					popHint("Size is not valid.");
 					return;
@@ -296,7 +296,7 @@ public class DSV {
 		btn_push.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				String szPush = tf_push.getText();
+				String szPush = tf_push.getText().trim();
 				if(szPush.isEmpty()){
 					popHint("Value is not valid.");
 					return;
@@ -371,7 +371,7 @@ public class DSV {
 		btn_init.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				String szSize = tf_size.getText();
+				String szSize = tf_size.getText().trim();
 				if(szSize.isEmpty()){
 					popHint("Size is not valid.");
 					return;
@@ -394,7 +394,7 @@ public class DSV {
 		btn_enqueue.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szPush = tf_enqueue.getText();
+				String szPush = tf_enqueue.getText().trim();
 				if (szPush.isEmpty()) {
 					popHint("Value is not valid.");
 					return;
@@ -474,7 +474,7 @@ public class DSV {
 		btn_init.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szInit = ta_init.getText();
+				String szInit = ta_init.getText().trim();
 
 				if (szInit.isEmpty()) {
 					popHint("Default array is not valid.");
@@ -502,8 +502,8 @@ public class DSV {
 		btn_insert.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szIndex = tf_index.getText();
-				String szData = tf_data.getText();
+				String szIndex = tf_index.getText().trim();
+				String szData = tf_data.getText().trim();
 
 				if (szIndex.isEmpty() || szData.isEmpty()) {
 					popHint("Index or Data is not valid.");
@@ -525,7 +525,7 @@ public class DSV {
 		btn_remove.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szRemove = tf_remove.getText();
+				String szRemove = tf_remove.getText().trim();
 
 				if (szRemove.isEmpty()) {
 					popHint("Remove index is not valid.");
@@ -604,7 +604,7 @@ public class DSV {
 		btn_init.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				String szInit = ta_init.getText();
+				String szInit = ta_init.getText().trim();
 
 				if (szInit.isEmpty()) {
 					popHint("Default array is not valid.");
@@ -632,7 +632,7 @@ public class DSV {
 		btn_add.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				String szAdd = tf_add.getText();
+				String szAdd = tf_add.getText().trim();
 
 				if(szAdd.isEmpty()){
 					popHint("Data is not valid.");
@@ -652,7 +652,7 @@ public class DSV {
 		btn_delete.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e){
-				String szDelete = tf_delete.getText();
+				String szDelete = tf_delete.getText().trim();
 
 				if(szDelete.isEmpty()){
 					popHint("Data is not valid.");
