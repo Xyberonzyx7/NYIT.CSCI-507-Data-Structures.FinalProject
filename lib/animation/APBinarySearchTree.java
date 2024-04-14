@@ -105,7 +105,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 	public Script initBinarySearchTree(int[] nums) {
 		Script script = new Script();
 
-		// ensure that the user’s input data matches the criteria of the binary search tree
+		// ensure that the user’s input data matches the criteria of the binary search
+		// tree
 		QuickSort qs = new QuickSort();
 		qs.quickSort(nums, 0, nums.length - 1);
 		ReorderForBST reorderForBST = new ReorderForBST();
@@ -121,68 +122,94 @@ public class APBinarySearchTree extends AnimationPlanner {
 		script.addScene(generateTextScene(pointerID, EShape.TEXT, pointer));
 		script.addScene(generateColorScene(pointerID, EShape.TEXT, Color.RED));
 
-		for (int i = 0; i < nums.length; i++) {
+		try {
+			for (int i = 0; i < nums.length; i++) {
 
-			node = dataTree.root;
-			arrow = arrowTree.root;
-			locationNode = locationsTree.root;
+				node = dataTree.root;
+				arrow = arrowTree.root;
+				locationNode = locationsTree.root;
 
-			if (i == 0) {
+				if (i == 0) {
 
-				// data node
-				node.data = new ValuePair(generateUniqueID(), nums[i], locationNode.data, 0);
+					// data node
+					node.data = new ValuePair(generateUniqueID(), nums[i], locationNode.data, 0);
 
-				// arrow node (won't use this one, but we need a root)
-				arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
+					// arrow node (won't use this one, but we need a root)
+					arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
 
-				// animation planning
-				script.addScene(generateInitNodeScene(node));
-				continue;
-			}
+					// animation planning
+					script.addScene(generateInitNodeScene(node));
+					continue;
+				}
 
-			while (true) {
-				if (nums[i] > node.data.num) {
-					if (node.right == null) {
-						node.right = new TreeNode<ValuePair>(null);
-						node.right.data = new ValuePair(generateUniqueID(), nums[i], locationNode.right.data, 0);
-						arrow.right = new TreeNode<ValuePair>(null);
-						arrow.right.data = new ValuePair(generateUniqueID(),
-								getLength(node.data.location, node.right.data.location) - 50,
-								getMiddlePoint(node.data.location, node.right.data.location),
-								getAngle(node.data.location, node.right.data.location));
+				while (true) {
+					if (nums[i] > node.data.num) {
+						if (node.right == null) {
+							node.right = new TreeNode<ValuePair>(null);
+							node.right.data = new ValuePair(generateUniqueID(), nums[i], locationNode.right.data, 0);
+							arrow.right = new TreeNode<ValuePair>(null);
+							arrow.right.data = new ValuePair(generateUniqueID(),
+									getLength(node.data.location, node.right.data.location) - 50,
+									getMiddlePoint(node.data.location, node.right.data.location),
+									getAngle(node.data.location, node.right.data.location));
 
-						// animation
-						script.addScene(generateInitNodeScene(node.right));	
-						script.addScene(generateInitArrowScene(arrow.right));
-						break;
+							// animation
+							script.addScene(generateInitNodeScene(node.right));
+							script.addScene(generateInitArrowScene(arrow.right));
+							break;
+						} else {
+							node = node.right;
+							locationNode = locationNode.right;
+							arrow = arrow.right;
+						}
+					} else if (nums[i] < node.data.num) {
+						if (node.left == null) {
+							node.left = new TreeNode<ValuePair>(null);
+							node.left.data = new ValuePair(generateUniqueID(), nums[i], locationNode.left.data, 0);
+							arrow.left = new TreeNode<ValuePair>(null);
+							arrow.left.data = new ValuePair(generateUniqueID(),
+									getLength(node.data.location, node.left.data.location) - 50,
+									getMiddlePoint(node.data.location, node.left.data.location),
+									getAngle(node.data.location, node.left.data.location));
+
+							// animation planning
+							script.addScene(generateInitNodeScene(node.left));
+							script.addScene(generateInitArrowScene(arrow.left));
+							break;
+						} else {
+							node = node.left;
+							locationNode = locationNode.left;
+							arrow = arrow.left;
+						}
 					} else {
-						node = node.right;
-						locationNode = locationNode.right;
-						arrow = arrow.right;
-					}
-				} else if (nums[i] < node.data.num) {
-					if (node.left == null) {
-						node.left = new TreeNode<ValuePair>(null);
-						node.left.data = new ValuePair(generateUniqueID(), nums[i], locationNode.left.data, 0);
-						arrow.left = new TreeNode<ValuePair>(null);
-						arrow.left.data = new ValuePair(generateUniqueID(),
-								getLength(node.data.location, node.left.data.location) - 50,
-								getMiddlePoint(node.data.location, node.left.data.location),
-								getAngle(node.data.location, node.left.data.location));
-
-						// animation planning
-						script.addScene(generateInitNodeScene(node.left));
-						script.addScene(generateInitArrowScene(arrow.left));
 						break;
-					} else {
-						node = node.left;
-						locationNode = locationNode.left;
-						arrow = arrow.left;
 					}
-				} else {
-					break;
 				}
 			}
+		} catch (NullPointerException e) {
+
+			script.removeAllScene();
+			script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+
+			// reset
+			dataTree = new Tree<>();
+			dataTree.root = new TreeNode<ValuePair>(null);
+
+			// arrow tree
+			arrowTree = new Tree<>();
+			arrowTree.root = new TreeNode<ValuePair>(null);
+		} catch (Exception e){
+
+			script.removeAllScene();
+			script.addScene(generatePopup("Unknown Error. Please adjust the input data and try again."));
+
+			// reset
+			dataTree = new Tree<>();
+			dataTree.root = new TreeNode<ValuePair>(null);
+
+			// arrow tree
+			arrowTree = new Tree<>();
+			arrowTree.root = new TreeNode<ValuePair>(null);
 		}
 		return script;
 	}
@@ -198,6 +225,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		// new node to standby position
 		TreeNode<ValuePair> newNode = new TreeNode<>(null);
 		newNode.data = new ValuePair(generateUniqueID(), num, STANDBYPOINT, 0);
+		int level = 1;
 
 		// animation
 		script.addScene(generateAddScene(newNode.data.id, EShape.CIRCLE, 0, 0));
@@ -242,6 +270,15 @@ public class APBinarySearchTree extends AnimationPlanner {
 				script.addScene(generateMoveCodePointerScene(3));	// code: if (node.value > value) then
 				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
 				if (node.left == null) {
+
+					level += 1;
+
+					if(level > 5){
+						script.removeAllScene();
+						script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+						return script;
+					}
+
 					script.addScene(generateMoveCodePointerScene(4));
 					script.addScene(generateMoveCodePointerScene(1));
 					script.addScene(generateMoveCodePointerScene(3));
@@ -275,6 +312,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = node.left;
 					locationNode = locationNode.left;
 					arrow = arrow.left;
+					level += 1;
 				}
 
 				script.addScene(generateColorScene(node.data.id, EShape.CIRCLE, Color.BLUE));
@@ -289,6 +327,14 @@ public class APBinarySearchTree extends AnimationPlanner {
 				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
 				if (node.right == null) {
 					
+					level += 1;
+
+					if(level > 5){
+						script.removeAllScene();
+						script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+						return script;
+					}
+
 					script.addScene(generateMoveCodePointerScene(6));
 					script.addScene(generateMoveCodePointerScene(1));
 					script.addScene(generateMoveCodePointerScene(3));
@@ -323,6 +369,8 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = node.right;
 					locationNode = locationNode.right;
 					arrow = arrow.right;
+
+					level += 1;
 				}
 
 				script.addScene(generateColorScene(node.data.id, EShape.CIRCLE, Color.BLUE));

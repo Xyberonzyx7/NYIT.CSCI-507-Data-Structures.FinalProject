@@ -10,6 +10,10 @@ public class Script {
 		this.scenes = new ArrayList<>();
 	}
 
+	public void removeAllScene(){
+		this.scenes.clear();
+	}
+
 	public void addScene(Scene scene){
 		this.scenes.add(scene);
 	}
