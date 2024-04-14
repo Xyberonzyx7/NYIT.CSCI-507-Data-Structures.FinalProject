@@ -49,7 +49,7 @@ public class APLinkedList extends AnimationPlanner {
 		code_insertAt += "Algorithm INSERT(L, INDEX, ITEM)\n";
 		code_insertAt += "{\n";
 		code_insertAt += "    if (INDEX > L.size) then\n";
-		code_insertAt += "        write (\"index out of range\");\n";
+		code_insertAt += "        write (\"Index Out of Range\");\n";
 		code_insertAt += "        return;\n";
 		code_insertAt += "    newest = Node(ITEM);\n";
 		code_insertAt += "    if (INDEX == 0) then\n";
@@ -68,7 +68,7 @@ public class APLinkedList extends AnimationPlanner {
 		code_removeAt += "Algorithm DELETE(L, INDEX)\n";
 		code_removeAt += "{\n";
 		code_removeAt += "    if (INDEX >= L.size) then\n";
-		code_removeAt += "        write (\"index out of range\");\n";
+		code_removeAt += "        write (\"Index Out of Range\");\n";
 		code_removeAt += "        return;\n";
 		code_removeAt += "    if (INDEX == 0) then\n";
 		code_removeAt += "        L.head = L.head.next;\n";
@@ -156,6 +156,7 @@ public class APLinkedList extends AnimationPlanner {
 		// protection
 		if(index > sll_node.getSize()){
 			script.addScene(generateMoveCodePointerScene(4));	// code: write ("index out of range");
+			script.addScene(generatePopup("Index Out of Range"));	
 			script.addScene(generateMoveCodePointerScene(5));	// code: return
 			script.addScene(generateMoveCodePointerScene(0));	// code: standby line
 			return script;
@@ -245,6 +246,7 @@ public class APLinkedList extends AnimationPlanner {
 
 		if(index >= sll_node.getSize()){
 			script.addScene(generateMoveCodePointerScene(4)); // code: write ("index out of range");
+			script.addScene(generatePopup("Index Out of Range"));	
 			script.addScene(generateMoveCodePointerScene(5)); // code: return;
 			script.addScene(generateMoveCodePointerScene(0)); // code: standby line
 			return script;
