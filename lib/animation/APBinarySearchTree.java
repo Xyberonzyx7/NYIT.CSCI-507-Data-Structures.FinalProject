@@ -69,7 +69,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		code_add += "    else if (NODE.value < VALUE) then\n";
 		code_add += "        NODE.right = ADD(NODE.right, VALUE);\n";
 		code_add += "    else if (NODE.value == VALUE) then\n";
-		code_add += "        write (\"duplicate data\")\n";
+		code_add += "        write (\"Duplicate Data\")\n";
 		code_add += "    else\n";
 		code_add += "        // (NODE == null)\n";
 		code_add += "        NODE = new TreeNode(VALUE);\n";
@@ -338,6 +338,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 				script.addScene(generateMoveCodePointerScene(7));
 				script.addScene(generateDoubleHighlightScene(node.data.id, newNode.data.id, Color.BLUE, Color.RED));
 				script.addScene(generateMoveCodePointerScene(8));
+				script.addScene(generatePopup("Duplicate Data"));
 				script.addScene(generateDeleteScene(newNode.data.id, EShape.CIRCLE));
 				script.addScene(generateWaitScene(1000));
 				script.addScene(generateMoveCodePointerScene(12));
