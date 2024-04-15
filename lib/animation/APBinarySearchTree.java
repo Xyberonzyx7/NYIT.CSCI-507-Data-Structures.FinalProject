@@ -520,6 +520,9 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = null;
 					arrow = null;
 				}else{
+					dataTree.root = node.right;
+					arrowTree.root = arrow.right;
+					reposition(script, null, dataTree.root, arrowTree.root, location);
 					node = null;
 					arrow = null;
 				}
@@ -564,6 +567,9 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node = null;
 					arrow = null;
 				}else{
+					dataTree.root = node.left;
+					arrowTree.root = arrow.left;
+					reposition(script, null, dataTree.root, arrowTree.root, location);
 					node = null;
 					arrow = null;
 				}
@@ -596,9 +602,15 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 		repositionNode.data.location = repositionLocation.data;
 
-		repositionArrow.data.angle = getAngle(parentNode.data.location, repositionLocation.data);
-		repositionArrow.data.num = getLength(parentNode.data.location, repositionLocation.data) - 50;
-		repositionArrow.data.location = getMiddlePoint(parentNode.data.location, repositionLocation.data);
+		if(parentNode == null){
+			repositionArrow.data.angle = 90;
+			repositionArrow.data.num = 0;
+			repositionArrow.data.location = repositionLocation.data;
+		}else{
+			repositionArrow.data.angle = getAngle(parentNode.data.location, repositionLocation.data);
+			repositionArrow.data.num = getLength(parentNode.data.location, repositionLocation.data) - 50;
+			repositionArrow.data.location = getMiddlePoint(parentNode.data.location, repositionLocation.data);
+		}
 
 		// animaion planning
 		script.addScene(generateMoveScene(repositionNode.data.id, EShape.CIRCLE, repositionNode.data.location));
