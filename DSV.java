@@ -846,7 +846,9 @@ public class DSV {
 				}
 				i += 1;
 
-				if(i >= clips.size()) executor.shutdown();
+				if (i >= clips.size()) {
+					executor.shutdown();
+				}
 				else{
 					executor.schedule(this, (long)(movie.getClips().get(i).delaystart * delayMultiplier), TimeUnit.MILLISECONDS);
 				}

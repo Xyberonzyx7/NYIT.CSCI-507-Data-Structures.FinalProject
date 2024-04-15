@@ -143,10 +143,11 @@ public class APBinarySearchTree extends AnimationPlanner {
 					node.data = new ValuePair(generateUniqueID(), nums[i], locationNode.data, 0);
 
 					// arrow node (won't use this one, but we need a root)
-					arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
+					arrow.data = new ValuePair(generateUniqueID(), 0, new Point(-10, -10), 0);
 
 					// animation planning
 					script.addScene(generateInitNodeScene(node));
+					script.addScene(generateInitArrowScene(arrow));
 					continue;
 				}
 
@@ -259,9 +260,10 @@ public class APBinarySearchTree extends AnimationPlanner {
 			node.data.angle = newNode.data.angle;
 
 			// arrow node (won't use this one, but we need a root)
-			arrow.data = new ValuePair(-1, 0, locationNode.data, 0);
+			arrow.data = new ValuePair(generateUniqueID(), 0, new Point(-10, -10), 0);
 
 			// animation planning
+			script.addScene(generateInitArrowScene(arrow));
 			script.addScene(generateMoveScene(node.data.id, EShape.CIRCLE, node.data.location));
 			script.addScene(generateWaitScene(1000));
 
@@ -424,7 +426,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 	private void delete(Script script, EDir dir, TreeNode<ValuePair> parentNode, TreeNode<ValuePair> node, TreeNode<ValuePair> parentArrow, TreeNode<ValuePair> arrow, TreeNode<Point> parentLocation, TreeNode<Point> location, int num) {
 
-		if (node == null) {
+		if (node == null || node.data.num == Integer.MIN_VALUE) {
 			script.addScene(generateMoveCodePointerScene(1));
 			script.addScene(generateMoveCodePointerScene(3));
 			script.addScene(generateMoveCodePointerScene(4));
