@@ -198,7 +198,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 		} catch (NullPointerException e) {
 
 			script.removeAllScene();
-			script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+			script.addScene(generatePopup("Data Structure Visualizer only supports trees with up to 5 levels."));
 
 			// reset
 			dataTree = new Tree<>();
@@ -285,7 +285,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 					if(level > 5){
 						script.removeAllScene();
-						script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+						script.addScene(generatePopup("Data Structure Visualizer only supports trees with up to 5 levels."));
 						return script;
 					}
 
@@ -341,7 +341,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 
 					if(level > 5){
 						script.removeAllScene();
-						script.addScene(generatePopup("Sorry. Data Structure Visualizer currently only supports trees with up to 5 levels."));
+						script.addScene(generatePopup("Data Structure Visualizer only supports trees with up to 5 levels."));
 						return script;
 					}
 
