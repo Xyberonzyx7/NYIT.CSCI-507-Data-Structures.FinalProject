@@ -101,6 +101,10 @@ public class APStack extends AnimationPlanner {
 	public Script initStack(int capacity){
 
 		Script script = new Script();		
+		if(capacity > 10){
+			script.addScene(generatePopup("Data Structure Visualizer supports stacks with a maximum size of 10. Please reduce the size of the initial stack and try again."));
+			return script;
+		}
 
 		squares.setSize(capacity);
 		circles.setSize(capacity);
