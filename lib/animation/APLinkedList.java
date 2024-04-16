@@ -109,6 +109,11 @@ public class APLinkedList extends AnimationPlanner {
 
 		Script script = new Script();
 
+		if(nums.length > 7){
+			script.addScene(generatePopup("Data Structure Visualizer supports linked lists with a maximum size of 7. Please reduce the size of the initial linked list and try again."));
+			return script;
+		}
+
 		script.addScene(generateAddScene(codeID, EShape.TEXT, codeArea.x, codeArea.y));
 		script.addScene(generateChangeCodeScene(code_insertAt));
 		script.addScene(generateAddScene(pointerID, EShape.TEXT, pointer_x, pointer_y));
@@ -148,6 +153,11 @@ public class APLinkedList extends AnimationPlanner {
 	public Script insertAt(int index, int data){
 
 		Script script = new Script();
+
+		if(sll_node.getSize() == 7){
+			script.addScene(generatePopup("Data Structure Visualizer supports linked lists with a maximum size of 7."));
+			return script;
+		}
 
 		script.addScene(generateChangeCodeScene(code_insertAt));
 
