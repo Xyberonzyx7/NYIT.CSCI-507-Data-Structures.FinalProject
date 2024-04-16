@@ -105,8 +105,7 @@ public class APBinarySearchTree extends AnimationPlanner {
 	public Script initBinarySearchTree(int[] nums) {
 		Script script = new Script();
 
-		// ensure that the user’s input data matches the criteria of the binary search
-		// tree
+		// ensure that the input data matches the criteria of the binary search tree
 		QuickSort qs = new QuickSort();
 		qs.quickSort(nums, 0, nums.length - 1);
 		ReorderForBST reorderForBST = new ReorderForBST();
