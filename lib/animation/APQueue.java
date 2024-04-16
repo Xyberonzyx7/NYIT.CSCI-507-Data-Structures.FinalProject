@@ -86,6 +86,11 @@ public class APQueue extends AnimationPlanner {
 	public Script initQueue(int capacity){
 		
 		Script script = new Script();
+
+		if(capacity > 10){
+			script.addScene(generatePopup("Data Structure Visualizer only supports queues with a maximum size of 10. Please reduce the size of the initial queue and try again."));
+			return script;
+		}
 		
 		circles = new CircularQueue(capacity);
 		squares = new CircularQueue(capacity);
