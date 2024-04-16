@@ -73,6 +73,11 @@ public class APArray extends AnimationPlanner{
 	public Script initArray(int[] nums){
 		Script script = new Script();
 
+		if(nums.length > 10){
+			script.addScene(generatePopup("Data Structure Visualizer supports arrays with a maximum size of 10. Please reduce the size of the initial array and try again."));
+			return script;
+		}
+
 		// add code to animation panel
 		script.addScene(generateAddScene(codeID, EShape.TEXT, codeArea.x, codeArea.y));
 		script.addScene(generateTextScene(codeID, EShape.TEXT, code));
