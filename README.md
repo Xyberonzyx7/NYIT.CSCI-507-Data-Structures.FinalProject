@@ -4,7 +4,8 @@ This project is a Data Structure Visualizer. The implemented Data Structures are
 - Stack
 - Queue
 - Linked List
-- Binary Search Tree  
+- Binary Search Tree
+
 ![Example Image](/assets/readme.png)
 
 ### Technical Features
