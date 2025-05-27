@@ -6,7 +6,7 @@ This project is a Data Structure Visualizer. The implemented Data Structures are
 - Linked List
 - Binary Search Tree
 
-![Example Image](/assets/readme.png)
+![Project Demo](assets/demo.gif)
 
 ### Technical Features
 - GUI
